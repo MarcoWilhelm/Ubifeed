@@ -7,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class VenuesPage implements OnInit {
 
+  venues : any;
+
   constructor() { }
 
   ngOnInit() {
+    fetch('../../assets/data/venues.json').then(res => res.json())
+    .then(json => {
+      this.venues = json;
+    });
   }
 
 }

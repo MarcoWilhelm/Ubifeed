@@ -1,10 +1,3 @@
-<!-- <ion-header>
-  <ion-toolbar>
-    <ion-menu-button menu="first" auto-hide="false"></ion-menu-button>
-    <ion-title>Venues</ion-title>
-  </ion-toolbar>
-</ion-header> -->
-
 <ion-header>
   <ion-toolbar hideBackButton="true">
     <ion-buttons end>
@@ -16,5 +9,10 @@
 
 
 <ion-content>
-<p>öalsdfjöalskdfj</p>
+  <ion-card *ngFor="let venue of venues">
+    <ion-card-header>
+      <ion-card-title>{{ venue.name }}</ion-card-title>
+      <ion-card-subtitle>{{ venue.address }}</ion-card-subtitle>
+    </ion-card-header>
+  </ion-card>
 </ion-content>
