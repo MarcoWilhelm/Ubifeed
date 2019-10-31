@@ -1,0 +1,17 @@
+<ion-split-pane contentId="main-menu">
+  <ion-menu class="sidemenu" menuId="first">
+      <ion-content>
+          <!-- <h1 class="menu-headline">Ubifeed</h1> -->
+          <img class="sidemenu-logo" src="../../assets/img/logo_black.png">
+          <ion-list lines="full" *ngFor="let page of pages">
+              <ion-menu-toggle autoHide="false">
+                  <ion-item [routerLink]="page.url">
+                      <ion-icon [name]="page.icon" slot="start"></ion-icon>
+                      <ion-label>{{ page.title }}</ion-label>
+                  </ion-item>
+              </ion-menu-toggle>
+          </ion-list>
+      </ion-content>
+  </ion-menu>
+  <ion-router-outlet id="main-menu" animated="false" main></ion-router-outlet>
+</ion-split-pane>
