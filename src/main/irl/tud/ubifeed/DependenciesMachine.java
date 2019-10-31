@@ -48,6 +48,12 @@ public class DependenciesMachine {
 		}
 	}
 
+	/**
+	 * Return an object after initializing all the dependencies.
+	 * 
+	 * @param classToProduce the class that you want the object
+	 * @return object initialized with all the dependencies
+	 */
 	public static Object produce(Class<?> classToProduce) {
 
 		//init object
@@ -55,14 +61,21 @@ public class DependenciesMachine {
 
 		// inject dependencies
 		injectDependencies(object);
-		
-		System.out.println(instances);
+
 		//clear instances
 		instances = new HashMap<String, Object>();
 
 		return object;
 	}
 
+	/**
+	 * This method gives the matching implementation of a given interface.
+	 * 
+	 * @param anInterface The interface for which the implementation is required.
+	 * @return An instance of the corresponding implementation, and null if no matching is found or if
+	 *         an error during creation is raised.
+	 * @throws IllegalStateException If the Factory has not been initialized yet.
+	 */
 	private static Object getImpl(Class<?> anInterface) throws IllegalStateException {
 		// if not initialized raises exception
 		if (matchings == null) {
@@ -71,8 +84,7 @@ public class DependenciesMachine {
 		}
 		String implName = matchings.getProperty(anInterface.getName());
 		// if none found
-		
-		System.out.println("Impl for " + anInterface.getName() + " = " + implName);
+
 		if (implName == null) {
 			return null;
 		}
@@ -88,21 +100,29 @@ public class DependenciesMachine {
 		return impl;
 	}
 
+	/**
+	 * Inject all the dependencies in the Service objects.
+	 * 
+	 * @param object the object you want to inject its dependencies
+	 */
 	private static void injectDependencies(Object object) {
-		System.out.println("OBJECT : " + object);
 		Field[] fields = object.getClass().getFields();
+		// for each attribute
 		for(int i = 0; i< fields.length; i++) {
 			if(!fields[i].isAnnotationPresent(Inject.class)) {
+				//attribute has not the annotation
 				continue;
 			}
+			// check if the object has already been instanciated or not
 			if (!instances.containsKey(matchings.getProperty(fields[i].getType().getName()))) {
+				//object not instanciated
 				Object instance = getImpl(fields[i].getType());
 				instances.put(matchings.getProperty(fields[i].getType().getName()), instance);
-				System.out.println("PUT : " + fields[i].getType().getName());
+				//inject depend of the object
 				injectDependencies(instance);
 			}
 			try {
-				System.out.println(fields[i].getType().getName() + "; " + instances.get(matchings.getProperty(fields[i].getType().getName())));
+				// Instanciate the attribute
 				fields[i].set(object, instances.get(matchings.getProperty(fields[i].getType().getName())));
 			} catch (IllegalArgumentException illegalArgumentException) {
 				illegalArgumentException.printStackTrace();
@@ -110,6 +130,5 @@ public class DependenciesMachine {
 				illegalAccessException.printStackTrace();
 			}
 		}
-		System.out.println("OUT : " + object);
 	}
 }
