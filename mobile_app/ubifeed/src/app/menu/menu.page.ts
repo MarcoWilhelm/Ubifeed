@@ -14,6 +14,11 @@ export class MenuPage implements OnInit {
       icon: 'pizza'
     },
     {
+      title: 'Your Orders',
+      url: '',
+      icon: 'list'
+    },
+    {
       title: 'Profile',
       url: 'menu',
       icon: 'person'
