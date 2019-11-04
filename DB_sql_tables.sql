@@ -25,20 +25,17 @@ DROP TABLE user_images ;
 DROP TABLE venues_images ;
 
 
-CREATE TABLE cities (
-    city_id                INT(7) unsigned NOT NULL,
-    city_name              VARCHAR(30) NOT NULL,
-    countries_country_id   INT(7) unsigned NOT NULL
-);
-
-ALTER TABLE cities ADD CONSTRAINT cities_pk PRIMARY KEY ( city_id );
-
 CREATE TABLE countries (
-    country_id     INT(7) unsigned NOT NULL,
+    country_id     SERIAL PRIMARY KEY,
     country_name   VARCHAR(30) NOT NULL
 );
 
-ALTER TABLE countries ADD CONSTRAINT countries_pk PRIMARY KEY ( country_id );
+CREATE TABLE cities (
+    city_id                SERIAL PRIMARY KEY,
+    city_name              VARCHAR(30) NOT NULL,
+    countries_country_id   INT NOT NULL REFERENCES countries (country_id)
+);
+
 
 CREATE TABLE meals (
     meal_id                          INT(7) unsigned NOT NULL,
