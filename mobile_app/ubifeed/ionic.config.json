@@ -1,5 +1,7 @@
 {
   "name": "ubifeed",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
