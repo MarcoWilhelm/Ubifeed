@@ -1,14 +1,23 @@
 package irl.tud.ubifeed.dbaccess;
 
 import java.sql.DriverManager;
+import java.sql.DriverPropertyInfo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.Properties;
+import java.util.logging.Logger;
+
+import org.apache.commons.dbcp2.BasicDataSource;
+
+import com.mysql.jdbc.Driver;
 
 
 public class DalServicesImpl implements DalBackendServices, DalServices {
-	
-	private Connection conn;
+
+	private BasicDataSource pool;
+	private ThreadLocal<Connection> connections;
 
 	private static final String URL = "";
 	private static final String PASSWORD = "";
@@ -18,28 +27,19 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 	 * Class Constructor.
 	 */
 	public DalServicesImpl() {
-	 
-		try {
-			Class.forName( "com.mysql.jdbc.Driver" ) ;
 
-
-			// Get a connection to the database
-			this.conn = DriverManager.getConnection(URL, PASSWORD, USER) ;
-
-		}catch( SQLException se ){
-			System.out.println( "SQL Exception:" ) ;
-
-			// Loop through the SQL Exceptions
-			while( se != null ){
-				System.out.println( "State  : " + se.getSQLState()  ) ;
-				System.out.println( "Message: " + se.getMessage()   ) ;
-				System.out.println( "Error  : " + se.getErrorCode() ) ;
-
-				se = se.getNextException() ;
-			}
+		// init BasicDataSource
+	    pool = new BasicDataSource();
+	    try {
+			pool.setDriver(new Driver());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		catch( Exception e ){
-			System.out.println( e ) ;
-		}
+	    pool.setUrl(URL);
+	    pool.setUsername(USER);
+	    pool.setPassword(PASSWORD);
+	    // init ThreadLocal
+	    connections = new ThreadLocal<Connection>();
 	}
 }
