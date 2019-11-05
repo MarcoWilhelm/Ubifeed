@@ -15,12 +15,12 @@ export class MenuPage implements OnInit {
     },
     {
       title: 'Your Orders',
-      url: '',
+      url: '/menu/venues',
       icon: 'list'
     },
     {
       title: 'Profile',
-      url: 'menu',
+      url: 'menu/venues',
       icon: 'person'
     }
   ]
