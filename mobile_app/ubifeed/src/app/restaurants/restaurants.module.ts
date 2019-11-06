@@ -10,7 +10,7 @@ import { RestaurantsPage } from './restaurants.page';
 const routes: Routes = [
   {
     path: '',
-    component: RestaurantsPage
+    component: RestaurantsPage,
   }
 ];
 

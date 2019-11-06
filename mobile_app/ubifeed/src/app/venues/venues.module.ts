@@ -6,12 +6,19 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { VenuesPage } from './venues.page';
+import { RestaurantsPage } from '../restaurants/restaurants.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: VenuesPage
-  }
+    component: VenuesPage,
+    children: [
+      {
+        path: 'restaurants',
+        loadChildren: () => import('../restaurants/restaurants.module').then(m => m.RestaurantsPageModule)
+      }
+    ]
+  },
 ];
 
 @NgModule({
