@@ -12,12 +12,6 @@ const routes: Routes = [
   {
     path: '',
     component: VenuesPage,
-    children: [
-      {
-        path: 'restaurants',
-        loadChildren: () => import('../restaurants/restaurants.module').then(m => m.RestaurantsPageModule)
-      }
-    ]
   },
 ];
 
