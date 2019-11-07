@@ -1,0 +1,6 @@
+[  
+    {  "restaurant_id": "1", "name": "Mc Donalds", "address": "Testroad 1, 7 Dublin", "description": "Fast Food, Drinks, Coffee" },
+    {  "restaurant_id": "2", "name": "Dall Italia Pastabar", "address": "Testroad 2, 15 Dublin", "description": "Pasta, Drinks" },
+    {  "restaurant_id": "3", "name": "KFC", "address": "Testroad 3, 7 Dublin", "description": "Chicken Wings, Fast Food, Drinks" }
+
+]

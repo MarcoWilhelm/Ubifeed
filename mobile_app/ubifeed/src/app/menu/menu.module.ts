@@ -17,6 +17,10 @@ const routes: Routes = [
         loadChildren: () => import('../venues/venues.module').then(m => m.VenuesPageModule)
       },
       {
+        path: 'restaurants',
+        loadChildren: () => import('../restaurants/restaurants.module').then(m => m.RestaurantsPageModule)
+      },
+      {
         path: '',
         redirectTo: 'venues',
         pathMatch: 'full'

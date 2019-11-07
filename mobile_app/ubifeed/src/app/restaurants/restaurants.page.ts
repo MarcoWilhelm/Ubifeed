@@ -7,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RestaurantsPage implements OnInit {
 
+  restaurants: any;
+
   constructor() { }
 
   ngOnInit() {
+    fetch('../../assets/data/restaurants.json').then(res => res.json())
+    .then(json => {
+      this.restaurants = json;
+    });
   }
 
 }
