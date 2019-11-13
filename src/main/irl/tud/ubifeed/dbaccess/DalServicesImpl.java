@@ -1,13 +1,8 @@
 package irl.tud.ubifeed.dbaccess;
 
-import java.sql.DriverManager;
-import java.sql.DriverPropertyInfo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.util.Properties;
-import java.util.logging.Logger;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
@@ -39,6 +34,7 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 		pool.setUrl(URL);
 		pool.setUsername(USER);
 		pool.setPassword(PASSWORD);
+		
 		// init ThreadLocal
 		connections = new ThreadLocal<Connection>();
 	}

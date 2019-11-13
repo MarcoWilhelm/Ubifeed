@@ -19,6 +19,11 @@ import irl.tud.ubifeed.user.UserDto;
 
 public class MyServlet extends DefaultServlet {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Inject
 	public UserUcc userUcc;
 
@@ -73,6 +78,10 @@ public class MyServlet extends DefaultServlet {
 		
 		String email = req.getParameter("email");
 		String password = req.getParameter("password");
+		
+		if(email == null || email == "") {
+			return;
+		}
 		
 		user.setEmail(email);
 		user.setPassword(password);

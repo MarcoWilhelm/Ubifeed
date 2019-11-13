@@ -19,7 +19,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public UserDto loginUser(UserDto user) {
-		String select = "Select u.user_id, u.first_name, u.last_name, u.user_password, u.user_email, "
+		String select = "SELECT u.user_id, u.first_name, u.last_name, u.user_password, u.user_email, "
 				+ "u.user_phone ";
 		String from = "FROM users u ";
 		String where = "WHERE u.user_email = ?";
@@ -45,7 +45,8 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public UserDto register(UserDto user) {
-		if(loginUser(user) != null) {
+		UserDto test = factory.getUserDto();
+		if((test = loginUser(user)) != null && test.getEmail() != null) {
 			return null;
 		}
 		String insert = "INSERT INTO users (user_id, first_name, last_name, user_password, user_email, user_phone, user_images_us_img_id)";
