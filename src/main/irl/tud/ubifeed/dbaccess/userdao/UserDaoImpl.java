@@ -25,11 +25,13 @@ public class UserDaoImpl implements UserDao {
 		String where = "WHERE u.email = ?";
 
 		UserDto toRet = factory.getUserDto();
+		//get the Prepared Statement, it will close automatically
 		try(PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
+			//init prepared Statement
 			ps.setString(1, user.getEmail());
-			System.out.println(ps);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
+				// init the dto that will be returned by the method
 				toRet.setUserId(rs.getInt(1));
 				toRet.setFirstName(rs.getString(2));
 				toRet.setLastName(rs.getString(3));
@@ -37,6 +39,7 @@ public class UserDaoImpl implements UserDao {
 				toRet.setEmail(rs.getString(5));
 				toRet.setPhone(rs.getString(6));
 			}
+			//close the result set
 			rs.close();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();

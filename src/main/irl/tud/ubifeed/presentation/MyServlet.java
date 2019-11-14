@@ -61,6 +61,7 @@ public class MyServlet extends DefaultServlet {
 		if (action == null) {
 			return;
 		}
+		// Action checking
 		switch(action) {
 		case "login-user":
 			loginUser(req, resp);
@@ -75,11 +76,15 @@ public class MyServlet extends DefaultServlet {
 	
 	
 	private void loginUser(HttpServletRequest req, HttpServletResponse resp) {
+		//create dto
 		UserDto user = factory.getUserDto();
 		
+		//get the data from the request
 		String email = req.getParameter("email");
 		String password = req.getParameter("password");
 		
+		// check business for the data, we may need to creat a Util class for these checks
+		// with methods like isNotNull(String)
 		if(email == null || email == "") {
 			return;
 		}
@@ -87,12 +92,16 @@ public class MyServlet extends DefaultServlet {
 			return;
 		}
 		
+		//checks are ok, so init dto
 		user.setEmail(email);
 		user.setPassword(password);
 		
+		//Servlet -> Ucc
 		user = userUcc.loginUser(user);
+		// the instance that will create the json
 		Genson genson = new Genson();
 		try {
+			//send the json to the app, we can create a method for sending the data back
 			resp.getOutputStream().write(genson.serialize(user).getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();

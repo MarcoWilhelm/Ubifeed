@@ -34,7 +34,7 @@ public class UserUccImpl implements UserUcc {
 		}
 		return toRet;
 	}
-
+	@Override
 	public UserDto registerUser(UserDto user) {
 		try {
 			user.setPassword(BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray()));
