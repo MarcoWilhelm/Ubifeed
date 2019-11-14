@@ -32,12 +32,12 @@ CREATE TABLE ubifeed.meals_categories (
 );
 
 
-CREATE TABLE restaurants_images (
+CREATE TABLE ubifeed.restaurants_images (
     rest_img_id   SERIAL PRIMARY KEY,
     image    	  VARCHAR(60)
 );
 
-CREATE TABLE restaurants (
+CREATE TABLE ubifeed.restaurants (
     rest_id                          SERIAL PRIMARY KEY,
     nme                              VARCHAR(30) NOT NULL,
     address                          VARCHAR(50) NOT NULL,
