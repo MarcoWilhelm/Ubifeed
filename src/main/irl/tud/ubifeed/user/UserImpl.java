@@ -1,5 +1,7 @@
 package irl.tud.ubifeed.user;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+
 public class UserImpl implements User {
 	
 	private int userId;
@@ -68,7 +70,7 @@ public class UserImpl implements User {
 	}
 	@Override
 	public boolean verifyPassword(String password) {
-		// TODO Auto-generated method stub
-		return false;
+		BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), this.getPassword());
+		return result.verified;
 	}
 }

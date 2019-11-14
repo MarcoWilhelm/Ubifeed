@@ -19,16 +19,19 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public UserDto loginUser(UserDto user) {
-		String select = "Select u.user_id, u.first_name, u.last_name, u.user_password, u.user_email, "
-				+ "u.user_phone ";
-		String from = "FROM users u ";
-		String where = "WHERE u.user_email = ?";
+		String select = "SELECT u.user_id, u.firstn, u.lastn, u.passw, u.email, "
+				+ "u.phone ";
+		String from = "FROM ubifeed.users u ";
+		String where = "WHERE u.email = ?";
 
 		UserDto toRet = factory.getUserDto();
+		//get the Prepared Statement, it will close automatically
 		try(PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
+			//init prepared Statement
 			ps.setString(1, user.getEmail());
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
+				// init the dto that will be returned by the method
 				toRet.setUserId(rs.getInt(1));
 				toRet.setFirstName(rs.getString(2));
 				toRet.setLastName(rs.getString(3));
@@ -36,8 +39,10 @@ public class UserDaoImpl implements UserDao {
 				toRet.setEmail(rs.getString(5));
 				toRet.setPhone(rs.getString(6));
 			}
+			//close the result set
 			rs.close();
 		}catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
 			throw new RuntimeException();
 		}
 		return toRet;
@@ -45,10 +50,11 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public UserDto register(UserDto user) {
-		if(loginUser(user) != null) {
+		UserDto test = factory.getUserDto();
+		if((test = loginUser(user)) != null && test.getEmail() != null) {
 			return null;
 		}
-		String insert = "INSERT INTO users (user_id, first_name, last_name, user_password, user_email, user_phone, user_images_us_img_id)";
+		String insert = "INSERT INTO ubifeed.users (user_id, firstn, lastn, passw, email, phone, image)";
 		String values = "VALUES(DEFAULT, ?, ?, ?, ?, ?, NULL)";
 		try(PreparedStatement ps = dal.getPreparedStatement(insert + values)) {
 			ps.setString(1, user.getFirstName());
@@ -58,6 +64,7 @@ public class UserDaoImpl implements UserDao {
 			ps.setString(5, user.getPhone());
 			ps.execute();
 		}catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
 			throw new RuntimeException();
 		}
 		return user;

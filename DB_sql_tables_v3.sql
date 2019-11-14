@@ -69,7 +69,7 @@ CREATE TABLE ubifeed.users (
     lastn                  VARCHAR(30) NOT NULL,
     passw                  VARCHAR(60) NOT NULL,
     email                  VARCHAR(30) NOT NULL,
-    phone                  INT NOT NULL,
+    phone                  VARCHAR(15) NOT NULL,
     image                  VARCHAR(60)
 );
 
