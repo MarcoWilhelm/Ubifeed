@@ -19,9 +19,9 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 	private BasicDataSource pool;
 	private ThreadLocal<Connection> connections;
 
-	private static final String URL = "";
-	private static final String PASSWORD = "";
-	private static final String USER = "";
+	private static final String URL = "localhost:3306";
+	private static final String PASSWORD = "WEB&business96";
+	private static final String USER = "root";
 
 	/**
 	 * Class Constructor.

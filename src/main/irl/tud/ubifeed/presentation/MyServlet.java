@@ -68,6 +68,7 @@ public class MyServlet extends DefaultServlet {
 		}
 	}
 	
+	
 	private void loginUser(HttpServletRequest req, HttpServletResponse resp) {
 		UserDto user = factory.getUserDto();
 		
