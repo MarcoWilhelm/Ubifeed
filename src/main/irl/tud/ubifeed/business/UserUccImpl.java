@@ -1,5 +1,6 @@
 package irl.tud.ubifeed.business;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.dbaccess.DalServices;
 import irl.tud.ubifeed.dbaccess.userdao.UserDao;
@@ -36,6 +37,8 @@ public class UserUccImpl implements UserUcc {
 
 	public UserDto registerUser(UserDto user) {
 		try {
+			user.setPassword(BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray()));
+			System.out.println(user.getPassword());
 			dal.startTransaction();
 			user = userDao.register(user);
 			dal.commitTransaction();

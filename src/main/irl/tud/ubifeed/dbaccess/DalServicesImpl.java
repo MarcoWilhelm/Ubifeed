@@ -14,9 +14,9 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 	private BasicDataSource pool;
 	private ThreadLocal<Connection> connections;
 
-	private static final String URL = "";
-	private static final String PASSWORD = "";
-	private static final String USER = "";
+	private static final String URL = "jdbc::mysql://127.0.0.1:3306/ubifeed";
+	private static final String PASSWORD = "n08odYkantC";
+	private static final String USER = "project_user";
 
 	/**
 	 * Class Constructor.
@@ -50,12 +50,15 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 
 	@Override
 	public void startTransaction(){
+		System.out.println("getConnection");
 		if (connections.get() != null) {
-			throw new RuntimeException();
+			throw new RuntimeException("connection already used in this thread");
 		}
 		try {
+			System.out.println(pool.getConnection());
 			connections.set(pool.getConnection());
 			connections.get().setAutoCommit(false);
+			System.out.println("its ok");
 		} catch (SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 		}

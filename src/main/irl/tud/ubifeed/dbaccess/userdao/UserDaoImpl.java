@@ -19,14 +19,15 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public UserDto loginUser(UserDto user) {
-		String select = "SELECT u.user_id, u.first_name, u.last_name, u.user_password, u.user_email, "
-				+ "u.user_phone ";
-		String from = "FROM users u ";
-		String where = "WHERE u.user_email = ?";
+		String select = "SELECT u.user_id, u.firstn, u.lastn, u.passw, u.email, "
+				+ "u.phone ";
+		String from = "FROM ubifeed.users u ";
+		String where = "WHERE u.email = ?";
 
 		UserDto toRet = factory.getUserDto();
 		try(PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
 			ps.setString(1, user.getEmail());
+			System.out.println(ps);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				toRet.setUserId(rs.getInt(1));
@@ -38,6 +39,7 @@ public class UserDaoImpl implements UserDao {
 			}
 			rs.close();
 		}catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
 			throw new RuntimeException();
 		}
 		return toRet;
@@ -49,7 +51,7 @@ public class UserDaoImpl implements UserDao {
 		if((test = loginUser(user)) != null && test.getEmail() != null) {
 			return null;
 		}
-		String insert = "INSERT INTO users (user_id, first_name, last_name, user_password, user_email, user_phone, user_images_us_img_id)";
+		String insert = "INSERT INTO ubifeed.users (user_id, firstn, lastn, passw, email, phone, image)";
 		String values = "VALUES(DEFAULT, ?, ?, ?, ?, ?, NULL)";
 		try(PreparedStatement ps = dal.getPreparedStatement(insert + values)) {
 			ps.setString(1, user.getFirstName());
@@ -59,6 +61,7 @@ public class UserDaoImpl implements UserDao {
 			ps.setString(5, user.getPhone());
 			ps.execute();
 		}catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
 			throw new RuntimeException();
 		}
 		return user;

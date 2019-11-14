@@ -82,6 +82,9 @@ public class MyServlet extends DefaultServlet {
 		if(email == null || email == "") {
 			return;
 		}
+		if(password == null || password == "") {
+			return;
+		}
 		
 		user.setEmail(email);
 		user.setPassword(password);
