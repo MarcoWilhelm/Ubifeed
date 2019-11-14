@@ -43,7 +43,7 @@ CREATE TABLE ubifeed.restaurants (
     address                          VARCHAR(50) NOT NULL,
     descrip                 		 VARCHAR(60) NOT NULL,
     email                            VARCHAR(30) NOT NULL,
-    passw                            VARCHAR(30) NOT NULL,
+    passw                            VARCHAR(60) NOT NULL,
     rest_img_id                      INT NOT NULL REFERENCES ubifeed.restaurants_images(rest_img_id)
 );
 
@@ -59,7 +59,7 @@ CREATE TABLE ubifeed.meals (
 CREATE TABLE ubifeed.pickup_stations (
     pickup_id         SERIAL PRIMARY KEY,
     email      VARCHAR(30) NOT NULL,
-    passw   VARCHAR(30) NOT NULL,
+    passw   VARCHAR(60) NOT NULL,
     venue_id   INT NOT NULL REFERENCES ubifeed.venues(venue_id)
 );
 
@@ -67,9 +67,9 @@ CREATE TABLE ubifeed.users (
     user_id                SERIAL PRIMARY KEY,
     firstn                 VARCHAR(30) NOT NULL,
     lastn                  VARCHAR(30) NOT NULL,
-    passw                  VARCHAR(30) NOT NULL,
+    passw                  VARCHAR(60) NOT NULL,
     email                  VARCHAR(30) NOT NULL,
-    phone                  INT NOT NULL,
+    phone                  VARCHAR(15) NOT NULL,
     image                  VARCHAR(60)
 );
 
