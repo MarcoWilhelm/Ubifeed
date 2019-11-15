@@ -38,7 +38,6 @@ public class UserUccImpl implements UserUcc {
 	public UserDto registerUser(UserDto user) {
 		try {
 			user.setPassword(BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray()));
-			System.out.println(user.getPassword());
 			dal.startTransaction();
 			user = userDao.register(user);
 			dal.commitTransaction();

@@ -43,7 +43,7 @@ public class UserDaoImpl implements UserDao {
 			rs.close();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
-			throw new RuntimeException();
+			throw new RuntimeException(sqlExcept);
 		}
 		return toRet;
 	}
@@ -65,7 +65,7 @@ public class UserDaoImpl implements UserDao {
 			ps.execute();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
-			throw new RuntimeException();
+			throw new RuntimeException(sqlExcept);
 		}
 		return user;
 	}

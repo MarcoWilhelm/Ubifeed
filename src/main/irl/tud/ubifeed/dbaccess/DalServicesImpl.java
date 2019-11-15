@@ -44,15 +44,8 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 //       		 System.out.println("Database connected!");
 
 		// init BasicDataSource
-		try {
-    	    Class.forName("com.mysql.jdbc.Driver");
-    	    System.out.println("Driver loaded!");
-    	} catch (ClassNotFoundException e) {
-    	    throw new IllegalStateException("Cannot find the driver in the classpath!", e);
-    	}
 		pool = new BasicDataSource();
 		try {
-			System.out.println("Set Driver");
 			pool.setDriver(new Driver());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -61,9 +54,6 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 		pool.setUrl(URL);
 		pool.setUsername(USER);
 		pool.setPassword(PASSWORD);
-		System.out.println(pool.isPoolPreparedStatements());
-		pool.setPoolPreparedStatements(true);
-		System.out.println("init connection");
 		// init ThreadLocal
 		connections = new ThreadLocal<Connection>();
 
@@ -75,23 +65,19 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 //			return this.conn.prepareStatement(query);
 			return connections.get().prepareStatement(query);
 		} catch (SQLException sqlExcept) {
-			throw new RuntimeException();
+			throw new RuntimeException(sqlExcept);
 		}
 	}
 
 	@Override
 	public void startTransaction(){
 		
-		System.out.println("getConnection");
 		if (connections.get() != null) {
 			throw new RuntimeException("connection already used in this thread");
 		}
-		System.out.println(pool);
 		try {
-			System.out.println(pool.getConnection());
 			connections.set(pool.getConnection());
 			connections.get().setAutoCommit(false);
-			System.out.println("its ok");
 		} catch (SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 		}
