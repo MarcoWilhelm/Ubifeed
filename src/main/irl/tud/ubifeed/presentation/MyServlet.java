@@ -61,6 +61,7 @@ public class MyServlet extends DefaultServlet {
 		if (action == null) {
 			return;
 		}
+		System.out.println(action);
 		// Action checking
 		switch(action) {
 		case "login-user":
@@ -70,7 +71,7 @@ public class MyServlet extends DefaultServlet {
 			registerUser(req, resp);
 			return;
 		default:
-			break;
+			return;
 		}
 	}
 	
@@ -82,7 +83,9 @@ public class MyServlet extends DefaultServlet {
 		//get the data from the request
 		String email = req.getParameter("email");
 		String password = req.getParameter("password");
+		System.out.println(req.getParameterMap());
 		
+		System.out.println(email);
 		// check business for the data, we may need to creat a Util class for these checks
 		// with methods like isNotNull(String)
 		if(email == null || email == "") {
