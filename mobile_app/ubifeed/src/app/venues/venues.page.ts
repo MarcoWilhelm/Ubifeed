@@ -19,7 +19,9 @@ export class VenuesPage implements OnInit {
     });
 
     /*for testing*/
-    this.storageService.setUser('user-name', 'testuser');
+    // this.storageService.setUser('user-name', 'testuser');
   }
+
+  
 
 }

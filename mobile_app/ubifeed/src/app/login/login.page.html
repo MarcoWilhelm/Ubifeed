@@ -8,10 +8,10 @@
 
 <ion-content>
   <img class="login-logo" src="../../assets/img/logo.png" alt="Ubifeed Logo">
-  <form>
+  <form (ngSubmit)="login()">
     <div class="input-wrapper login-input-wrapper">
-      <ion-input class="input input-username login-input" type="email" placeholder="E-Mail"></ion-input>
-      <ion-input class="input input-password login-input" type="password" placeholder="Password"></ion-input>
+      <ion-input name="email" class="input input-username login-input" type="email" placeholder="E-Mail"></ion-input>
+      <ion-input name="password" class="input input-password login-input" type="password" placeholder="Password"></ion-input>
       <ion-button class="button login-button" type="button" expand="block" routerLink="/menu/" routerDirection="root">Login</ion-button>
       <p class="signup-text">No account yet? <ion-text class="signup-link" routerLink="/signup" routerDirection="root">Sign-up here!</ion-text></p>
     </div>
