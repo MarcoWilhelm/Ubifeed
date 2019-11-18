@@ -11,6 +11,7 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import com.owlike.genson.Genson;
 
 import irl.tud.ubifeed.Inject;
+import irl.tud.ubifeed.Utils;
 import irl.tud.ubifeed.business.DeliveryUcc;
 import irl.tud.ubifeed.business.RestaurantUcc;
 import irl.tud.ubifeed.business.UserUcc;
@@ -85,15 +86,10 @@ public class MyServlet extends DefaultServlet {
 		String password = req.getParameter("password");
 		System.out.println(req.getParameterMap());
 		
-		System.out.println(email);
 		// check business for the data, we may need to creat a Util class for these checks
 		// with methods like isNotNull(String)
-		if(email == null || email == "") {
+		if(!Utils.isNotNullOrEmpty(email) || !Utils.isNotNullOrEmpty(password))
 			return;
-		}
-		if(password == null || password == "") {
-			return;
-		}
 		
 		//checks are ok, so init dto
 		user.setEmail(email);
@@ -120,6 +116,13 @@ public class MyServlet extends DefaultServlet {
 		String email = req.getParameter("email");
 		String password = req.getParameter("password");
 		
+		if(!Utils.isNotNullOrEmpty(email) || !Utils.isNotNullOrEmpty(password)  || !Utils.isNotNullOrEmpty(firstName)  
+				|| !Utils.isNotNullOrEmpty(lastName))
+			return;
+		if(!Utils.isPhoneNumber(phone))
+			return;
+		if(!Utils.isEmail(email))
+			return;
 		user.setEmail(email);
 		user.setFirstName(firstName);
 		user.setLastName(lastName);
