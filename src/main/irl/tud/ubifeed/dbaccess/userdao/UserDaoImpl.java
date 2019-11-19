@@ -79,7 +79,7 @@ public class UserDaoImpl implements UserDao {
 	public List<VenueDto> getAllVenues() {
 		String select = "SELECT v.venue_id, v.nme, v.address, v.dte, c.nme, co.nme ";
 		String from = "FROM ubifeed.cities c, ubifeed.venues v, ubifeed.countries co  ";
-		String where = "WHERE v.city_id = c.city_id AND c.country_id = co.country_id";
+		String where = "WHERE v.city_id = c.city_id AND c.country_id = co.country_id AND v.dte >= NOW()";
 		
 		List<VenueDto> list = new ArrayList<VenueDto>();
 		//get the Prepared Statement, it will close automatically
