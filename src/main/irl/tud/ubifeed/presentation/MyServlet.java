@@ -76,6 +76,20 @@ public class MyServlet extends DefaultServlet {
 		}
 	}
 	
+	//for Preflight
+	  @Override
+	  protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
+	          throws ServletException, IOException {
+	      setAccessControlHeaders(resp);
+	      resp.setStatus(HttpServletResponse.SC_OK);
+	  }
+
+	  private void setAccessControlHeaders(HttpServletResponse resp) {
+	      resp.setHeader("Access-Control-Allow-Origin", "http://localhost:8100");
+	      resp.setHeader("Access-Control-Allow-Methods", "POST");
+	      resp.setHeader("Access-Control-Allow-Headers","origin, content-type, accept");
+	  }
+	
 	
 	private void loginUser(HttpServletRequest req, HttpServletResponse resp) {
 		//create dto
