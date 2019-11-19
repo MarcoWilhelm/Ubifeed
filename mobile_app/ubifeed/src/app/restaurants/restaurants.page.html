@@ -6,16 +6,18 @@
 
 <ion-content>
   <ion-list class="list">
-    <ion-item class="list-item" *ngFor="let restaurant of restaurants">
-      <div class="list-left">
-      </div>
-      <div class="list-middle">
-        <ion-label class="list-title">{{ restaurant.name }}</ion-label>
-        <ion-card-subtitle class="list-description">{{ restaurant.description }}</ion-card-subtitle>
-      </div>
-      <div class="list-right">
-
-      </div>
-    </ion-item>
+    <div *ngFor="let restaurant of restaurants">
+        <ion-item class="list-item">
+            <div class="list-left">
+            </div>
+            <div class="list-middle">
+              <ion-label class="list-title">{{ restaurant.name }}</ion-label>
+              <ion-card-subtitle class="list-description">{{ restaurant.description }}</ion-card-subtitle>
+            </div>
+            <div class="list-right">
+      
+            </div>
+          </ion-item>
+    </div>
   </ion-list>
 </ion-content>

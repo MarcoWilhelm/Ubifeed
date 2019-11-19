@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalstorageService } from '../services/localstorage.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-venues',
@@ -10,7 +11,8 @@ export class VenuesPage implements OnInit {
 
   venues : any;
 
-  constructor(private storageService: LocalstorageService) { }
+  constructor(private storageService: LocalstorageService,
+              private activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
     fetch('../../assets/data/venues.json').then(res => res.json())
@@ -18,6 +20,8 @@ export class VenuesPage implements OnInit {
       this.venues = json;
     });
   }
+
+  
 
   
 
