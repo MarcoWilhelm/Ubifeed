@@ -6,6 +6,7 @@ import irl.tud.ubifeed.dbaccess.DalServices;
 import irl.tud.ubifeed.dbaccess.userdao.UserDao;
 import irl.tud.ubifeed.user.User;
 import irl.tud.ubifeed.user.UserDto;
+import irl.tud.ubifeed.venue.VenueDto;
 
 public class UserUccImpl implements UserUcc {
 
@@ -47,4 +48,19 @@ public class UserUccImpl implements UserUcc {
 			throw new RuntimeException(dbfExcept);
 		}
 	}
+	@Override
+	public VenueDto getAllVenues(VenueDto venue) {
+		try {
+			dal.startTransaction();
+			venue = userDao.getAllVenues(venue);
+			dal.commitTransaction();
+			return venue;
+			
+		} catch (RuntimeException dbfExcept) {
+			dal.rollbackTransaction();
+			throw new RuntimeException(dbfExcept);
+		}
+	}
+	
+	
 }

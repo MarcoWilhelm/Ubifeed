@@ -1,6 +1,7 @@
 package irl.tud.ubifeed.business;
 
 import irl.tud.ubifeed.user.UserDto;
+import irl.tud.ubifeed.venue.VenueDto;
 
 /**
  * 
@@ -23,5 +24,13 @@ public interface UserUcc {
 	 * @return the user created
 	 */
 	UserDto registerUser(UserDto user);
+	
+	
+	/**
+	 * Gets a list of venues stored in the DB
+	 * @param venue
+	 * @return
+	 */
+	VenueDto getAllVenues(VenueDto venue);
 
 }

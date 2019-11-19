@@ -56,7 +56,7 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 		pool.setPassword(PASSWORD);
 		// init ThreadLocal
 		connections = new ThreadLocal<Connection>();
-
+		
 	}
 
 	@Override
