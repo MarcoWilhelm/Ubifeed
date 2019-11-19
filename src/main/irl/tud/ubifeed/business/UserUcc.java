@@ -1,5 +1,7 @@
 package irl.tud.ubifeed.business;
 
+import java.util.List;
+
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
 
@@ -29,8 +31,8 @@ public interface UserUcc {
 	/**
 	 * Gets a list of venues stored in the DB
 	 * @param venue
-	 * @return
+	 * @return the list of the venue
 	 */
-	VenueDto getAllVenues(VenueDto venue);
+	List<VenueDto> getAllVenues();
 
 }

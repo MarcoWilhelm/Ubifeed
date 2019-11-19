@@ -3,6 +3,8 @@ package irl.tud.ubifeed.dbaccess.userdao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
@@ -74,18 +76,18 @@ public class UserDaoImpl implements UserDao {
 	
 
 	@Override
-	public VenueDto getAllVenues(VenueDto venue) {
-		String select = "SELECT v.venue_id, v.nme, v.address, v.dte, c.nme, co.nme";
-		String from = "FROM ubifeed.cities c  ";
-		String join = "JOIN ubifeed.venues v USING(city_id) JOIN ubifeed.countries co USING(country_id);";
-
-		VenueDto toRet = factory.getVenueDto();
+	public List<VenueDto> getAllVenues() {
+		String select = "SELECT v.venue_id, v.nme, v.address, v.dte, c.nme, co.nme ";
+		String from = "FROM ubifeed.cities c, ubifeed.venues v, ubifeed.countries co  ";
+		String where = "WHERE v.city_id = c.city_id AND c.country_id = co.country_id";
+		
+		List<VenueDto> list = new ArrayList<VenueDto>();
 		//get the Prepared Statement, it will close automatically
-		try(PreparedStatement ps = dal.getPreparedStatement(select + from + join)) {
+		try(PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
 			//init prepared Statement
-			//ps.setString(1, user.getEmail());
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
+				VenueDto toRet = factory.getVenueDto();
 				// init the dto that will be returned by the method
 				toRet.setVenueId(rs.getInt(1));
 				toRet.setName(rs.getString(2));
@@ -93,13 +95,7 @@ public class UserDaoImpl implements UserDao {
 				toRet.setDate(rs.getTimestamp(4).toLocalDateTime());
 				toRet.setCityName(rs.getString(5));
 				toRet.setCountryName(rs.getString(6));
-				
-				/*System.out.println("ID: " + rs.getString("venue_id"));
-                System.out.println("Name: " + rs.getString("nme"));
-                System.out.println("Address: " + rs.getString("address"));
-                System.out.println("Date: " + rs.getString("dte"));
-                System.out.println("City: " + rs.getInt("city_id"));
-                System.out.println("--------------------------------------");*/
+				list.add(toRet);
 			}
 			//close the result set
 			rs.close();
@@ -108,6 +104,6 @@ public class UserDaoImpl implements UserDao {
 			throw new RuntimeException(sqlExcept);
 		}
 	
-		return toRet;
+		return list;
 	}
 }

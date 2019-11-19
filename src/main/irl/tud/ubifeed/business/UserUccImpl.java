@@ -1,5 +1,7 @@
 package irl.tud.ubifeed.business;
 
+import java.util.List;
+
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.dbaccess.DalServices;
@@ -49,10 +51,11 @@ public class UserUccImpl implements UserUcc {
 		}
 	}
 	@Override
-	public VenueDto getAllVenues(VenueDto venue) {
+	public List<VenueDto> getAllVenues() {
+		List<VenueDto> venue;
 		try {
 			dal.startTransaction();
-			venue = userDao.getAllVenues(venue);
+			venue = userDao.getAllVenues();
 			dal.commitTransaction();
 			return venue;
 			

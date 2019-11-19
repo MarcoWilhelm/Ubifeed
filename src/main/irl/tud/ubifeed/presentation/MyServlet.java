@@ -1,6 +1,7 @@
 package irl.tud.ubifeed.presentation;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -167,8 +168,8 @@ public class MyServlet extends DefaultServlet {
 	
 	
 	private void getAllVenues(HttpServletRequest req, HttpServletResponse resp) {
-		VenueDto venue = factory.getVenueDto();
-		userUcc.getAllVenues(venue);
+	
+		List<VenueDto> venue = userUcc.getAllVenues();
 		
 		Genson genson = new Genson();
 		try {
