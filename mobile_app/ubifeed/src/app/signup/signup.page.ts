@@ -31,9 +31,7 @@ export class SignupPage implements OnInit {
     this.url = 'http://localhost:8080/ubifeed/';
   }
 
-  register() {
-    // console.log(form.value);
-    
+  register() {    
       const params = new HttpParams()
         .set('action', 'register-user')
         .set('firstName', 'Hello')
@@ -48,38 +46,6 @@ export class SignupPage implements OnInit {
     this.registerService.register(params, headers);
   }
 
-  // register() {
-  //   console.log('register function begin');
-  //   // const formData = new FormData();
-  //   // formData.set('action', 'register-user');
-  //   // formData.set('firstName', this.firstname);
-  //   // formData.set('lastName', this.lastname);
-  //   // formData.set('email', this.email);
-  //   // formData.set('phone', this.phone);
-  //   // formData.set('password', this.password);
-
-  //   const formData = {
-  //     'action': 'register-user',
-  //     'firstName': 'Test',
-  //     'lastName': 'Test',
-  //     'email': '1234',
-  //     'phone': '1234',
-  //     'password': 'test'
-  //   }
-
-
-  //   console.log(this.firstname);
-  //   console.log(formData);
-  //   const httpOptions = {
-  //     headers: new HttpHeaders({
-  //       'Content-Type': 'application/json',
-  //       'Accept': '*/*'
-  //     })
-  //   };
-
-  //   this.registerService.register(formData, httpOptions);
-
-  // }
 
   async showToast(text: string) {
     const toast = await this.toastController.create({

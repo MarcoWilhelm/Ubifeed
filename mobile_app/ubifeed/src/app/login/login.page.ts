@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHandler, HttpHeaders } from '@angular/common/http';
+import { LoginService } from '../services/login.service';
 
 @Component({
   selector: 'app-login',
@@ -12,21 +13,24 @@ export class LoginPage implements OnInit {
   email: string;
   password: string;
 
-  loginStatus: boolean;
-
   constructor(public toastController: ToastController,
-              private http: HttpClient) { }
+              private http: HttpClient,
+              private loginService: LoginService) { }
 
   ngOnInit() {
-    this.loginStatus = false;
   }
 
   login() {
-    if (this.email == null) {
-      this.showToast('Please enter your email');
-    } else if (this.password == null) {
-      this.showToast('Please enter your password');
-    }
+    const params = new HttpParams()
+      .set('action', 'login-user')
+      .set('email', this.email)
+      .set('password', this.password);
+
+      const headers = new HttpHeaders()
+        .set('Content-Type', 'application/x-www-form-urlencoded');
+
+    this.loginService.login(params, headers);
+    
   }
 
   async showToast(text: string) {

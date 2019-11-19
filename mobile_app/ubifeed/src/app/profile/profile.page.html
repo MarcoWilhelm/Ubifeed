@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar hideBackButton="true">
+    <ion-buttons end>
+      <ion-menu-button menu="first" auto-hide="false"></ion-menu-button>
+      <ion-title>Profile</ion-title>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col></ion-col>
+      <ion-col>
+        {{ name }}
+      </ion-col>
+      <ion-col></ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col></ion-col>
+      <ion-col>
+        {{ phone }}
+      </ion-col>
+      <ion-col></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col></ion-col>
+        <ion-col>
+          {{ email }}
+        </ion-col>
+        <ion-col></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col></ion-col>
+        <ion-col>
+          <ion-button class="button login-button" type="button" (click)="logout()" expand="block">Logout</ion-button>
+        </ion-col>
+        <ion-col></ion-col>
+      </ion-row>
+
+  </ion-grid>
+</ion-content>

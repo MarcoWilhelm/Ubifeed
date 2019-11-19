@@ -17,9 +17,6 @@ export class VenuesPage implements OnInit {
     .then(json => {
       this.venues = json;
     });
-
-    /*for testing*/
-    // this.storageService.setUser('user-name', 'testuser');
   }
 
   

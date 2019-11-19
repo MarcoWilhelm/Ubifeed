@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { LocalstorageService } from './localstorage.service';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
@@ -9,7 +8,7 @@ import { ToastController } from '@ionic/angular';
 @Injectable({
   providedIn: 'root'
 })
-export class RegisterService {
+export class LoginService {
 
   url = 'http://localhost:8080/ubifeed/';
   user: Object;
@@ -19,27 +18,23 @@ export class RegisterService {
               private router: Router,
               private toastController: ToastController) { }
 
-  register(body: any, headers: any) {
-    console.log(body);
+  login(body: any, headers: any) {
     this.http.post(this.url, body, headers)
       .subscribe((data) => {
-        console.log(data)
+        console.log(data);
         this.user = data;
-        if(data != null) {
+        if (this.user != null) {
           this.localStorage.setUser('user', data)
           .then(() => {
             console.log('user is saved');
           }).catch(e => {
             console.log(e);
           });
-          this.router.navigateByUrl('/menu/venues');
+        this.router.navigateByUrl('/menu/venues');
         } else {
-          this.showToast('Signup failed, please try again');
+          this.showToast('Credentials wrong!');
         }
-
-      }, error =>
-        console.log(error)
-      );
+      });
   }
 
   async showToast(text: string) {
@@ -49,4 +44,5 @@ export class RegisterService {
     });
     toast.present();
   }
+
 }

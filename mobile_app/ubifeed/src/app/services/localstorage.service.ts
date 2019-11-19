@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import { Router } from '@angular/router';
+
 
 @Injectable({
   providedIn: 'root'
@@ -7,15 +9,16 @@ import { Storage } from '@ionic/storage';
 
 export class LocalstorageService {
 
-  constructor(public storage: Storage) {
+  constructor(public storage: Storage,
+              private router: Router) {
     console.log('Local storage working!');
   }
 
   /*  Set the user's email  */
-  async setUser(key: string, value: any): Promise<any> {
+  async setUser(key: string, user: Object): Promise<any> {
     try {
-      const result = await this.storage.set(key, value);
-      console.log('Set string in storage: ' + result);
+      const result = await this.storage.set(key, user);
+      console.log('Set object in storage: ' + result);
       return true;
     } catch (e) {
       console.log(e);
@@ -36,6 +39,11 @@ export class LocalstorageService {
       console.log(e);
       return null;
     }
+  }
+
+  removeUser(key: string) {
+    this.storage.remove(key);
+    this.router.navigateByUrl('/login');
   }
 
 }
