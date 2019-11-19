@@ -57,6 +57,7 @@ public class MyServlet extends DefaultServlet {
 	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) {
+		
 		String action = req.getParameter("action");
 		// No handled call
 		if (action == null) {
