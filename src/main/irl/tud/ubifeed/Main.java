@@ -8,8 +8,13 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-
+import irl.tud.ubifeed.business.UserUcc;
+import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.presentation.MyServlet;
+
+import irl.tud.ubifeed.venue.VenueDto;
+import irl.tud.ubifeed.venue.VenueImpl;;
+
 
 public class Main {
 
@@ -42,6 +47,7 @@ public class Main {
 		
 		server.setHandler(context); 
 		// give the configuration to the server
+		
 
 		try {
 			server.start();

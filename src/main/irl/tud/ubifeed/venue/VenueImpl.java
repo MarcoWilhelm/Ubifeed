@@ -14,6 +14,8 @@ public class VenueImpl implements VenueDto {
 	private LocalDateTime date;
 	private String map;
 	private List<String> pictures;
+	private String cityname;
+	private String countryname;
 	
 	@Override
 	public int getVenueId() {
@@ -70,5 +72,22 @@ public class VenueImpl implements VenueDto {
 	@Override
 	public void setPictures(List<String> pictures) {
 		this.pictures = pictures;
+	}
+	@Override
+	public String getCityName() {
+		return cityname;
+	}
+	@Override
+	public void setCityName(String cityname) {
+		this.cityname = cityname;
+		
+	}
+	@Override
+	public String getCountryName() {
+		return countryname;
+	}
+	@Override
+	public void setCountryName(String countryname) {
+		this.countryname = countryname;
 	}
 }

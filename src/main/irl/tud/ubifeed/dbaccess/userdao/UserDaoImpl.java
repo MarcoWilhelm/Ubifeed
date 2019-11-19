@@ -8,6 +8,7 @@ import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.dbaccess.DalBackendServices;
 import irl.tud.ubifeed.user.UserDto;
+import irl.tud.ubifeed.venue.VenueDto;
 
 public class UserDaoImpl implements UserDao {
 
@@ -68,5 +69,45 @@ public class UserDaoImpl implements UserDao {
 			throw new RuntimeException(sqlExcept);
 		}
 		return user;
+	}
+	
+	
+
+	@Override
+	public VenueDto getAllVenues(VenueDto venue) {
+		String select = "SELECT v.venue_id, v.nme, v.address, v.dte, c.nme, co.nme";
+		String from = "FROM ubifeed.cities c  ";
+		String join = "JOIN ubifeed.venues v USING(city_id) JOIN ubifeed.countries co USING(country_id);";
+
+		VenueDto toRet = factory.getVenueDto();
+		//get the Prepared Statement, it will close automatically
+		try(PreparedStatement ps = dal.getPreparedStatement(select + from + join)) {
+			//init prepared Statement
+			//ps.setString(1, user.getEmail());
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				// init the dto that will be returned by the method
+				toRet.setVenueId(rs.getInt(1));
+				toRet.setName(rs.getString(2));
+				toRet.setAddress(rs.getString(3));
+				toRet.setDate(rs.getTimestamp(4).toLocalDateTime());
+				toRet.setCityName(rs.getString(5));
+				toRet.setCountryName(rs.getString(6));
+				
+				/*System.out.println("ID: " + rs.getString("venue_id"));
+                System.out.println("Name: " + rs.getString("nme"));
+                System.out.println("Address: " + rs.getString("address"));
+                System.out.println("Date: " + rs.getString("dte"));
+                System.out.println("City: " + rs.getInt("city_id"));
+                System.out.println("--------------------------------------");*/
+			}
+			//close the result set
+			rs.close();
+		}catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+			throw new RuntimeException(sqlExcept);
+		}
+	
+		return toRet;
 	}
 }

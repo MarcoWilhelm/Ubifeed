@@ -1,9 +1,9 @@
-DROP SCHEMA if exists ubifeed;
+DROP SCHEMA  if exists ubifeed ;
 CREATE SCHEMA ubifeed;
 
 CREATE TABLE ubifeed.countries (
     country_id     SERIAL PRIMARY KEY,
-    country_name   VARCHAR(30) NOT NULL
+	nme   VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE ubifeed.cities (

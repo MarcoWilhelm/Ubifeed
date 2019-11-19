@@ -17,6 +17,7 @@ import irl.tud.ubifeed.business.RestaurantUcc;
 import irl.tud.ubifeed.business.UserUcc;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.user.UserDto;
+import irl.tud.ubifeed.venue.VenueDto;
 
 public class MyServlet extends DefaultServlet {
 
@@ -36,6 +37,8 @@ public class MyServlet extends DefaultServlet {
 
 	@Inject
 	public ModelFactory factory;
+	
+	
 
 	/**
 	 * Receive get requests from the client and threat it.
@@ -58,6 +61,7 @@ public class MyServlet extends DefaultServlet {
 	 * @param req The HttpServletRequest.
 	 * @param resp The HttpServletResponse.
 	 */
+	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) {
 		String action = req.getParameter("action");
@@ -74,6 +78,9 @@ public class MyServlet extends DefaultServlet {
 			return;
 		case "register-user":
 			registerUser(req, resp);
+			return;
+		case "get-all-venues":
+			getAllVenues(req, resp);
 			return;
 		default:
 			return;
@@ -153,6 +160,19 @@ public class MyServlet extends DefaultServlet {
 		Genson genson = new Genson();
 		try {
 			resp.getOutputStream().write(genson.serialize(user).getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	private void getAllVenues(HttpServletRequest req, HttpServletResponse resp) {
+		VenueDto venue = factory.getVenueDto();
+		userUcc.getAllVenues(venue);
+		
+		Genson genson = new Genson();
+		try {
+			resp.getOutputStream().write(genson.serialize(venue).getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

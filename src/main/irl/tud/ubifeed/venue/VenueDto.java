@@ -34,5 +34,13 @@ public interface VenueDto {
 	List<String> getPictures();
 	
 	void setPictures(List<String> pictures);
+	
+	String getCityName();
+	
+	void setCityName(String cityname);
+
+	String getCountryName();
+	
+	void setCountryName(String countryname);
 
 }
