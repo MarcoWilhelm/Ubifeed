@@ -3,7 +3,7 @@
 
 <ion-content>
     <img class="signup-logo" src="../../assets/img/logo.png" alt="Ubifeed Logo">
-    <form (ngSubmit)="signup()">
+    <form (submit)="register()">
       <div class="input-wrapper signup-input-wrapper">
         <ion-input id="action" name="action" type="hidden" value="signup-user"></ion-input>
         <ion-input name="firstName" [(ngModel)]="firstname" class="input input-firstname signup-input" type="text" placeholder="First Name"></ion-input>
@@ -17,3 +17,21 @@
       </div>
     </form>
 </ion-content>
+
+
+<!-- <ion-content>
+  <img class="signup-logo" src="../../assets/img/logo.png" alt="Ubifeed Logo">
+  <form (submit)="register()">
+    <div class="input-wrapper signup-input-wrapper">
+      <ion-input id="action" name="action" type="hidden" value="signup-user"></ion-input>
+      <ion-input name="firstName" ngModel class="input input-firstname signup-input" type="text" placeholder="First Name"></ion-input>
+      <ion-input name="lastName" ngModel class="input input-lastname signup-input" type="text" placeholder="Last Name"></ion-input>
+      <ion-input name="phone" ngModel class="input input-phone signup-input" type="text" placeholder="Phone Number"></ion-input>
+      <ion-input name="email" ngModel class="input input-email signup-input" type="email" placeholder="E-Mail"></ion-input>
+      <ion-input name="password" ngModel class="input input-password signup-input" type="password" placeholder="Password"></ion-input>
+      <ion-input name="password-repeat" ngModel class="input input-password-repeat signup-input" type="password" placeholder="Repeat Password"></ion-input>
+      <ion-button class="button login-button" type="submit" expand="block">Sign up</ion-button>
+      <p class="signup-text">Already have an account? <ion-text class="signup-link" routerLink="/login" routerDirection="root">Login here!</ion-text></p>
+    </div>
+  </form>
+</ion-content> -->

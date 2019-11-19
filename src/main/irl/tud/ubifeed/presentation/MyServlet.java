@@ -45,9 +45,26 @@ public class MyServlet extends DefaultServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		System.out.println("doGet");
 
+		
 	}
 
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+		System.out.println("doOptions");
+
+        setAccessControlHeaders(resp);
+        resp.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    private void setAccessControlHeaders(HttpServletResponse resp) {
+        resp.setHeader("Access-Control-Allow-Origin", "http://localhost:8100/*");
+        resp.setHeader("Access-Control-Allow-Methods", "POST");
+        resp.setHeader("Access-Control-Allow-Headers","origin, content-type, accept");
+    }
+	
 	/**
 	 * Receive post requests from the client and threat it.
 	 * 
@@ -56,12 +73,16 @@ public class MyServlet extends DefaultServlet {
 	 */
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) {
+		System.out.println("doPost");
+		System.out.println(req.getParameterMap());
+		System.out.println(req.getHeaderNames());
 		String action = req.getParameter("action");
 		// No handled call
 		if (action == null) {
 			return;
 		}
 		System.out.println(action);
+		
 		// Action checking
 		switch(action) {
 		case "login-user":
@@ -74,6 +95,7 @@ public class MyServlet extends DefaultServlet {
 			return;
 		}
 	}
+
 	
 	
 	private void loginUser(HttpServletRequest req, HttpServletResponse resp) {
