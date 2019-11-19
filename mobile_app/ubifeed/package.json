@@ -27,6 +27,8 @@
     "@ionic/storage": "^2.2.0",
     "cordova-android": "^8.1.0",
     "cordova-ios": "^5.0.1",
+    "cordova-plugin-advanced-http": "^2.2.0",
+    "cordova-plugin-file": "^6.0.2",
     "cordova-sqlite-storage": "^3.4.0",
     "core-js": "^2.5.4",
     "rxjs": "~6.5.1",
@@ -76,7 +78,8 @@
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       },
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-sqlite-storage": {}
+      "cordova-sqlite-storage": {},
+      "cordova-plugin-advanced-http": {}
     },
     "platforms": [
       "android",

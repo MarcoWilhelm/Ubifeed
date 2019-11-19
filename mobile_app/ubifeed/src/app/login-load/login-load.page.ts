@@ -19,7 +19,7 @@ export class LoginLoadPage implements OnInit {
   }
 
   requestUser() {
-    this.storageService.getUser('user-name').then(result => {
+    this.storageService.getUser('user').then(result => {
       if (result != null) {
         this.router.navigateByUrl('/menu/venues');
       } else {

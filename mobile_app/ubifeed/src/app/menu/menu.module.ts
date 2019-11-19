@@ -21,9 +21,8 @@ const routes: Routes = [
         loadChildren: () => import('../restaurants/restaurants.module').then(m => m.RestaurantsPageModule)
       },
       {
-        path: '',
-        redirectTo: 'venues',
-        pathMatch: 'full'
+        path: 'profile',
+        loadChildren: () => import('../profile/profile.module').then(m => m.ProfilePageModule)
       }
     ]
   }
