@@ -27,7 +27,6 @@ export class RestaurantsPage implements OnInit {
       });
       console.log(this.venueId);
       console.log(this.restaurants);
-
     });
 
   }
