@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: 'signup', loadChildren: './signup/signup.module#SignupPageModule' },
   { path: 'menu', loadChildren: () => import('./menu/menu.module').then(m => m.MenuPageModule) },
   { path: 'login-load', loadChildren: './login-load/login-load.module#LoginLoadPageModule' },
+  { path: 'tabmenu', loadChildren: './tabmenu/tabmenu.module#TabmenuPageModule' },
 ];
 
 @NgModule({
