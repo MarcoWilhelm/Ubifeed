@@ -78,13 +78,19 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public List<VenueDto> getAllVenues() {
+
 		String select = "SELECT v.venue_id, v.nme, v.address, v.dte, c.nme, co.nme ";
 		String from = "FROM ubifeed.cities c, ubifeed.venues v, ubifeed.countries co  ";
 		String where = "WHERE v.city_id = c.city_id AND c.country_id = co.country_id AND v.dte >= NOW();";
 		
+
+/*		String select = "SELECT venue_id, nme, address FROM ubifeed.venues ORDER BY nme ASC";*/
+
 		List<VenueDto> list = new ArrayList<VenueDto>();
 		//get the Prepared Statement, it will close automatically
 		try(PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
+//		try(PreparedStatement ps = dal.getPreparedStatement(select)) {
+
 			//init prepared Statement
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
@@ -97,6 +103,10 @@ public class UserDaoImpl implements UserDao {
 				toRet.setCityName(rs.getString(5));
 				toRet.setCountryName(rs.getString(6));
 				list.add(toRet);
+				/*toRet.setVenueId(rs.getInt(1));
+				toRet.setName(rs.getString(2));
+				toRet.setAddress(rs.getString(3));
+				list.add(toRet);*/
 			}
 			//close the result set
 			rs.close();

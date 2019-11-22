@@ -52,6 +52,16 @@ public class MyServlet extends DefaultServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		System.out.println("doGet");
+		String action = req.getParameter("action");
+		if (action == null) {
+			System.out.println("action is null");
+			return;
+		}
+		switch(action) {
+		case "get-all-venues":
+			getAllVenues(req, resp);
+			return;
+		}
 
 		
 	}
@@ -103,7 +113,7 @@ public class MyServlet extends DefaultServlet {
 
 	  private void setAccessControlHeaders(HttpServletResponse resp) {
 	      resp.setHeader("Access-Control-Allow-Origin", "http://localhost:8100");
-	      resp.setHeader("Access-Control-Allow-Methods", "POST");
+	      resp.setHeader("Access-Control-Allow-Methods", "POST, GET");
 	      resp.setHeader("Access-Control-Allow-Headers","origin, content-type, accept");
 	  }
 	
@@ -182,6 +192,7 @@ public class MyServlet extends DefaultServlet {
 			e.printStackTrace();
 		}
 	}
+
 
 	private void getAllRestaurants(HttpServletRequest req, HttpServletResponse resp) {
 		

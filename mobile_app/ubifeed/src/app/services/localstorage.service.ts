@@ -14,7 +14,7 @@ export class LocalstorageService {
     console.log('Local storage working!');
   }
 
-  /*  Set the user's email  */
+  /*  Set the user object  */
   async setUser(key: string, user: Object): Promise<any> {
     try {
       const result = await this.storage.set(key, user);
@@ -44,6 +44,27 @@ export class LocalstorageService {
   removeUser(key: string) {
     this.storage.remove(key);
     this.router.navigateByUrl('/login');
+  }
+
+  async setVenues(key: string, venues: any) {
+    try {
+      const result = await this.storage.set(key, venues);
+      return true;
+    } catch(e) {
+      return false;
+    }
+  }
+
+  async getVenues(key: string): Promise<any> {
+    try {
+      const result = this.storage.get(key);
+      if (result != null) {
+        return result;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
   }
 
 }
