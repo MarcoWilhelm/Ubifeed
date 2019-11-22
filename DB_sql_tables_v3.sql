@@ -81,8 +81,9 @@ CREATE TABLE ubifeed.orders (
 );
 
 CREATE TABLE ubifeed.order_meals (
-	or_meal_id      SERIAL PRIMARY KEY,
     quantity        INT,
     price           DOUBLE,
-    order_id        INT NOT NULL REFERENCES ubifeed.orders (order_id)
+    order_id        INT NOT NULL REFERENCES ubifeed.orders (order_id),
+    meal_id			INT NOT NULL REFERENCES ubifeed.meals(meal_id),
+    CONSTRAINT order_meal_PK PRIMARY KEY(order_id, meal_id)
 )
