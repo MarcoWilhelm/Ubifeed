@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { LocalstorageService } from '../services/localstorage.service';
+import { HttpClient, HttpParams, HttpHandler, HttpHeaders } from '@angular/common/http';
+import { RestaurantService } from '../services/restaurant.service';
 
 
 @Component({
@@ -9,26 +12,40 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class RestaurantsPage implements OnInit {
 
-  allRestaurants: Array<any>;
-  restaurants: Array<any>;
+  // allRestaurants: Array<any>;
+  restaurants: any;
+  url: 'http://localhost:8080/ubifeed/';
   venueId: any;
 
-  constructor(private activatedRoute: ActivatedRoute) { }
+  constructor(private activatedRoute: ActivatedRoute,
+              private storageService: LocalstorageService,
+              private restaurantService: RestaurantService,
+              private http: HttpClient) { }
 
   ngOnInit() {
+    // this.venueId = this.activatedRoute.snapshot.paramMap.get('id');
+    // fetch('../../assets/data/restaurants.json').then(res => res.json())
+    // .then(res => {
+    //   this.allRestaurants = res;
+    //   console.log(this.allRestaurants);
+
+    //   this.restaurants = this.allRestaurants.filter((restaurant) => {
+    //     return restaurant.venue_id == this.venueId;
+    //   });
+    //   console.log(this.venueId);
+    //   console.log(this.restaurants);
+    // });
+
+    this.getData();
     this.venueId = this.activatedRoute.snapshot.paramMap.get('id');
-    fetch('../../assets/data/restaurants.json').then(res => res.json())
-    .then(res => {
-      this.allRestaurants = res;
-      console.log(this.allRestaurants);
+  }
 
-      this.restaurants = this.allRestaurants.filter((restaurant) => {
-        return restaurant.venue_id == this.venueId;
+  getData() {
+    this.storageService.getRestaurants('restaurants')
+      .then((res) => {
+        this.restaurants = res;
+        console.log(res);
       });
-      console.log(this.venueId);
-      console.log(this.restaurants);
-    });
-
   }
 
 }

@@ -45,7 +45,7 @@ CREATE TABLE ubifeed.restaurants (
     email                            VARCHAR(30) NOT NULL,
     passw                            VARCHAR(60) NOT NULL,
     #venue_id      					 INT NOT NULL REFERENCES ubifeed.venues(venue_id),
-    rest_img_id                      INT NOT NULL REFERENCES ubifeed.restaurants_images(rest_img_id)
+    rest_img_id                      INT REFERENCES ubifeed.restaurants_images(rest_img_id)
 );
 
 CREATE TABLE ubifeed.meals (

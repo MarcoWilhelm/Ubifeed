@@ -5,19 +5,20 @@ import { LocalstorageService } from '../services/localstorage.service';
 @Injectable({
   providedIn: 'root'
 })
-export class VenueService {
+export class RestaurantService {
 
-  url = 'http://localhost:8080/ubifeed/?action=get-all-venues';
-  venues: any;
+  url = 'http://localhost:8080/ubifeed/?action=get-all-restaurants';
+  restaurants: any;
 
   constructor(private http: HttpClient,
               private localStorage: LocalstorageService) { }
 
-  getAllVenues() {
+  getAllRestaurants() {
     this.http.get(this.url)
       .subscribe((data) => {
-        console.log(data);
-        this.localStorage.setVenues("venues", data);
+        console.log("Result GET", data);
+        this.localStorage.setRestaurants("restaurants", data);
       });
   }
+
 }

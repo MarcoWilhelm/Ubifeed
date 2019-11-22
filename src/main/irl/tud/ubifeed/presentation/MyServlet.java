@@ -61,6 +61,9 @@ public class MyServlet extends DefaultServlet {
 		case "get-all-venues":
 			getAllVenues(req, resp);
 			return;
+		case "get-all-restaurants":
+			getAllRestaurants(req, resp);
+			return;
 		}
 
 		
@@ -76,6 +79,7 @@ public class MyServlet extends DefaultServlet {
 	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) {
+		System.out.println("doPost");
 		String action = req.getParameter("action");
 		// No handled call
 		if (action == null) {
