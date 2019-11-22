@@ -10,7 +10,7 @@
 
 <ion-content>
   <div *ngFor="let venue of venues">
-      <ion-card [routerLink]="['/menu/restaurants/', venue.id]" routerDirection="root">
+      <ion-card [routerLink]="['/menu/restaurants/', venue.venueId]" routerDirection="root">
         <ion-card-header class="card-content">
           <div class="list-left-container">
             <ion-card-title class="card-title">{{ venue.name }}</ion-card-title>
