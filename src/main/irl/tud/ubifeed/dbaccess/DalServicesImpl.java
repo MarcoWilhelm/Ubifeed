@@ -9,6 +9,8 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.mysql.jdbc.Driver;
 
+import irl.tud.ubifeed.exception.FatalErrorException;
+
 
 public class DalServicesImpl implements DalBackendServices, DalServices {
 
@@ -27,23 +29,6 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 	 * Class Constructor.
 	 */
 	public DalServicesImpl() {
-		/*
-		try {
-    	    Class.forName("com.mysql.jdbc.Driver");
-    	    System.out.println("Driver loaded!");
-    	} catch (ClassNotFoundException e) {
-    	    throw new IllegalStateException("Cannot find the driver in the classpath!", e);
-    	}
-        
-       	try {
-           	System.out.println("Connecting database...");
-			this.conn = DriverManager.getConnection(URL, USER, PASSWORD);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-       		 System.out.println("Database connected!");
-		*/
 		// init BasicDataSource
 		pool = new BasicDataSource();
 		try {
@@ -51,6 +36,7 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new FatalErrorException(e);
 		}
 		pool.setUrl(URL);
 		pool.setUsername(USER);
@@ -66,7 +52,7 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 //			return this.conn.prepareStatement(query);
 			return connections.get().prepareStatement(query);
 		} catch (SQLException sqlExcept) {
-			throw new RuntimeException(sqlExcept);
+			throw new FatalErrorException(sqlExcept);
 		}
 	}
 
@@ -81,6 +67,7 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 			connections.get().setAutoCommit(false);
 		} catch (SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
+			throw new FatalErrorException(sqlExcept);
 		}
 	
 	}
@@ -91,6 +78,7 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 			connections.get().commit();
 		} catch (SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
+			throw new FatalErrorException(sqlExcept);
 		}
 		closeConnection();
 	}
@@ -101,6 +89,7 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 			connections.get().rollback();
 		} catch (SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
+			throw new FatalErrorException(sqlExcept);
 		}
 		closeConnection();
 	}
@@ -113,6 +102,7 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 			connections.get().close();
 		} catch (SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
+			throw new FatalErrorException(sqlExcept);
 		}
 		connections.remove();
 	}

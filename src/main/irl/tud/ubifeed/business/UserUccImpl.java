@@ -6,6 +6,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.dbaccess.DalServices;
 import irl.tud.ubifeed.dbaccess.userdao.UserDao;
+import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.User;
 import irl.tud.ubifeed.user.UserDto;
@@ -28,9 +29,9 @@ public class UserUccImpl implements UserUcc {
 			dal.startTransaction();
 			toRet = (User) userDao.loginUser(user);
 			dal.commitTransaction();
-		} catch (RuntimeException dbfExcept) {
+		} catch (FatalErrorException dbfExcept) {
 			dal.rollbackTransaction();
-			throw new RuntimeException(dbfExcept);
+			throw new FatalErrorException(dbfExcept);
 		}
 
 		if (toRet == null || toRet.getEmail() == null || !toRet.verifyPassword(user.getPassword())) {
@@ -46,9 +47,9 @@ public class UserUccImpl implements UserUcc {
 			user = userDao.register(user);
 			dal.commitTransaction();
 			return user;
-		} catch (RuntimeException dbfExcept) {
+		} catch (FatalErrorException dbfExcept) {
 			dal.rollbackTransaction();
-			throw new RuntimeException(dbfExcept);
+			throw new FatalErrorException(dbfExcept);
 		}
 	}
 	@Override
@@ -60,9 +61,9 @@ public class UserUccImpl implements UserUcc {
 			dal.commitTransaction();
 			return venue;
 			
-		} catch (RuntimeException dbfExcept) {
+		} catch (FatalErrorException dbfExcept) {
 			dal.rollbackTransaction();
-			throw new RuntimeException(dbfExcept);
+			throw new FatalErrorException(dbfExcept);
 		}
 	}
 	
@@ -75,9 +76,9 @@ public class UserUccImpl implements UserUcc {
 			dal.commitTransaction();
 			return restaurant;
 		
-		} catch (RuntimeException dbfExcept) {
+		} catch (FatalErrorException dbfExcept) {
 			dal.rollbackTransaction();
-			throw new RuntimeException(dbfExcept);
+			throw new FatalErrorException(dbfExcept);
 		}
 	}
 	

@@ -9,6 +9,7 @@ import java.util.List;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.dbaccess.DalBackendServices;
+import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
@@ -47,7 +48,7 @@ public class UserDaoImpl implements UserDao {
 			rs.close();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
-			throw new RuntimeException(sqlExcept);
+			throw new FatalErrorException(sqlExcept);
 		}
 		return toRet;
 	}
@@ -69,7 +70,7 @@ public class UserDaoImpl implements UserDao {
 			ps.execute();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
-			throw new RuntimeException(sqlExcept);
+			throw new FatalErrorException(sqlExcept);
 		}
 		return user;
 	}
@@ -112,7 +113,7 @@ public class UserDaoImpl implements UserDao {
 			rs.close();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
-			throw new RuntimeException(sqlExcept);
+			throw new FatalErrorException(sqlExcept);
 		}
 	
 		return list;
@@ -143,7 +144,7 @@ public class UserDaoImpl implements UserDao {
 			rs.close();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
-			throw new RuntimeException(sqlExcept);
+			throw new FatalErrorException(sqlExcept);
 		}
 	
 		return list;
