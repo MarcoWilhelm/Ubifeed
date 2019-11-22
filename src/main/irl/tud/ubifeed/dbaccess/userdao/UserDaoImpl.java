@@ -9,6 +9,7 @@ import java.util.List;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.dbaccess.DalBackendServices;
+import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
 
@@ -79,7 +80,7 @@ public class UserDaoImpl implements UserDao {
 	public List<VenueDto> getAllVenues() {
 		String select = "SELECT v.venue_id, v.nme, v.address, v.dte, c.nme, co.nme ";
 		String from = "FROM ubifeed.cities c, ubifeed.venues v, ubifeed.countries co  ";
-		String where = "WHERE v.city_id = c.city_id AND c.country_id = co.country_id AND v.dte >= NOW()";
+		String where = "WHERE v.city_id = c.city_id AND c.country_id = co.country_id AND v.dte >= NOW();";
 		
 		List<VenueDto> list = new ArrayList<VenueDto>();
 		//get the Prepared Statement, it will close automatically
@@ -106,4 +107,37 @@ public class UserDaoImpl implements UserDao {
 	
 		return list;
 	}
+
+	@Override
+	public List<RestaurantDto> getAllRestaurants() {
+		String select = "SELECT r.rest_id, r.nme,  r.address, r.descrip, r.email ";
+		String from = "FROM ubifeed.restaurants r ";
+		String where = " ";
+		
+		List<RestaurantDto> list = new ArrayList<RestaurantDto>();
+		//get the Prepared Statement, it will close automatically
+		try(PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
+			//init prepared Statement
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				RestaurantDto toRet = factory.getRestaurantDto();
+				// init the dto that will be returned by the method
+				toRet.setRestaurantId(rs.getInt(1));
+				toRet.setName(rs.getString(2));
+				toRet.setAddress(rs.getString(3));
+				toRet.setDescription(rs.getString(4));
+				toRet.setEmail(rs.getString(5));
+				list.add(toRet);
+			}
+			//close the result set
+			rs.close();
+		}catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+			throw new RuntimeException(sqlExcept);
+		}
+	
+		return list;
+	}
+	
+	
 }

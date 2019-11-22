@@ -17,6 +17,7 @@ import irl.tud.ubifeed.business.DeliveryUcc;
 import irl.tud.ubifeed.business.RestaurantUcc;
 import irl.tud.ubifeed.business.UserUcc;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
+import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
 
@@ -82,6 +83,9 @@ public class MyServlet extends DefaultServlet {
 			return;
 		case "get-all-venues":
 			getAllVenues(req, resp);
+			return;
+		case "get-all-restaurants":
+			getAllRestaurants(req, resp);
 			return;
 		default:
 			return;
@@ -174,6 +178,18 @@ public class MyServlet extends DefaultServlet {
 		Genson genson = new Genson();
 		try {
 			resp.getOutputStream().write(genson.serialize(venue).getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void getAllRestaurants(HttpServletRequest req, HttpServletResponse resp) {
+		
+		List<RestaurantDto> restaurant = userUcc.getAllRestaurants();
+		
+		Genson genson = new Genson();
+		try {
+			resp.getOutputStream().write(genson.serialize(restaurant).getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

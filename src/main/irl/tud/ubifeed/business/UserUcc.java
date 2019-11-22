@@ -2,6 +2,7 @@ package irl.tud.ubifeed.business;
 
 import java.util.List;
 
+import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
 
@@ -34,5 +35,7 @@ public interface UserUcc {
 	 * @return the list of the venue
 	 */
 	List<VenueDto> getAllVenues();
+
+	List<RestaurantDto> getAllRestaurants();
 
 }
