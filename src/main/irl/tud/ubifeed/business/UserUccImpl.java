@@ -6,6 +6,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.dbaccess.DalServices;
 import irl.tud.ubifeed.dbaccess.userdao.UserDao;
+import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.User;
 import irl.tud.ubifeed.user.UserDto;
@@ -67,13 +68,27 @@ public class UserUccImpl implements UserUcc {
 	}
 	
 	@Override
-	public List<RestaurantDto> getAllRestaurants() {
+	public List<RestaurantDto> getAllRestaurants(String venueId) {
 		List<RestaurantDto> restaurant;
 		try {	
 			dal.startTransaction();
-			restaurant = userDao.getAllRestaurants();
+			restaurant = userDao.getAllRestaurants(venueId);
 			dal.commitTransaction();
 			return restaurant;
+		
+		} catch (RuntimeException dbfExcept) {
+			dal.rollbackTransaction();
+			throw new RuntimeException(dbfExcept);
+		}
+	}
+	@Override
+	public List<EventDto> getEvents(String venueId) {
+		List<EventDto> event;
+		try {	
+			dal.startTransaction();
+			event = userDao.getEvents(venueId);
+			dal.commitTransaction();
+			return event;
 		
 		} catch (RuntimeException dbfExcept) {
 			dal.rollbackTransaction();

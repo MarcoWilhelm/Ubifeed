@@ -4,6 +4,8 @@ import irl.tud.ubifeed.country.CityDto;
 import irl.tud.ubifeed.country.CityImpl;
 import irl.tud.ubifeed.country.CountryDto;
 import irl.tud.ubifeed.country.CountryImpl;
+import irl.tud.ubifeed.event.EventDto;
+import irl.tud.ubifeed.event.EventImpl;
 import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.meal.MealImpl;
 import irl.tud.ubifeed.order.OrderDto;
@@ -75,6 +77,11 @@ public class ModelFactoryImpl implements ModelFactory {
 	@Override
 	public VenueDto getVenueDto() {
 		return new VenueImpl();
+	}
+
+	@Override
+	public EventDto getEventDto() {
+		return new EventImpl();
 	}
 
 }

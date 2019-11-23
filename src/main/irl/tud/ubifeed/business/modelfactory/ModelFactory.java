@@ -2,6 +2,7 @@ package irl.tud.ubifeed.business.modelfactory;
 
 import irl.tud.ubifeed.country.CityDto;
 import irl.tud.ubifeed.country.CountryDto;
+import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.order.OrderDto;
 import irl.tud.ubifeed.pickupstation.PickupStation;
@@ -35,4 +36,6 @@ public interface ModelFactory {
 	public UserDto getUserDto();
 	
 	public VenueDto getVenueDto();
+
+	public EventDto getEventDto();
 }

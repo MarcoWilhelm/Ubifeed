@@ -22,8 +22,20 @@ CREATE TABLE ubifeed.venues (
     venue_id            SERIAL PRIMARY KEY,
     nme                 VARCHAR(30) NOT NULL,
     address             VARCHAR(50) NOT NULL,
-    dte                 DATE NOT NULL,
     city_id      		INT NOT NULL REFERENCES ubifeed.cities(city_id)
+);
+
+CREATE TABLE ubifeed.events_images (
+    ev_img_id    SERIAL PRIMARY KEY,
+    image         VARCHAR(60),
+    event_id     INT NOT NULL REFERENCES ubifeed.events_(event_id)
+);
+
+CREATE TABLE ubifeed.events_ (
+	event_id	SERIAL PRIMARY KEY,
+    nme			VARCHAR(30) NOT NULL,
+    dte			DATE NOT NULL,
+    venue_id	INT NOT NULL REFERENCES ubifeed.venues(venue_id)
 );
 
 CREATE TABLE ubifeed.meals_categories (
@@ -44,7 +56,7 @@ CREATE TABLE ubifeed.restaurants (
     descrip                 		 VARCHAR(60) NOT NULL,
     email                            VARCHAR(30) NOT NULL,
     passw                            VARCHAR(60) NOT NULL,
-    #venue_id      					 INT NOT NULL REFERENCES ubifeed.venues(venue_id),
+    venue_id      					 INT NOT NULL REFERENCES ubifeed.venues(venue_id),
     rest_img_id                      INT NOT NULL REFERENCES ubifeed.restaurants_images(rest_img_id)
 );
 

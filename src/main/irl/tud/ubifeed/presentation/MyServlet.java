@@ -17,6 +17,7 @@ import irl.tud.ubifeed.business.DeliveryUcc;
 import irl.tud.ubifeed.business.RestaurantUcc;
 import irl.tud.ubifeed.business.UserUcc;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
+import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
@@ -97,6 +98,10 @@ public class MyServlet extends DefaultServlet {
 		case "get-all-restaurants":
 			getAllRestaurants(req, resp);
 			return;
+		case "get-events":
+			getEvents(req, resp);
+			return;
+			
 		default:
 			return;
 		}
@@ -196,11 +201,29 @@ public class MyServlet extends DefaultServlet {
 
 	private void getAllRestaurants(HttpServletRequest req, HttpServletResponse resp) {
 		
-		List<RestaurantDto> restaurant = userUcc.getAllRestaurants();
+		
+		String venueId = req.getParameter("venueId");
+		
+		List<RestaurantDto> restaurant = userUcc.getAllRestaurants(venueId);
 		
 		Genson genson = new Genson();
 		try {
 			resp.getOutputStream().write(genson.serialize(restaurant).getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+private void getEvents(HttpServletRequest req, HttpServletResponse resp) {
+		
+		
+		String venueId = req.getParameter("venueId");
+		
+		List<EventDto> events = userUcc.getEvents(venueId);
+		
+		Genson genson = new Genson();
+		try {
+			resp.getOutputStream().write(genson.serialize(events).getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
