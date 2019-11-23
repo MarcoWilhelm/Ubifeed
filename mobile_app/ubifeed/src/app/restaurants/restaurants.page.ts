@@ -23,24 +23,13 @@ export class RestaurantsPage implements OnInit {
               private http: HttpClient) { }
 
   ngOnInit() {
-    // this.venueId = this.activatedRoute.snapshot.paramMap.get('id');
-    // fetch('../../assets/data/restaurants.json').then(res => res.json())
-    // .then(res => {
-    //   this.allRestaurants = res;
-    //   console.log(this.allRestaurants);
-
-    //   this.restaurants = this.allRestaurants.filter((restaurant) => {
-    //     return restaurant.venue_id == this.venueId;
-    //   });
-    //   console.log(this.venueId);
-    //   console.log(this.restaurants);
-    // });
-
     this.getData();
+    console.log(this.restaurants);
     this.venueId = this.activatedRoute.snapshot.paramMap.get('id');
   }
 
   getData() {
+    // this.restaurantService.getAllRestaurants();
     this.storageService.getRestaurants('restaurants')
       .then((res) => {
         this.restaurants = res;

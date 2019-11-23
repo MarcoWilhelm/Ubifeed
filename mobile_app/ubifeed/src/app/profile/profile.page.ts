@@ -10,9 +10,14 @@ import { LocalstorageService } from '../services/localstorage.service';
 export class ProfilePage implements OnInit {
 
   user: any;
-  name: string;
+
+  action: string;
+  firstname: string;
+  lastname: string;
   phone: string;
   email: string;
+  password: string;
+  passwordRepeat: string;
   
 
   constructor(private storageService: LocalstorageService) { }
@@ -21,13 +26,16 @@ export class ProfilePage implements OnInit {
     this.storageService.getUser('user')
       .then((res) => {
         this.user = res;
+        this.firstname = res.firstName;
+        this.lastname = res.lastName;
+        this.phone = res.phone;
+        this.email = res.email;
+        console.log(this.firstname);
         console.log(this.user);
-        this.name = this.user.firstName + " " + this.user.lastName;
-        this.phone = this.user.phone;
-        this.email = this.user.email;
       }).catch(e => {
         console.log(e);
       });
+
   }
 
   logout() {

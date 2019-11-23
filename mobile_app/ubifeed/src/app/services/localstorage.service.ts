@@ -57,7 +57,7 @@ export class LocalstorageService {
 
   async getVenues(key: string): Promise<any> {
     try {
-      const result = this.storage.get(key);
+      const result = await this.storage.get(key);
       if (result != null) {
         return result;
       }

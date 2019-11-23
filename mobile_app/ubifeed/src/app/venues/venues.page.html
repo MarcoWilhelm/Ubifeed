@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-
+<!-- 
 <ion-content>
   <div *ngFor="let venue of venues">
       <ion-card [routerLink]="['/menu/restaurants/', venue.venueId]" routerDirection="root">
@@ -22,4 +22,20 @@
         </ion-card-header>
       </ion-card>
   </div>
-</ion-content>
+</ion-content> -->
+
+<ion-content>
+    <div *ngFor="let venue of venues">
+        <ion-card (click)="loadRestaurants(venue.venueId)">
+          <ion-card-header class="card-content">
+            <div class="list-left-container">
+              <ion-card-title class="card-title">{{ venue.name }}</ion-card-title>
+              <ion-card-subtitle class="card-subtitle">{{ venue.address }}</ion-card-subtitle>
+            </div>
+            <div class="list-right-container">
+              <img class="list-image" src="../../assets/img/crokepark.jpg">
+            </div>
+          </ion-card-header>
+        </ion-card>
+    </div>
+  </ion-content>

@@ -1,8 +1,44 @@
-.login-button {
-    position: relative;
+.profile-title {
     text-align: center;
-    fill: var(--ion-color-logo-blue);
-    width: 80%;
-    left: 10%;
-    --border-radius: 25px;
+    margin-bottom: 1em;
+}
+
+
+
+.profile-form {
+    width: 90%;
+    position: fixed;
+    left: 5%;
+    right: 5%;
+
+    .grid {
+        .row {
+            .col {
+    
+                .profile-input {
+                    text-align: center;
+                    margin-bottom: 1em;
+                    
+                    :focus {
+                        border: 1px solid var(--ion-color-logo-blue);
+                        border-radius: 25px;   
+                    }
+                }
+    
+                .btn {
+                    position: relative;
+                    text-align: center;
+                    width: 80%;
+                    left: 10%;
+                    --border-radius: 25px;
+                }
+                
+                .logout-button {
+                    fill: var(--ion-color-danger)!important;
+                    --background: var(--ion-color-danger);
+                }
+            }
+        }
+    }
+
 }

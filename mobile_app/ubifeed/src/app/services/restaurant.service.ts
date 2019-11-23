@@ -13,7 +13,7 @@ export class RestaurantService {
   constructor(private http: HttpClient,
               private localStorage: LocalstorageService) { }
 
-  getAllRestaurants() {
+  async getAllRestaurants() {
     this.http.get(this.url)
       .subscribe((data) => {
         console.log("Result GET", data);

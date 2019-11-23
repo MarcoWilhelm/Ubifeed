@@ -23,7 +23,6 @@ export class LoginPage implements OnInit {
   }
 
   login() {
-    this.setVenues();
     const params = new HttpParams()
       .set('action', 'login-user')
       .set('email', this.email)
@@ -44,8 +43,6 @@ export class LoginPage implements OnInit {
     toast.present();
   }
 
-  setVenues() {
-    this.venueService.getAllVenues();
-  }
+
 
 }
