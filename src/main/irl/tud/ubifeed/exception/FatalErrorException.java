@@ -4,7 +4,7 @@ package irl.tud.ubifeed.exception;
  * FatalErrorException constructs a new FatalErrorException with or without message, cause,
  * enableSuppression and writableStackTrace.
  * 
- * @author Pierre, Raphaël
+ * @author Yann
  *
  */
 public class FatalErrorException extends RuntimeException {
