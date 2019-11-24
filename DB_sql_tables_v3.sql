@@ -3,7 +3,7 @@ CREATE SCHEMA ubifeed;
 
 CREATE TABLE ubifeed.countries (
     country_id     SERIAL PRIMARY KEY,
-	nme   VARCHAR(30) NOT NULL
+	  nme   VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE ubifeed.cities (
@@ -22,8 +22,20 @@ CREATE TABLE ubifeed.venues (
     venue_id            SERIAL PRIMARY KEY,
     nme                 VARCHAR(30) NOT NULL,
     address             VARCHAR(50) NOT NULL,
-    dte                 DATE NOT NULL,
     city_id      		INT NOT NULL REFERENCES ubifeed.cities(city_id)
+);
+
+CREATE TABLE ubifeed.events_images (
+    ev_img_id    SERIAL PRIMARY KEY,
+    image         VARCHAR(60),
+    event_id     INT NOT NULL REFERENCES ubifeed.events_(event_id)
+);
+
+CREATE TABLE ubifeed.events_ (
+	event_id	SERIAL PRIMARY KEY,
+    nme			VARCHAR(30) NOT NULL,
+    dte			DATE NOT NULL,
+    venue_id	INT NOT NULL REFERENCES ubifeed.venues(venue_id)
 );
 
 CREATE TABLE ubifeed.meals_categories (
@@ -41,17 +53,16 @@ CREATE TABLE ubifeed.restaurants (
     rest_id                          SERIAL PRIMARY KEY,
     nme                              VARCHAR(30) NOT NULL,
     address                          VARCHAR(50) NOT NULL,
-    descrip                 		 VARCHAR(60) NOT NULL,
+    descrip                 		     VARCHAR(60) NOT NULL,
     email                            VARCHAR(30) NOT NULL,
     passw                            VARCHAR(60) NOT NULL,
-    #venue_id      					 INT NOT NULL REFERENCES ubifeed.venues(venue_id),
-    rest_img_id                      INT NOT NULL REFERENCES ubifeed.restaurants_images(rest_img_id)
-);
+    venue_id      					         INT NOT NULL REFERENCES ubifeed.venues(venue_id),
+    rest_img_id                      INT NOT NULL REFERENCES ubifeed.restaurants_images(rest_img_id));
 
 CREATE TABLE ubifeed.meals (
     meal_id                          SERIAL PRIMARY KEY,
-    meal_name                        VARCHAR(30) NOT NULL,
-    meal_price                       FLOAT NOT NULL,
+    nme                        		 VARCHAR(30) NOT NULL,
+    price                       	 FLOAT NOT NULL,
     image                            VARCHAR(60),
     rest_id                          INT NOT NULL REFERENCES ubifeed.restaurants(rest_id) ,
     meal_categ_id                    INT NOT NULL REFERENCES ubifeed.meals_categories(meal_categ_id)

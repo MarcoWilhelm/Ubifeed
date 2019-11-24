@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { VenueService } from '../services/venue.service';
 import { Router } from '@angular/router';
 
 import { LocalstorageService } from '../services/localstorage.service';
@@ -12,9 +12,11 @@ import { LocalstorageService } from '../services/localstorage.service';
 export class LoginLoadPage implements OnInit {
 
   constructor(public storageService: LocalstorageService,
-              private router: Router) { }
+              private router: Router,
+              private venueService: VenueService) { }
 
   ngOnInit() {
+    this.setVenues();
     this.requestUser();
   }
 
@@ -28,6 +30,10 @@ export class LoginLoadPage implements OnInit {
     }).catch(e => {
       console.log('Error: ' + e);
     })
+  }
+
+  setVenues() {
+    this.venueService.getAllVenues();
   }
 
 }

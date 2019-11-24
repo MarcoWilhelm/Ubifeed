@@ -57,6 +57,27 @@ export class LocalstorageService {
 
   async getVenues(key: string): Promise<any> {
     try {
+      const result = await this.storage.get(key);
+      if (result != null) {
+        return result;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async setRestaurants(key: string, restaurants: any) {
+    try {
+      const result = await this.storage.set(key, restaurants);
+      return true;
+    } catch(e) {
+      return false;
+    }
+  }
+
+  async getRestaurants(key: string): Promise<any> {
+    try {
       const result = this.storage.get(key);
       if (result != null) {
         return result;

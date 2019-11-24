@@ -12,6 +12,7 @@ public class MealImpl implements MealDto {
 	private List<String> pictures;
 	private int quantity;
 	private double price;
+	private String category;
 	
 	@Override
 	public int getMealId() {
@@ -61,5 +62,15 @@ public class MealImpl implements MealDto {
 	public void setPrice(double price) {
 		this.price = price;
 	}
+	@Override
+	public String getCategory() {
+		return category;
+	}
+	@Override
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	
+	
 		
 }

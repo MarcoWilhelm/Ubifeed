@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { HttpClient, HttpParams, HttpHandler, HttpHeaders } from '@angular/common/http';
 import { LoginService } from '../services/login.service';
+import { VenueService } from '../services/venue.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,8 @@ export class LoginPage implements OnInit {
 
   constructor(public toastController: ToastController,
               private http: HttpClient,
-              private loginService: LoginService) { }
+              private loginService: LoginService,
+              private venueService: VenueService) { }
 
   ngOnInit() {
   }
@@ -40,5 +42,7 @@ export class LoginPage implements OnInit {
     });
     toast.present();
   }
+
+
 
 }

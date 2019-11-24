@@ -18,6 +18,8 @@ import irl.tud.ubifeed.business.RestaurantUcc;
 import irl.tud.ubifeed.business.UserUcc;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.exception.FatalErrorException;
+import irl.tud.ubifeed.event.EventDto;
+import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
@@ -62,6 +64,9 @@ public class MyServlet extends DefaultServlet {
 		case "get-all-venues":
 			getAllVenues(req, resp);
 			return;
+		case "get-all-restaurants":
+			getAllRestaurants(req, resp);
+			return;
 		}
 
 
@@ -77,6 +82,7 @@ public class MyServlet extends DefaultServlet {
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) {
+		System.out.println("doPost");
 		String action = req.getParameter("action");
 		// No handled call
 		try {
@@ -201,9 +207,11 @@ public class MyServlet extends DefaultServlet {
 
 
 	private void getAllRestaurants(HttpServletRequest req, HttpServletResponse resp) {
-
-		List<RestaurantDto> restaurant = userUcc.getAllRestaurants();
-
+		
+		String venueId = req.getParameter("venueId");
+		
+		List<RestaurantDto> restaurant = userUcc.getAllRestaurants(venueId);
+		
 		Genson genson = new Genson();
 		try {
 			resp.getOutputStream().write(genson.serialize(restaurant).getBytes());
@@ -212,6 +220,36 @@ public class MyServlet extends DefaultServlet {
 			throw new FatalErrorException(e);
 		}
 	}
+	
+private void getEvents(HttpServletRequest req, HttpServletResponse resp) {
+		
+		
+		String venueId = req.getParameter("venueId");
+		
+		List<EventDto> events = userUcc.getEvents(venueId);
+		
+		Genson genson = new Genson();
+		try {
+			resp.getOutputStream().write(genson.serialize(events).getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
+
+private void getMeals(HttpServletRequest req, HttpServletResponse resp) {
+	
+	
+	String restaurantId = req.getParameter("restaurantId");
+	
+	List<MealDto> meals = userUcc.getMeals(restaurantId);
+	
+	Genson genson = new Genson();
+	try {
+		resp.getOutputStream().write(genson.serialize(meals).getBytes());
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+}
 }
 
