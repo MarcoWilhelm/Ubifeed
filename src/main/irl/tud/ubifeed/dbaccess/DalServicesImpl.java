@@ -9,20 +9,20 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.mysql.jdbc.Driver;
 
+import irl.tud.ubifeed.Config;
 import irl.tud.ubifeed.exception.FatalErrorException;
 
 
 public class DalServicesImpl implements DalBackendServices, DalServices {
 
 	private BasicDataSource pool;
-	private Connection conn;
 	
 	
 	private ThreadLocal<Connection> connections;
 
-	private static final String URL = "jdbc:mysql://localhost:3306/ubifeed?useSSL=false";
-	private static final String PASSWORD = "n08odYkantC";
-	private static final String USER = "project_user";
+	private static final String URL = Config.getConfigFor("url");
+	private static final String PASSWORD = Config.getConfigFor("password");
+	private static final String USER = Config.getConfigFor("user");
 
 
 	/**

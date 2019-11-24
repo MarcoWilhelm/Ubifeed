@@ -84,17 +84,12 @@ public class UserDaoImpl implements UserDao {
 
 		String select = "SELECT v.venue_id, v.nme, v.address, c.nme, co.nme ";
 		String from = "FROM ubifeed.cities c, ubifeed.venues v, ubifeed.countries co  ";
-		String where = "WHERE v.city_id = c.city_id AND c.country_id = co.country_id ;";//AND v.dte >= NOW()
-
-		//String select = "SELECT v.venue_id, v.nme, v.address, v.dte, c.nme, co.nme ";
-		//String from = "FROM ubifeed.cities c, ubifeed.venues v, ubifeed.countries co  ";
-		//String where = "WHERE v.city_id = c.city_id AND c.country_id = co.country_id AND v.dte >= NOW();";
-		//String select = "SELECT * FROM ubifeed.venues";
-		//String select = "SELECT venue_id, nme, address FROM ubifeed.venues ORDER BY nme ASC";
+		String where = "WHERE v.city_id = c.city_id AND c.country_id = co.country_id AND v.dte >= NOW() ";
+		String order = "ORDER BY v.dte";
 
 		List<VenueDto> list = new ArrayList<VenueDto>();
 		//get the Prepared Statement, it will close automatically
-		try(PreparedStatement ps = dal.getPreparedStatement(select)) {
+		try(PreparedStatement ps = dal.getPreparedStatement(select + from + where + order)) {
 
 			//init prepared Statement
 			ResultSet rs = ps.executeQuery();
