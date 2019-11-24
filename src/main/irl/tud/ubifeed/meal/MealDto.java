@@ -30,4 +30,8 @@ public interface MealDto {
 	
 	void setPrice(double price);
 	
+	String getCategory();
+	
+	void setCategory(String category);
+	
 }

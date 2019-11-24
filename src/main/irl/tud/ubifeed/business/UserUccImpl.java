@@ -7,6 +7,7 @@ import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.dbaccess.DalServices;
 import irl.tud.ubifeed.dbaccess.userdao.UserDao;
 import irl.tud.ubifeed.event.EventDto;
+import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.User;
 import irl.tud.ubifeed.user.UserDto;
@@ -89,6 +90,20 @@ public class UserUccImpl implements UserUcc {
 			event = userDao.getEvents(venueId);
 			dal.commitTransaction();
 			return event;
+		
+		} catch (RuntimeException dbfExcept) {
+			dal.rollbackTransaction();
+			throw new RuntimeException(dbfExcept);
+		}
+	}
+	@Override
+	public List<MealDto> getMeals(String restaurantId) {
+		List<MealDto> meal;
+		try {	
+			dal.startTransaction();
+			meal = userDao.getMeals(restaurantId);
+			dal.commitTransaction();
+			return meal;
 		
 		} catch (RuntimeException dbfExcept) {
 			dal.rollbackTransaction();
