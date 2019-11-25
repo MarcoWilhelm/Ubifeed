@@ -6,7 +6,6 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.dbaccess.DalServices;
 import irl.tud.ubifeed.dbaccess.userdao.UserDao;
-import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
@@ -24,16 +23,15 @@ public class UserUccImpl implements UserUcc {
 
 	@Override
 	public UserDto loginUser(UserDto user) {
-		User toRet;
+		User toRet = null;
 		try {
 
 			// init user thanks to UserDao
 			dal.startTransaction();
 			toRet = (User) userDao.loginUser(user);
 			dal.commitTransaction();
-		} catch (FatalErrorException dbfExcept) {
+		} catch (Exception dbfExcept) {
 			dal.rollbackTransaction();
-			throw new FatalErrorException(dbfExcept);
 		}
 
 		if (toRet == null || toRet.getEmail() == null || !toRet.verifyPassword(user.getPassword())) {
@@ -48,41 +46,37 @@ public class UserUccImpl implements UserUcc {
 			dal.startTransaction();
 			user = userDao.register(user);
 			dal.commitTransaction();
-			return user;
-		} catch (FatalErrorException dbfExcept) {
+		} catch (Exception dbfExcept) {
 			dal.rollbackTransaction();
-			throw new FatalErrorException(dbfExcept);
 		}
+		return user;
 	}
 	@Override
 	public List<VenueDto> getAllVenues() {
-		List<VenueDto> venue;
+		List<VenueDto> venue = null;
 		try {
 			dal.startTransaction();
 			venue = userDao.getAllVenues();
-			dal.commitTransaction();
-			return venue;
-			
-		} catch (FatalErrorException dbfExcept) {
+			dal.commitTransaction();			
+		} catch (Exception dbfExcept) {
 			dal.rollbackTransaction();
-			throw new FatalErrorException(dbfExcept);
 		}
+		return venue;
 	}
 	
 	@Override
 	public List<RestaurantDto> getAllRestaurants(String venueId) {
-		List<RestaurantDto> restaurant;
+		List<RestaurantDto> restaurant = null;
 		try {	
 			dal.startTransaction();
 			restaurant = userDao.getAllRestaurants(venueId);
-			dal.commitTransaction();
-			return restaurant;
-		
-		} catch (FatalErrorException dbfExcept) {
+			dal.commitTransaction();		
+		} catch (Exception dbfExcept) {
 			dal.rollbackTransaction();
-			throw new FatalErrorException(dbfExcept);
 		}
+		return restaurant;
 	}
+	/*
 	@Override
 	public List<EventDto> getEvents(String venueId) {
 		List<EventDto> event;
@@ -97,19 +91,18 @@ public class UserUccImpl implements UserUcc {
 			throw new FatalErrorException(dbfExcept);
 		}
 	}
+	*/
 	@Override
 	public List<MealDto> getMeals(String restaurantId) {
-		List<MealDto> meal;
+		List<MealDto> meal = null;
 		try {	
 			dal.startTransaction();
 			meal = userDao.getMeals(restaurantId);
-			dal.commitTransaction();
-			return meal;
-		
-		} catch (FatalErrorException dbfExcept) {
+			dal.commitTransaction();		
+		} catch (Exception dbfExcept) {
 			dal.rollbackTransaction();
-			throw new FatalErrorException(dbfExcept);
 		}
+		return meal;
 	}
 	
 	

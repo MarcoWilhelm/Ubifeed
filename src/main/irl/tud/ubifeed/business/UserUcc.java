@@ -40,8 +40,6 @@ public interface UserUcc {
 
 	List<RestaurantDto> getAllRestaurants(String venueId);
 
-	List<EventDto> getEvents(String venueId);
-
 	List<MealDto> getMeals(String restaurantId);
 
 }

@@ -9,7 +9,6 @@ import java.util.List;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.dbaccess.DalBackendServices;
-import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
@@ -50,7 +49,6 @@ public class UserDaoImpl implements UserDao {
 			rs.close();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
-			throw new FatalErrorException(sqlExcept);
 		}
 		return toRet;
 	}
@@ -72,7 +70,6 @@ public class UserDaoImpl implements UserDao {
 			ps.execute();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
-			throw new FatalErrorException(sqlExcept);
 		}
 		return user;
 	}
@@ -82,14 +79,10 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<VenueDto> getAllVenues() {
 
-		String select = "SELECT v.venue_id, v.nme, v.address, c.nme, co.nme ";
-		String from = "FROM ubifeed.cities c, ubifeed.venues v, ubifeed.countries co  ";
-		String where = "WHERE v.city_id = c.city_id AND c.country_id = co.country_id AND v.dte >= NOW() ";
-		String order = "ORDER BY v.dte";
-
+		String select = "SELECT * FROM ubifeed.venues";
 		List<VenueDto> list = new ArrayList<VenueDto>();
 		//get the Prepared Statement, it will close automatically
-		try(PreparedStatement ps = dal.getPreparedStatement(select + from + where + order)) {
+		try(PreparedStatement ps = dal.getPreparedStatement(select)) {
 
 			//init prepared Statement
 			ResultSet rs = ps.executeQuery();
@@ -115,7 +108,6 @@ public class UserDaoImpl implements UserDao {
 			rs.close();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
-			throw new FatalErrorException(sqlExcept);
 		}
 	
 		return list;
@@ -147,12 +139,11 @@ public class UserDaoImpl implements UserDao {
 			rs.close();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
-			throw new FatalErrorException(sqlExcept);
 		}
 	
 		return list;
 	}
-
+/*
 	@Override
 	public List<EventDto> getEvents(String venueId) {
 		String select = "SELECT e.event_id, e.nme, e.dte ";
@@ -184,7 +175,7 @@ public class UserDaoImpl implements UserDao {
 		
 		
 	}
-
+*/
 	@Override
 	public List<MealDto> getMeals(String restaurantId) {
 		String select = "SELECT m.meal_id, m.nme, m.price, 2, mc.nme ";
@@ -210,14 +201,8 @@ public class UserDaoImpl implements UserDao {
 					rs.close();
 				}catch(SQLException sqlExcept) {
 					sqlExcept.printStackTrace();
-					throw new FatalErrorException(sqlExcept);
 				}
 			
 				return list;
-		
 	}
-	
-	
-	
-	
 }

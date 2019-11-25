@@ -17,7 +17,6 @@ import irl.tud.ubifeed.business.DeliveryUcc;
 import irl.tud.ubifeed.business.RestaurantUcc;
 import irl.tud.ubifeed.business.UserUcc;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
-import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
@@ -85,31 +84,28 @@ public class MyServlet extends DefaultServlet {
 		System.out.println("doPost");
 		String action = req.getParameter("action");
 		// No handled call
-		try {
-			if (action == null) {
-				return;
-			}
-			System.out.println(action);
+		if (action == null) {
+			return;
+		}
+		System.out.println(action);
+		
+		// Action checking
+		switch(action) {
+		case "login-user":
+			loginUser(req, resp);
+			return;
+		case "register-user":
+			registerUser(req, resp);
+			return;
+		case "get-all-venues":
+			getAllVenues(req, resp);
+			return;
+		case "get-all-restaurants":
+			getAllRestaurants(req, resp);
+			return;
 
-			// Action checking
-			switch(action) {
-			case "login-user":
-				loginUser(req, resp);
-				return;
-			case "register-user":
-				registerUser(req, resp);
-				return;
-			case "get-all-venues":
-				getAllVenues(req, resp);
-				return;
-			case "get-all-restaurants":
-				getAllRestaurants(req, resp);
-				return;
-			default:
-				return;
-			}
-		}catch(FatalErrorException fatalExcept) {
-			
+		default:
+			return;
 		}
 	}
 
@@ -201,7 +197,6 @@ public class MyServlet extends DefaultServlet {
 			resp.getOutputStream().write(genson.serialize(venue).getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new FatalErrorException(e);
 		}
 	}
 
@@ -217,10 +212,9 @@ public class MyServlet extends DefaultServlet {
 			resp.getOutputStream().write(genson.serialize(restaurant).getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new FatalErrorException(e);
 		}
 	}
-	
+	/*
 private void getEvents(HttpServletRequest req, HttpServletResponse resp) {
 		
 		
@@ -235,10 +229,10 @@ private void getEvents(HttpServletRequest req, HttpServletResponse resp) {
 			e.printStackTrace();
 		}
 	}
-
+<<<<<<< HEAD
+*/
 
 private void getMeals(HttpServletRequest req, HttpServletResponse resp) {
-	
 	
 	String restaurantId = req.getParameter("restaurantId");
 	

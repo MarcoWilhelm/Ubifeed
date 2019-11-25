@@ -22,7 +22,9 @@ public class Main {
 		// TODO Auto-generated method stub
 		DependenciesMachine.init("prod.properties");
 		
-		Server server = new Server(Integer.parseInt(Config.getConfigFor("serverPort"))); 
+		
+		//Server server = new Server(Integer.parseInt(Config.getConfigFor("serverPort")));
+		Server server = new Server(8080);
 		// server on port 8080
 		
 		WebAppContext context = new WebAppContext(); 
