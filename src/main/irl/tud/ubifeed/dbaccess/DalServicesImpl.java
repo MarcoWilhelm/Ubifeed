@@ -10,6 +10,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import com.mysql.jdbc.Driver;
 
 
+
 public class DalServicesImpl implements DalBackendServices, DalServices {
 
 	private BasicDataSource pool;
@@ -27,23 +28,6 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 	 * Class Constructor.
 	 */
 	public DalServicesImpl() {
-		/*
-		try {
-    	    Class.forName("com.mysql.jdbc.Driver");
-    	    System.out.println("Driver loaded!");
-    	} catch (ClassNotFoundException e) {
-    	    throw new IllegalStateException("Cannot find the driver in the classpath!", e);
-    	}
-        
-       	try {
-           	System.out.println("Connecting database...");
-			this.conn = DriverManager.getConnection(URL, USER, PASSWORD);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-       		 System.out.println("Database connected!");
-		*/
 		// init BasicDataSource
 		pool = new BasicDataSource();
 		try {
@@ -66,8 +50,9 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 //			return this.conn.prepareStatement(query);
 			return connections.get().prepareStatement(query);
 		} catch (SQLException sqlExcept) {
-			throw new RuntimeException(sqlExcept);
+			sqlExcept.printStackTrace();
 		}
+		return null;
 	}
 
 	@Override

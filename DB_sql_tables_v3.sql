@@ -61,8 +61,8 @@ CREATE TABLE ubifeed.restaurants (
 
 CREATE TABLE ubifeed.meals (
     meal_id                          SERIAL PRIMARY KEY,
-    meal_name                        VARCHAR(30) NOT NULL,
-    meal_price                       FLOAT NOT NULL,
+    nme                        		 VARCHAR(30) NOT NULL,
+    price                       	 FLOAT NOT NULL,
     image                            VARCHAR(60),
     rest_id                          INT NOT NULL REFERENCES ubifeed.restaurants(rest_id) ,
     meal_categ_id                    INT NOT NULL REFERENCES ubifeed.meals_categories(meal_categ_id)
