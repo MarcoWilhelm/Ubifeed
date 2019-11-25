@@ -10,6 +10,7 @@ import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.dbaccess.DalBackendServices;
 import irl.tud.ubifeed.event.EventDto;
+import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
@@ -79,7 +80,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<VenueDto> getAllVenues() {
 
-		String select = "SELECT * FROM ubifeed.venues";
+		String select = "SELECT * FROM ubifeed.venues;";
 		List<VenueDto> list = new ArrayList<VenueDto>();
 		//get the Prepared Statement, it will close automatically
 		try(PreparedStatement ps = dal.getPreparedStatement(select)) {
@@ -93,8 +94,8 @@ public class UserDaoImpl implements UserDao {
 				toRet.setVenueId(rs.getInt(1));
 				toRet.setName(rs.getString(2));
 				toRet.setAddress(rs.getString(3));
-				toRet.setCityName(rs.getString(4));
-				toRet.setCountryName(rs.getString(5));
+				//toRet.setCityName(rs.getString(4));
+				//toRet.setCountryName(rs.getString(5));
 				list.add(toRet);
 
 				/*toRet.setVenueId(rs.getInt(1));
@@ -143,7 +144,7 @@ public class UserDaoImpl implements UserDao {
 	
 		return list;
 	}
-/*
+
 	@Override
 	public List<EventDto> getEvents(String venueId) {
 		String select = "SELECT e.event_id, e.nme, e.dte ";
@@ -175,10 +176,10 @@ public class UserDaoImpl implements UserDao {
 		
 		
 	}
-*/
+
 	@Override
 	public List<MealDto> getMeals(String restaurantId) {
-		String select = "SELECT m.meal_id, m.nme, m.price, 2, mc.nme ";
+		String select = "SELECT m.meal_id, m.nme, m.price, mc.nme ";
 		String from = "FROM ubifeed.meals m, ubifeed.meals_categories mc ";
 		String where = "WHERE rest_id =" + restaurantId + " AND m.meal_categ_id = mc.meal_categ_id;";
 		

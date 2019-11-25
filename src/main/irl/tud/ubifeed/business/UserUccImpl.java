@@ -7,6 +7,7 @@ import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.dbaccess.DalServices;
 import irl.tud.ubifeed.dbaccess.userdao.UserDao;
 import irl.tud.ubifeed.event.EventDto;
+import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.User;
@@ -76,7 +77,7 @@ public class UserUccImpl implements UserUcc {
 		}
 		return restaurant;
 	}
-	/*
+	
 	@Override
 	public List<EventDto> getEvents(String venueId) {
 		List<EventDto> event;
@@ -91,7 +92,7 @@ public class UserUccImpl implements UserUcc {
 			throw new FatalErrorException(dbfExcept);
 		}
 	}
-	*/
+	
 	@Override
 	public List<MealDto> getMeals(String restaurantId) {
 		List<MealDto> meal = null;

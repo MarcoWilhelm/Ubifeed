@@ -17,6 +17,8 @@ public interface UserDao {
 	List<VenueDto> getAllVenues();
 
 	List<RestaurantDto> getAllRestaurants(String venueId);
-
+	
 	List<MealDto> getMeals(String restaurantId);
+
+	List<EventDto> getEvents(String venueId);
 }
