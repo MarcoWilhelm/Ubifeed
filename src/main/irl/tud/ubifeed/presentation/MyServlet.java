@@ -102,10 +102,11 @@ public class MyServlet extends DefaultServlet {
 		case "get-all-restaurants":
 			getAllRestaurants(req, resp);
 			return;
+			/*
 		case "get-events":
 			getEvents(req, resp);
 			return;
-			
+			*/
 		default:
 			return;
 		}
@@ -217,7 +218,7 @@ public class MyServlet extends DefaultServlet {
 			e.printStackTrace();
 		}
 	}
-	
+	/*
 private void getEvents(HttpServletRequest req, HttpServletResponse resp) {
 		
 		
@@ -232,6 +233,6 @@ private void getEvents(HttpServletRequest req, HttpServletResponse resp) {
 			e.printStackTrace();
 		}
 	}
-
+*/
 }
 

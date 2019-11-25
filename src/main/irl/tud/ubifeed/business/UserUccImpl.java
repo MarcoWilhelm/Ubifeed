@@ -81,6 +81,7 @@ public class UserUccImpl implements UserUcc {
 			throw new RuntimeException(dbfExcept);
 		}
 	}
+	/*
 	@Override
 	public List<EventDto> getEvents(String venueId) {
 		List<EventDto> event;
@@ -95,6 +96,6 @@ public class UserUccImpl implements UserUcc {
 			throw new RuntimeException(dbfExcept);
 		}
 	}
-	
+	*/
 	
 }

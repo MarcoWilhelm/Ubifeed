@@ -9,7 +9,9 @@ import java.util.List;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.dbaccess.DalBackendServices;
+/*
 import irl.tud.ubifeed.event.EventDto;
+*/
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
@@ -80,14 +82,14 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<VenueDto> getAllVenues() {
 
-		String select = "SELECT v.venue_id, v.nme, v.address, c.nme, co.nme ";
-		String from = "FROM ubifeed.cities c, ubifeed.venues v, ubifeed.countries co  ";
-		String where = "WHERE v.city_id = c.city_id AND c.country_id = co.country_id ;";//AND v.dte >= NOW()
+		//String select = "SELECT v.venue_id, v.nme, v.address, c.nme, co.nme ";
+		//String from = "FROM ubifeed.cities c, ubifeed.venues v, ubifeed.countries co  ";
+		//String where = "WHERE v.city_id = c.city_id AND c.country_id = co.country_id ;";//AND v.dte >= NOW()
 
 		//String select = "SELECT v.venue_id, v.nme, v.address, v.dte, c.nme, co.nme ";
 		//String from = "FROM ubifeed.cities c, ubifeed.venues v, ubifeed.countries co  ";
 		//String where = "WHERE v.city_id = c.city_id AND c.country_id = co.country_id AND v.dte >= NOW();";
-		//String select = "SELECT * FROM ubifeed.venues";
+		String select = "SELECT * FROM ubifeed.venues";
 		//String select = "SELECT venue_id, nme, address FROM ubifeed.venues ORDER BY nme ASC";
 
 		List<VenueDto> list = new ArrayList<VenueDto>();
@@ -155,7 +157,7 @@ public class UserDaoImpl implements UserDao {
 	
 		return list;
 	}
-
+/*
 	@Override
 	public List<EventDto> getEvents(String venueId) {
 		String select = "SELECT e.event_id, e.nme, e.dte ";
@@ -188,7 +190,7 @@ public class UserDaoImpl implements UserDao {
 		
 	}
 	
-	
+	*/
 	
 	
 }

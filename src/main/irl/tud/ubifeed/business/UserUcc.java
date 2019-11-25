@@ -38,7 +38,8 @@ public interface UserUcc {
 	List<VenueDto> getAllVenues();
 
 	List<RestaurantDto> getAllRestaurants(String venueId);
+	/*
 
 	List<EventDto> getEvents(String venueId);
-
+*/
 }
