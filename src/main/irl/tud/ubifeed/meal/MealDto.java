@@ -36,7 +36,7 @@ public interface MealDto {
 
 	int getCategoryId();
 	
-	void setCategoryId(int catId);
+	void setCategoryId(int mealCategoryId);
 	
 	
 }

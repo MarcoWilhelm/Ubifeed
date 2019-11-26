@@ -195,7 +195,7 @@ public class UserDaoImpl implements UserDao {
 						toRet.setMealId(rs.getInt(1));
 						toRet.setName(rs.getString(2));
 						toRet.setPrice(rs.getFloat(3));
-						toRet.setCategory(rs.getString(4));
+						toRet.setCategoryId(rs.getInt(4));
 						list.add(toRet);
 					}
 					//close the result set
