@@ -34,7 +34,7 @@ export class SignupPage implements OnInit {
   register() {    
       const params = new HttpParams()
         .set('action', 'register-user')
-        .set('firstName', 'Hello')
+        .set('firstName', this.firstname)
         .set('lastName', this.lastname)
         .set('email', this.email)
         .set('phone', this.phone)

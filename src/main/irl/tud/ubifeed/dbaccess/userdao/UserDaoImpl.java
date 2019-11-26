@@ -93,8 +93,6 @@ public class UserDaoImpl implements UserDao {
 				toRet.setVenueId(rs.getInt(1));
 				toRet.setName(rs.getString(2));
 				toRet.setAddress(rs.getString(3));
-				toRet.setCityName(rs.getString(4));
-				toRet.setCountryName(rs.getString(5));
 				list.add(toRet);
 
 				/*toRet.setVenueId(rs.getInt(1));
@@ -116,13 +114,11 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<RestaurantDto> getAllRestaurants(String venueId) {
 		
-		String select = "SELECT r.rest_id, r.nme,  r.address, r.descrip, r.email ";
-		String from = "FROM ubifeed.restaurants r ";
-		String where = "WHERE venue_id =" + venueId + ";";
+		String select = "SELECT * FROM ubifeed.restaurants WHERE venue_id = " + venueId;
 		
 		List<RestaurantDto> list = new ArrayList<RestaurantDto>();
 		//get the Prepared Statement, it will close automatically
-		try(PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
+		try(PreparedStatement ps = dal.getPreparedStatement(select)) {
 			//init prepared Statement
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
@@ -178,14 +174,12 @@ public class UserDaoImpl implements UserDao {
 */
 	@Override
 	public List<MealDto> getMeals(String restaurantId) {
-		String select = "SELECT m.meal_id, m.nme, m.price, 2, mc.nme ";
-		String from = "FROM ubifeed.meals m, ubifeed.meals_categories mc ";
-		String where = "WHERE rest_id =" + restaurantId + " AND m.meal_categ_id = mc.meal_categ_id;";
+		String select = "SELECT * FROM ubifeed.meals WHERE rest_id = " + restaurantId;
 		
 		List<MealDto> list = new ArrayList<MealDto>();
 		
 		//get the Prepared Statement, it will close automatically
-				try(PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
+				try(PreparedStatement ps = dal.getPreparedStatement(select)) {
 					//init prepared Statement
 					ResultSet rs = ps.executeQuery();
 					while(rs.next()) {
@@ -194,7 +188,7 @@ public class UserDaoImpl implements UserDao {
 						toRet.setMealId(rs.getInt(1));
 						toRet.setName(rs.getString(2));
 						toRet.setPrice(rs.getFloat(3));
-						toRet.setCategory(rs.getString(4));
+						toRet.setCategory(rs.getString(6));
 						list.add(toRet);
 					}
 					//close the result set

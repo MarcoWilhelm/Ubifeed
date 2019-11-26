@@ -7,7 +7,7 @@
 <ion-content>
   <ion-list class="list">
     <div *ngFor="let restaurant of restaurants">
-        <ion-item class="list-item" routerLink="/tabmenu/food" routerDirection="root">
+        <ion-item class="list-item" [routerLink]="['/tabmenu/food/', restaurant.restaurantId]" routerDirection="root">
             <div class="list-left">
             </div>
             <div class="list-middle">

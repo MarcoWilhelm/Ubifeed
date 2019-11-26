@@ -66,9 +66,10 @@ public class MyServlet extends DefaultServlet {
 		case "get-all-restaurants":
 			getAllRestaurants(req, resp);
 			return;
+		case "get-all-meals":
+			getMeals(req, resp);
+			return;
 		}
-
-
 	}
 
 
