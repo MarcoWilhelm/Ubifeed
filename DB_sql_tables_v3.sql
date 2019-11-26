@@ -38,6 +38,12 @@ CREATE TABLE ubifeed.events_ (
     venue_id	INT NOT NULL REFERENCES ubifeed.venues(venue_id)
 );
 
+CREATE TABLE ubifeed.venues_events (
+    venue_id        	INT NOT NULL REFERENCES ubifeed.venues (venue_id),
+    event_id			INT NOT NULL REFERENCES ubifeed.events_(event_id),
+    CONSTRAINT order_meal_PK PRIMARY KEY(venue_id, event_id)
+);
+
 CREATE TABLE ubifeed.meals_categories (
     meal_categ_id     SERIAL PRIMARY KEY,
     nme   			  VARCHAR(30) NOT NULL

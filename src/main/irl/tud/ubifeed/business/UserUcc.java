@@ -37,9 +37,28 @@ public interface UserUcc {
 	 * @return the list of the venue
 	 */
 	List<VenueDto> getAllVenues();
-
+	
+	/**
+	 * Gets a list of the restaurants present in venue n° venueId
+	 * @param venueId
+	 * @return the list of restaurants
+	 */
 	List<RestaurantDto> getAllRestaurants(String venueId);
+	
+	
 
+	/**
+	 * Gets the full menu of restaurant n° restauranId
+	 * @param restaurantId
+	 * @return the menu
+	 */
 	List<MealDto> getMeals(String restaurantId);
+	
+	/**
+	 * Gets a list of future events in a selected venue
+	 * @param venueId
+	 * @return lis of events
+	 */
+	List<EventDto> getEvents(String venueId);
 
 }
