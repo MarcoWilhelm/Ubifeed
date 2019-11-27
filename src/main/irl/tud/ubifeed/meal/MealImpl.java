@@ -71,6 +71,14 @@ public class MealImpl implements MealDto {
 	public void setCategory(String category) {
 		this.category = category;
 	}
+	@Override
+	public int getCategoryId() {
+		return mealCategoryId;
+	}
+	@Override
+	public void setCategoryId(int mealCategoryId) {
+		this.mealCategoryId = mealCategoryId;
+	}
 	
 	@Override
 	public int getCategoryId() {
