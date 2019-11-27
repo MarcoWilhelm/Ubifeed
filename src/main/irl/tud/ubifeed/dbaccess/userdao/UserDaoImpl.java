@@ -177,7 +177,6 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public List<MealDto> getMeals(String restaurantId) {
-		//String select = "SELECT * FROM ubifeed.meals WHERE rest_id = " + restaurantId;
 		String select = "SELECT m.meal_id, m.nme, m.price, mc.meal_categ_id ";
 		String from = "FROM ubifeed.meals m, ubifeed.meals_categories mc ";
 		String where = "WHERE rest_id =" + restaurantId + " AND m.meal_categ_id = mc.meal_categ_id;";
@@ -194,7 +193,7 @@ public class UserDaoImpl implements UserDao {
 						toRet.setMealId(rs.getInt(1));
 						toRet.setName(rs.getString(2));
 						toRet.setPrice(rs.getFloat(3));
-						
+						toRet.setCategoryId(rs.getInt(4));
 						list.add(toRet);
 					}
 					//close the result set
