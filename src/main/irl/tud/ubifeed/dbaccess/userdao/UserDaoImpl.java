@@ -12,6 +12,7 @@ import irl.tud.ubifeed.dbaccess.DalBackendServices;
 import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.meal.MealDto;
+import irl.tud.ubifeed.order.OrderDto;
 import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
@@ -224,6 +225,31 @@ public class UserDaoImpl implements UserDao {
 				toRet.setLocationDescription(rs.getString(4));
 				toRet.setSeatCategoryName(rs.getString(5));
 				toRet.setSeatCategoryId(rs.getInt(6));
+				list.add(toRet);
+			}
+			rs.close();
+		} catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+		}
+		return list;
+	}
+	
+	@Override
+	public List<OrderDto> getAllOrders(String userId) {
+		String select = "SELECT order_id, user_id, rest_id, pickup_id, order_status ";
+		String from = "FROM ubifeed.orders ";
+		String where = "WHERE user_id = " + userId + ";";
+		List<OrderDto> list = new ArrayList<OrderDto>();
+		
+		try (PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				OrderDto toRet = factory.getOrderDto();
+				toRet.setOrderId(rs.getInt(1));
+				toRet.setUserId(rs.getInt(2));
+				toRet.setRestaurantId(rs.getInt(3));
+				toRet.setPickupId(rs.getInt(4));
+				toRet.setOrderStatus(rs.getString(5));
 				list.add(toRet);
 			}
 			rs.close();

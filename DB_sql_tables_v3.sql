@@ -105,6 +105,10 @@ CREATE TABLE ubifeed.orders (
     pickup_id   				INT NOT NULL REFERENCES ubifeed.pickup_stations(pick_id)
 );
 
+ALTER TABLE ubifeed.orders ADD (
+	order_status VARCHAR(50) NOT NULL DEFAULT 'In Preperation'
+);
+
 CREATE TABLE ubifeed.order_meals (
     quantity        INT,
     price           DOUBLE,
