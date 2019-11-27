@@ -115,7 +115,7 @@ CREATE TABLE ubifeed.order_meals (
     order_id        INT NOT NULL REFERENCES ubifeed.orders (order_id),
     meal_id			INT NOT NULL REFERENCES ubifeed.meals(meal_id),
     CONSTRAINT order_meal_PK PRIMARY KEY(order_id, meal_id)
-)
+);
 
 
 Use ubifeed;
@@ -227,3 +227,74 @@ INSERT INTO orders VALUES (
 INSERT INTO order_meals VALUES (
 	1, 5.4, 1, 1
 );
+
+
+
+
+
+INSERT INTO ubifeed.venues (venue_id, nme, address, city_id) values
+(1, "Croke park", "Dublin 3", 1);
+INSERT INTO ubifeed.venues (venue_id, nme, address, city_id) values
+(2, "Aviva Stadium", "Dublin 4", 1);
+INSERT INTO ubifeed.venues (venue_id, nme, address, city_id) values
+(3, "Pàirc Uì Chaoimh", "Ballintemple", 2);
+INSERT INTO ubifeed.venues (venue_id, nme, address, city_id) values
+(4, "Stadio Olimpico", "Viale dei Gladiatori", 3);
+
+
+
+INSERT INTO ubifeed.cities(city_id, nme, country_id) values
+(1, "Dublin", 1);
+INSERT INTO ubifeed.cities(city_id, nme, country_id) values
+(2, "Cork", 1);
+INSERT INTO ubifeed.cities(city_id, nme, country_id) values
+(3, "Roma", 2);
+INSERT INTO ubifeed.cities(city_id, nme, country_id) values
+(4, "Paris", 3);
+
+INSERT INTO ubifeed.countries(country_id, nme) values
+(1, "Ireland");
+INSERT INTO ubifeed.countries(country_id, nme) values
+(2, "Italy");
+INSERT INTO ubifeed.countries(country_id, nme) values
+(3, "France");
+
+INSERT INTO ubifeed.restaurants (rest_id, nme, address, descrip, email, passw, venue_id, rest_img_id) values
+(1, "McDonalds", "somewhere", 'old shitty mc', 'mcdonald@mcdonald.mc', '1234', 1, 1);
+INSERT INTO ubifeed.restaurants (rest_id, nme, address, descrip, email, passw, venue_id, rest_img_id) values
+(2, "Grannyfood", "somewhere else", 'kind of traditional', 'grannyfood@granny.ie', '1234', 1, 2);
+INSERT INTO ubifeed.restaurants (rest_id, nme, address, descrip, email, passw, venue_id, rest_img_id) values
+(3, "SpaghettiPizza", "a place", 'italian stereotypes', 'spPizza@pizza.it', '1234', 2, 3);
+INSERT INTO ubifeed.restaurants (rest_id, nme, address, descrip, email, passw, venue_id, rest_img_id) values
+(4, "Il Legionario", "a place", 'Good Food', 'legionario@pizza.it', '1234', 4, 4);
+
+
+INSERT INTO ubifeed.events_ (event_id, nme, dte, venue_id) values
+(1, "Clapping hands", "2019-12-6", 1);
+INSERT INTO ubifeed.events_ (event_id, nme, dte, venue_id) values
+(2, "Yelling", "2020-1-14", 1);
+INSERT INTO ubifeed.events_ (event_id, nme, dte, venue_id) values
+(3, "Italy vs Ireland", "2020-1-19", 4);
+
+
+
+INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) values
+(1, "Coke", 2.00, "image", 1, 1);
+INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) values
+(2, "Big Mac", 6.70, "image", 1, 2);
+INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) values
+(3, "Pizza Margherita", 7.35, "image", 3, 4);
+INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) values
+(4, "Fish & Chips", 12.45, "image", 2, 5);
+
+
+INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) values
+(1, "Drink");
+INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) values
+(2, "Sandwich");
+INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) values
+(3, "Desserts");
+INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) values
+(4, "Pizza");
+INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) values
+(5, "Main Course");
