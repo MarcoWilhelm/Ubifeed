@@ -208,7 +208,7 @@ public class UserDaoImpl implements UserDao {
 	
 	@Override
 	public List<PickupStationDto> getPickupDetails(String venueId) {
-		String select = "SELECT pickup_id, email, passw, loc_description, cat_name ";
+		String select = "SELECT pickup_id, email, passw, loc_description, cat_name, p.seat_cat_id ";
 		String from = "FROM pickup_stations AS p ";
 		String join = "LEFT JOIN seat_categories AS s ON s.seat_cat_id = p.seat_cat_id ";
 		String where = "WHERE s.venue_id = " + venueId + ";";
@@ -223,6 +223,7 @@ public class UserDaoImpl implements UserDao {
 				toRet.setPassword(rs.getString(3));
 				toRet.setLocationDescription(rs.getString(4));
 				toRet.setSeatCategoryName(rs.getString(5));
+				toRet.setSeatCategoryId(rs.getInt(6));
 				list.add(toRet);
 			}
 			rs.close();

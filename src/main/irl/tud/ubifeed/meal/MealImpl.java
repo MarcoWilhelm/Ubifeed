@@ -80,16 +80,6 @@ public class MealImpl implements MealDto {
 		this.mealCategoryId = mealCategoryId;
 	}
 	
-	@Override
-	public int getCategoryId() {
-		return this.mealCategoryId;
-	}
-	
-	@Override
-	public void setCategoryId(int id) {
-		this.mealCategoryId = id;
-	}
-	
 	
 		
 }
