@@ -19,6 +19,7 @@ import irl.tud.ubifeed.business.UserUcc;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.meal.MealDto;
+import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
@@ -68,6 +69,9 @@ public class MyServlet extends DefaultServlet {
 			return;
 		case "get-all-meals":
 			getMeals(req, resp);
+			return;
+		case "get-pickup-details":
+			getPickupDetails(req, resp);
 			return;
 		}
 	}
@@ -245,6 +249,18 @@ private void getMeals(HttpServletRequest req, HttpServletResponse resp) {
 	Genson genson = new Genson();
 	try {
 		resp.getOutputStream().write(genson.serialize(meals).getBytes());
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+}
+
+private void getPickupDetails(HttpServletRequest req, HttpServletResponse resp) {
+	String venueId = req.getParameter("venueId");
+	List<PickupStationDto> pickupDetails = userUcc.getPickupDetails(venueId);
+	
+	Genson genson = new Genson();
+	try {
+		resp.getOutputStream().write(genson.serialize(pickupDetails).getBytes());
 	} catch (IOException e) {
 		e.printStackTrace();
 	}

@@ -7,17 +7,25 @@ public interface PickupStationDto {
 	int getPickupId();
 
 	void setPickupId(int pickupId);
-
-	String getPhone();
-
-	void setPhone(String phone);
-
-	VenueDto getVenue();
-
-	void setVenue(VenueDto venue);
+	
+	String getEmail();
+	
+	void setEmail(String email);
 
 	String getPassword();
 
 	void setPassword(String password);
+	
+	String getLocationDescription();
+	
+	void setLocationDescription(String description);
+	
+	int getSeatCategoryId();
+	
+	void setSeatCategoryId(int id);
+	
+	String getSeatCategoryName();
+	
+	void setSeatCategoryName(String name);
 
 }

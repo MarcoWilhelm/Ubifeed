@@ -12,6 +12,7 @@ import irl.tud.ubifeed.dbaccess.DalBackendServices;
 import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.meal.MealDto;
+import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
@@ -203,5 +204,31 @@ public class UserDaoImpl implements UserDao {
 				}
 			
 				return list;
+	}
+	
+	@Override
+	public List<PickupStationDto> getPickupDetails(String venueId) {
+		String select = "SELECT pickup_id, email, passw, loc_description, cat_name ";
+		String from = "FROM pickup_stations AS p ";
+		String join = "LEFT JOIN seat_categories AS s ON s.seat_cat_id = p.seat_cat_id ";
+		String where = "WHERE s.venue_id = " + venueId + ";";
+		List<PickupStationDto> list = new ArrayList<PickupStationDto>();
+		
+		try(PreparedStatement ps = dal.getPreparedStatement(select + from + join + where)) {
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				PickupStationDto toRet = factory.getPickupStationDto();
+				toRet.setPickupId(rs.getInt(1));
+				toRet.setEmail(rs.getString(2));
+				toRet.setPassword(rs.getString(3));
+				toRet.setLocationDescription(rs.getString(4));
+				toRet.setSeatCategoryName(rs.getString(5));
+				list.add(toRet);
+			}
+			rs.close();
+		} catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+		}
+		return list;
 	}
 }

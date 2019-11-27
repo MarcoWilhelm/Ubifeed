@@ -9,6 +9,7 @@ import irl.tud.ubifeed.dbaccess.userdao.UserDao;
 import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.meal.MealDto;
+import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.User;
 import irl.tud.ubifeed.user.UserDto;
@@ -106,5 +107,16 @@ public class UserUccImpl implements UserUcc {
 		return meal;
 	}
 	
-	
+	@Override
+	public List<PickupStationDto> getPickupDetails(String venueId) {
+		List<PickupStationDto> details = null;
+		try {
+			dal.startTransaction();
+			details = userDao.getPickupDetails(venueId);
+			dal.commitTransaction();
+		} catch (Exception dbfExcept) {
+			dal.rollbackTransaction();
+		}
+		return details;
+	}
 }
