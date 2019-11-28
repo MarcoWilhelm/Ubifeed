@@ -2,6 +2,8 @@ package irl.tud.ubifeed.restaurant;
 
 import java.util.List;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+
 public class RestaurantImpl implements Restaurant {
 
 	private int restaurantId;
@@ -63,10 +65,8 @@ public class RestaurantImpl implements Restaurant {
 	}
 	@Override
 	public boolean verifyPassword(String password) {
-		// TODO Auto-generated method stub
-		return false;
+		BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), this.getPassword());
+		return result.verified;
 	}
-	
-	
-	
+
 }

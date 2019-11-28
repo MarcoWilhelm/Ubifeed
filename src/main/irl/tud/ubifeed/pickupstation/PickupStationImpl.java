@@ -1,5 +1,6 @@
 package irl.tud.ubifeed.pickupstation;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import irl.tud.ubifeed.venue.VenueDto;
 
 public class PickupStationImpl implements PickupStation {
@@ -37,8 +38,8 @@ public class PickupStationImpl implements PickupStation {
 	}
 	@Override
 	public boolean verifyPassword(String password) {
-		// TODO Auto-generated method stub
-		return false;
+		BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), this.getPassword());
+		return result.verified;
 	}
 	@Override
 	public String getLocationDescription() {

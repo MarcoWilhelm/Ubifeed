@@ -238,7 +238,7 @@ public class UserDaoImpl implements UserDao {
 	public List<OrderDto> getAllOrders(String userId) {
 		String select = "SELECT order_id, user_id, rest_id, pickup_id, order_status ";
 		String from = "FROM ubifeed.orders ";
-		String where = "WHERE user_id = " + userId + " ";
+		String where = "WHERE user_id = " + userId + " AND order_status != 'DELIVERED' ";
 		String order = "ORDER BY order_id DESC;";
 		List<OrderDto> list = new ArrayList<OrderDto>();
 		
