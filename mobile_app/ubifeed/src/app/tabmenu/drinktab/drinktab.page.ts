@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { TabserviceService } from '../../services/tabservice.service';
+import { LocalstorageService } from '../../services/localstorage.service';
 
 @Component({
   selector: 'app-drinktab',
@@ -7,9 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DrinktabPage implements OnInit {
 
-  constructor() { }
+  meals: any;
+
+  constructor(private tabService: TabserviceService,
+              private localStorage: LocalstorageService) { }
 
   ngOnInit() {
+    this.getData();
+  }
+
+  getData() {
+    this.localStorage.getMeals('meals')
+      .then((res) => {
+        this.meals = res;
+      });
   }
 
 }

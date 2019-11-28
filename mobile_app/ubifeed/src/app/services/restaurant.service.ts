@@ -7,14 +7,16 @@ import { LocalstorageService } from '../services/localstorage.service';
 })
 export class RestaurantService {
 
-  url = 'http://localhost:8080/ubifeed/?action=get-all-restaurants';
+  url = 'http://localhost:8080/ubifeed/?action=get-all-restaurants&venueId=';
   restaurants: any;
 
   constructor(private http: HttpClient,
               private localStorage: LocalstorageService) { }
 
-  async getAllRestaurants() {
-    this.http.get(this.url)
+  async getAllRestaurants(venueId: any) {
+    let urlWithParams = this.url + venueId;
+    console.log(urlWithParams);
+    this.http.get(urlWithParams)
       .subscribe((data) => {
         console.log("Result GET", data);
         this.localStorage.setRestaurants("restaurants", data);

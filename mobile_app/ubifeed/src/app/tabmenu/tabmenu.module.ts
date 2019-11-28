@@ -13,7 +13,7 @@ const routes: Routes = [
     component: TabmenuPage,
     children: [
       {
-        path: 'food',
+        path: 'food/:id',
         loadChildren: () => import('./foodtab/foodtab.module').then(m => m.FoodtabPageModule)
       },
       {

@@ -12,6 +12,8 @@ import irl.tud.ubifeed.dbaccess.DalBackendServices;
 import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.meal.MealDto;
+import irl.tud.ubifeed.order.OrderDto;
+import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
@@ -117,13 +119,11 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<RestaurantDto> getAllRestaurants(String venueId) {
 		
-		String select = "SELECT r.rest_id, r.nme,  r.address, r.descrip, r.email ";
-		String from = "FROM ubifeed.restaurants r ";
-		String where = "WHERE venue_id =" + venueId + ";";
+		String select = "SELECT * FROM ubifeed.restaurants WHERE venue_id = " + venueId;
 		
 		List<RestaurantDto> list = new ArrayList<RestaurantDto>();
 		//get the Prepared Statement, it will close automatically
-		try(PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
+		try(PreparedStatement ps = dal.getPreparedStatement(select)) {
 			//init prepared Statement
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
@@ -179,7 +179,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public List<MealDto> getMeals(String restaurantId) {
-		String select = "SELECT m.meal_id, m.nme, m.price, mc.nme ";
+		String select = "SELECT m.meal_id, m.nme, m.price, mc.meal_categ_id ";
 		String from = "FROM ubifeed.meals m, ubifeed.meals_categories mc ";
 		String where = "WHERE rest_id =" + restaurantId + " AND m.meal_categ_id = mc.meal_categ_id;";
 		
@@ -195,7 +195,7 @@ public class UserDaoImpl implements UserDao {
 						toRet.setMealId(rs.getInt(1));
 						toRet.setName(rs.getString(2));
 						toRet.setPrice(rs.getFloat(3));
-						toRet.setCategory(rs.getString(4));
+						toRet.setCategoryId(rs.getInt(4));
 						list.add(toRet);
 					}
 					//close the result set
@@ -205,5 +205,58 @@ public class UserDaoImpl implements UserDao {
 				}
 			
 				return list;
+	}
+	
+	@Override
+	public List<PickupStationDto> getPickupDetails(String venueId) {
+		String select = "SELECT pickup_id, email, passw, loc_description, cat_name, p.seat_cat_id ";
+		String from = "FROM pickup_stations AS p ";
+		String join = "LEFT JOIN seat_categories AS s ON s.seat_cat_id = p.seat_cat_id ";
+		String where = "WHERE s.venue_id = " + venueId + ";";
+		List<PickupStationDto> list = new ArrayList<PickupStationDto>();
+		
+		try(PreparedStatement ps = dal.getPreparedStatement(select + from + join + where)) {
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				PickupStationDto toRet = factory.getPickupStationDto();
+				toRet.setPickupId(rs.getInt(1));
+				toRet.setEmail(rs.getString(2));
+				toRet.setPassword(rs.getString(3));
+				toRet.setLocationDescription(rs.getString(4));
+				toRet.setSeatCategoryName(rs.getString(5));
+				toRet.setSeatCategoryId(rs.getInt(6));
+				list.add(toRet);
+			}
+			rs.close();
+		} catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+		}
+		return list;
+	}
+	
+	@Override
+	public List<OrderDto> getAllOrders(String userId) {
+		String select = "SELECT order_id, user_id, rest_id, pickup_id, order_status ";
+		String from = "FROM ubifeed.orders ";
+		String where = "WHERE user_id = " + userId + " AND order_status != 'DELIVERED' ";
+		String order = "ORDER BY order_id DESC;";
+		List<OrderDto> list = new ArrayList<OrderDto>();
+		
+		try (PreparedStatement ps = dal.getPreparedStatement(select + from + where + order)) {
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				OrderDto toRet = factory.getOrderDto();
+				toRet.setOrderId(rs.getInt(1));
+				toRet.setUserId(rs.getInt(2));
+				toRet.setRestaurantId(rs.getInt(3));
+				toRet.setPickupId(rs.getInt(4));
+				toRet.setOrderStatus(rs.getString(5));
+				list.add(toRet);
+			}
+			rs.close();
+		} catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+		}
+		return list;
 	}
 }

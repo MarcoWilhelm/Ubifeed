@@ -19,6 +19,8 @@ import irl.tud.ubifeed.business.UserUcc;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.meal.MealDto;
+import irl.tud.ubifeed.order.OrderDto;
+import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
@@ -66,9 +68,22 @@ public class MyServlet extends DefaultServlet {
 		case "get-all-restaurants":
 			getAllRestaurants(req, resp);
 			return;
+		case "get-all-meals":
+			getMeals(req, resp);
+			return;
+		case "get-pickup-details":
+			getPickupDetails(req, resp);
+			return;
+		case "get-all-orders":
+			getAllOrders(req, resp);
+			return;
+		case "get-all-orders-rest":
+			getAllOrdersRest(req, resp);
+			return;
+		case "get-all-orders-pickup":
+			getAllOrdersPickup(req, resp);
+			return;
 		}
-
-
 	}
 
 
@@ -97,6 +112,12 @@ public class MyServlet extends DefaultServlet {
 		case "register-user":
 			registerUser(req, resp);
 			return;
+		case "login-restaurant":
+			loginRestaurant(req, resp);
+			return;
+		case "login-pickup-station":
+			loginPickupStation(req, resp);
+			return;
 		case "get-all-venues":
 			getAllVenues(req, resp);
 			return;
@@ -109,9 +130,27 @@ public class MyServlet extends DefaultServlet {
 		case "get-meals":
 			getMeals(req, resp);
 			return;	
+		case "edit-menu":
+			editMenu(req, resp);
+			return;	
+		case "add-meal":
+			addMeal(req, resp);
+			return;
 		default:
 			return;
 		}
+	}
+
+
+	private void addMeal(HttpServletRequest req, HttpServletResponse resp) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	private void editMenu(HttpServletRequest req, HttpServletResponse resp) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
@@ -159,7 +198,7 @@ public class MyServlet extends DefaultServlet {
 			e.printStackTrace();
 		}
 	}
-
+	
 	private void registerUser(HttpServletRequest req, HttpServletResponse resp) {
 		UserDto user = factory.getUserDto();
 
@@ -191,6 +230,68 @@ public class MyServlet extends DefaultServlet {
 			e.printStackTrace();
 		}
 	}
+	
+	private void loginRestaurant(HttpServletRequest req, HttpServletResponse resp) {
+		//create dto
+		RestaurantDto restaurant = factory.getRestaurantDto();
+
+		//get the data from the request
+		String email = req.getParameter("email");
+		String password = req.getParameter("password");
+		System.out.println(req.getParameterMap());
+
+		// check business for the data, we may need to creat a Util class for these checks
+		// with methods like isNotNull(String)
+		if(!Utils.isNotNullOrEmpty(email) || !Utils.isNotNullOrEmpty(password))
+			return;
+
+		//checks are ok, so init dto
+		restaurant.setEmail(email);
+		restaurant.setPassword(password);
+
+		//Servlet -> Ucc
+		restaurant = restaurantUcc.loginRestaurant(restaurant);
+		// the instance that will create the json
+		Genson genson = new Genson();
+		try {
+			//send the json to the app, we can create a method for sending the data back
+			resp.getOutputStream().write(genson.serialize(restaurant).getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void loginPickupStation(HttpServletRequest req, HttpServletResponse resp) {
+		//create dto
+		PickupStationDto pickupstation = factory.getPickupStationDto();
+
+		//get the data from the request
+		String email = req.getParameter("email");
+		String password = req.getParameter("password");
+		System.out.println(req.getParameterMap());
+
+		// check business for the data, we may need to creat a Util class for these checks
+		// with methods like isNotNull(String)
+		if(!Utils.isNotNullOrEmpty(email) || !Utils.isNotNullOrEmpty(password))
+			return;
+
+		//checks are ok, so init dto
+		pickupstation.setEmail(email);
+		pickupstation.setPassword(password);
+
+		//Servlet -> Ucc
+		pickupstation = deliveryUcc.loginPickupStation(pickupstation);
+		// the instance that will create the json
+		Genson genson = new Genson();
+		try {
+			//send the json to the app, we can create a method for sending the data back
+			resp.getOutputStream().write(genson.serialize(pickupstation).getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	
 
 
 	private void getAllVenues(HttpServletRequest req, HttpServletResponse resp) {
@@ -248,5 +349,56 @@ private void getMeals(HttpServletRequest req, HttpServletResponse resp) {
 		e.printStackTrace();
 	}
 }
+
+private void getPickupDetails(HttpServletRequest req, HttpServletResponse resp) {
+	String venueId = req.getParameter("venueId");
+	List<PickupStationDto> pickupDetails = userUcc.getPickupDetails(venueId);
+	
+	Genson genson = new Genson();
+	try {
+		resp.getOutputStream().write(genson.serialize(pickupDetails).getBytes());
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+}
+
+private void getAllOrders(HttpServletRequest req, HttpServletResponse resp) {
+	String userId = req.getParameter("userId");
+	List<OrderDto> orders = userUcc.getAllOrders(userId);
+	
+	Genson genson = new Genson();
+	try {
+		resp.getOutputStream().write(genson.serialize(orders).getBytes());
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+}
+
+private void getAllOrdersRest(HttpServletRequest req, HttpServletResponse resp) {
+	String restaurantId = req.getParameter("restaurantId");
+	List<OrderDto> orders = restaurantUcc.getAllOrders(restaurantId);
+	
+	Genson genson = new Genson();
+	try {
+		resp.getOutputStream().write(genson.serialize(orders).getBytes());
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+}
+
+private void getAllOrdersPickup(HttpServletRequest req, HttpServletResponse resp) {
+	String restaurantId = req.getParameter("restaurantId");
+	List<OrderDto> orders = deliveryUcc.getAllOrders();
+	
+	Genson genson = new Genson();
+	try {
+		resp.getOutputStream().write(genson.serialize(orders).getBytes());
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+}
+
+
+
 }
 

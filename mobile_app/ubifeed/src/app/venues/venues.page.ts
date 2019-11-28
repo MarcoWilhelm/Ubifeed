@@ -30,7 +30,7 @@ export class VenuesPage implements OnInit {
   }
 
   getData() {
-    // this.venueService.getAllVenues();
+    this.venueService.getAllVenues();
     this.storageService.getVenues('venues')
       .then((res) => {
         this.venues = res;
@@ -38,12 +38,11 @@ export class VenuesPage implements OnInit {
       });
   }
 
-  loadRestaurants(venueId: any) {
-    this.url = '/menu/restaurants/' + venueId;
-    this.restaurantService.getAllRestaurants()
-      .then(() => {
-        this.router.navigateByUrl(this.url);
-      });
-    
-  }
+  // loadRestaurants(venueId: any) {
+  //   this.url = '/menu/restaurants/' + venueId;
+  //   this.restaurantService.getAllRestaurants()
+  //     .then(() => {
+  //       this.router.navigateByUrl(this.url);
+  //     });
+  // }
 }

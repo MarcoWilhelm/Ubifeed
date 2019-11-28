@@ -33,5 +33,10 @@ public interface MealDto {
 	String getCategory();
 	
 	void setCategory(String category);
+
+	int getCategoryId();
+	
+	void setCategoryId(int mealCategoryId);
+	
 	
 }

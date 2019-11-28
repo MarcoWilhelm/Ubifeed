@@ -27,5 +27,21 @@ public interface OrderDto {
 	List<MealDto> getMeals();
 
 	void setMeals(List<MealDto> meals);
+	
+	int getUserId();
+	
+	void setUserId(int userId);
+	
+	int getRestaurantId();
+	
+	void setRestaurantId(int restaurantId);
+	
+	int getPickupId();
+	
+	void setPickupId(int pickupId);
+	
+	String getOrderStatus();
+	
+	void setOrderStatus(String status);
 
 }

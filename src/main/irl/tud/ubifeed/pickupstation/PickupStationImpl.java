@@ -1,13 +1,16 @@
 package irl.tud.ubifeed.pickupstation;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import irl.tud.ubifeed.venue.VenueDto;
 
 public class PickupStationImpl implements PickupStation {
 	
 	private int pickupId;
-	private String phone;
-	private VenueDto venue;
+	private String email;
 	private String password;
+	private String locationDescription;
+	private int seat_cat_id;
+	private String seatCategoryName;
 	
 	@Override
 	public int getPickupId() {
@@ -18,20 +21,12 @@ public class PickupStationImpl implements PickupStation {
 		this.pickupId = pickupId;
 	}
 	@Override
-	public String getPhone() {
-		return phone;
+	public String getEmail() {
+		return this.email;
 	}
 	@Override
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-	@Override
-	public VenueDto getVenue() {
-		return venue;
-	}
-	@Override
-	public void setVenue(VenueDto venue) {
-		this.venue = venue;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	@Override
 	public String getPassword() {
@@ -43,8 +38,31 @@ public class PickupStationImpl implements PickupStation {
 	}
 	@Override
 	public boolean verifyPassword(String password) {
-		// TODO Auto-generated method stub
-		return false;
+		BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), this.getPassword());
+		return result.verified;
 	}
-	
+	@Override
+	public String getLocationDescription() {
+		return this.locationDescription;
+	}
+	@Override
+	public void setLocationDescription(String description) {
+		this.locationDescription = description;
+	}
+	@Override
+	public int getSeatCategoryId() {
+		return this.seat_cat_id;
+	}
+	@Override
+	public void setSeatCategoryId(int id) {
+		this.seat_cat_id = id;
+	}
+	@Override
+	public String getSeatCategoryName() {
+		return this.seatCategoryName;
+	}
+	@Override
+	public void setSeatCategoryName(String name) {
+		this.seatCategoryName = name;
+	}
 }

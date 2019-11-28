@@ -67,6 +67,14 @@ export class LocalstorageService {
     }
   }
 
+  removeVenues() {
+    try {
+      this.storage.remove('venues');
+    } catch(ex) {
+      console.log(ex);
+    }
+  }
+
   async setRestaurants(key: string, restaurants: any) {
     try {
       const result = await this.storage.set(key, restaurants);
@@ -77,6 +85,35 @@ export class LocalstorageService {
   }
 
   async getRestaurants(key: string): Promise<any> {
+    try {
+      const result = this.storage.get(key);
+      if (result != null) {
+        return result;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  removeRestaurants() {
+    try {
+      this.storage.remove('restaurants');
+    } catch(ex) {
+      console.log(ex);
+    }
+  }
+
+  async setMeals(key: string, meals: any) {
+    try {
+      const result = await this.storage.set(key, meals);
+      return true;
+    } catch(e) {
+      return false;
+    }
+  }
+
+  async getMeals(key: string): Promise<any> {
     try {
       const result = this.storage.get(key);
       if (result != null) {

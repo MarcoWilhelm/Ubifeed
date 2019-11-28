@@ -4,6 +4,8 @@ import java.util.List;
 
 import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.meal.MealDto;
+import irl.tud.ubifeed.order.OrderDto;
+import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
@@ -60,5 +62,10 @@ public interface UserUcc {
 	 * @return lis of events
 	 */
 	List<EventDto> getEvents(String venueId);
+	
+	
+	List<PickupStationDto> getPickupDetails(String venueId);
+	
+	List<OrderDto> getAllOrders(String userId);
 
 }
