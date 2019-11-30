@@ -26,7 +26,11 @@ public interface UserDto {
 
 	void setEmail(String email);
 
-	String getProfilePicture();
+	String getProfilePictureName();
 
-	void setProfilePicture(String profilePicture);
+	void setProfilePictureName(String profilePictureName);
+	
+	byte[] getProfilePictureFile();
+	
+	void setProfilePictureFile(byte[] profilePictureFile);
 }

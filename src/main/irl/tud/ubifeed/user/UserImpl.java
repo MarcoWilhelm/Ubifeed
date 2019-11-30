@@ -10,7 +10,8 @@ public class UserImpl implements User {
 	private String password;
 	private String phone;
 	private String email;
-	private String profilePicture;
+	private String profilePictureName;
+	private byte[] profilePictureFile;
 	
 	@Override
 	public int getUserId() {
@@ -60,17 +61,27 @@ public class UserImpl implements User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	@Override
-	public String getProfilePicture() {
-		return profilePicture;
-	}
-	@Override
-	public void setProfilePicture(String profilePicture) {
-		this.profilePicture = profilePicture;
-	}
+
 	@Override
 	public boolean verifyPassword(String password) {
 		BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), this.getPassword());
 		return result.verified;
+	}
+	@Override
+	public String getProfilePictureName() {
+		return this.profilePictureName;
+	}
+	@Override
+	public void setProfilePictureName(String profilePictureName) {
+		this.profilePictureName = profilePictureName;
+		
+	}
+	@Override
+	public byte[] getProfilePictureFile() {
+		return this.profilePictureFile;
+	}
+	@Override
+	public void setProfilePictureFile(byte[] profilePictureFile) {
+		this.profilePictureFile = profilePictureFile;
 	}
 }

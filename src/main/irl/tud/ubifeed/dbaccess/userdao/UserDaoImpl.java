@@ -70,7 +70,7 @@ public class UserDaoImpl implements UserDao {
 			ps.setString(3, user.getPassword());
 			ps.setString(4, user.getEmail());
 			ps.setString(5, user.getPhone());
-			ps.setString(6, user.getProfilePicture());
+			ps.setString(6, user.getProfilePictureName());
 			ps.execute();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();

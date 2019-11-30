@@ -354,13 +354,13 @@ public class MyServlet extends DefaultServlet {
 		user.setLastName(lastName);
 		user.setPassword(password);
 		user.setPhone(phone);
-		user.setProfilePicture(image);
+		user.setProfilePictureName(image);
 
 		user = userUcc.registerUser(user);
 
-		if(user != null && Utils.isNotNullOrEmpty(user.getProfilePicture())) {
+		if(user != null && Utils.isNotNullOrEmpty(user.getProfilePictureName())) {
 			byte[] bytes = ((List<byte[]>) req.getAttribute("pictureFile")).get(0);
-			Utils.uploadPicture(user.getProfilePicture(), Config.getConfigFor("picturesPath") + File.separator + Config.getConfigFor("profilePictures"), bytes);
+			Utils.uploadPicture(user.getProfilePictureName(), Config.getConfigFor("picturesPath") + File.separator + Config.getConfigFor("profilePictures"), bytes);
 		}
 		Genson genson = new Genson();
 		try {
