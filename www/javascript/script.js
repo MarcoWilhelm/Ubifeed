@@ -1,15 +1,14 @@
 $(function(){
     let cookie;
     //verification of the cookie
-    /*
     $.ajax({
-        url:'/ubifeed',
+        url:'localhost:8080/ubifeed/',
             data:{action:'verification'},
             type:'POST',
             success: function(response){
                 if(response != ""){
                     cookie = response;
-                    if(cookie.role = "restaurant"){
+                    if(cookie["role"] = "restaurant"){
                         $('#restaurant').show();
                     }
                     else{
@@ -23,7 +22,6 @@ $(function(){
                 }
             }
     });
-    */
     function hideShowButtonInit(button) {
         let parentTable = button.closest('table');
         let nextRow = button.parent().parent().index()+1;
@@ -31,57 +29,56 @@ $(function(){
         
         nextTr.is(':hidden') ? nextTr.show() : nextTr.hide();
     }
+
+    function addInfoCookie(response, role){
+        cookie["id"]=parseInt(response);
+        cookie["role"]= role;
+    }
     
     $('#restaurant_log_in').on('click', function(){
+        console.log("login restaurant")
         let mail = $('#restaurant_mail').val();
         let password = $('#restaurant_pswd').val();
         
-        /*$.ajax({
-            url:'/ubifeed',
-            data:{action:'login-restaurant',mail:mail,password:password},
+        $.ajax({
+            url:'localhost:8080/ubifeed',
+            data:{action:'login-pickup-station',mail:mail,password:password},
             type:'POST',
             success: function(reponse){
-                switch(parseInt(reponse)){
-                    case 0:
-                        cookie.mail=mail;
-                        cookie.role="restaurant";
-                        $('#restaurant').show();
-                        break;
-                    case 1:
-                        $('#alert').text("Email or password incorrect");
-                        break;
-                }
+                if(response == null)
+                    $('#alert').text("Email or password incorrect")
+                else{
+                    console.log(response,)//addInfoCookie(response, role)
+                    //$('#connection').hide();
+                    //$('#restaurant').show();
+                } 
             }
         });
-        */
-       $('#connection').hide();
-       $('#restaurant').show();
+       
     });
 
     $('#station_log_in').on('click', function(){
+        console.log("login station")
         let mail = $('#station_mail').val();
         let password = $('#station_pswd').val();
-        /*$.ajax({
-            url:'/ubifeed',
-            data:{action:'login-station',mail:mail,password:password},
+        let role = "station";
+        $.ajax({
+            url:'localhost:8080/ubifeed',
+            data:{action:'login-pickup-station',mail:mail,password:password},
             type:'POST',
             success: function(reponse){
-                switch(parseInt(reponse)){
-                    case 0:
-                        cookie.mail=mail;
-                        cookie.role="station";
-                        $('#pickup_station').show();
-                        break;
-                    case 1:
-                        $('#alert').text("Email or password incorrect");
-                        break;
+                if(response == null){
+                    $('#alert').text("Email or password incorrect")
+                }else{
+                    console.log(response)//addInfoCookie(response, role)
+                    //$('#connection').hide();
+                    //$('#pickup_station').show();
                 }
             }
         });
-        */
-        $('#connection').hide();
-        $('#pickup_station').show();
+        
     });
+
 
     $('#to_station').on('click', function(){
         $('#alert').text("");

@@ -1,16 +1,34 @@
 package irl.tud.ubifeed.presentation;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
+import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.servlet.DefaultServlet;
 
 import com.owlike.genson.Genson;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import irl.tud.ubifeed.Config;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.Utils;
 import irl.tud.ubifeed.business.DeliveryUcc;
@@ -25,12 +43,18 @@ import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
 
+@MultipartConfig
 public class MyServlet extends DefaultServlet {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	private static final MultipartConfigElement MULTI_PART_CONFIG = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
+
+	private static final int MAX_MEM_SIZE = 1024*1024*1;
+	private static final int MAX_FILE_SIZE = 1024*1024*50;
 
 	@Inject
 	public UserUcc userUcc;
@@ -44,6 +68,11 @@ public class MyServlet extends DefaultServlet {
 	@Inject
 	public ModelFactory factory;
 
+	@Inject
+	public ServletHelper servletHelper;
+
+	private String html = "";
+
 
 
 	/**
@@ -56,34 +85,49 @@ public class MyServlet extends DefaultServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		System.out.println("doGet");
-		String action = req.getParameter("action");
-		if (action == null) {
-			System.out.println("action is null");
+
+		// Static files return
+		String path = req.getRequestURI();
+		if (path.contains("/assets")) {
+			super.doGet(req, resp);
 			return;
 		}
-		switch(action) {
-		case "get-all-venues":
-			getAllVenues(req, resp);
-			return;
-		case "get-all-restaurants":
-			getAllRestaurants(req, resp);
-			return;
-		case "get-all-meals":
-			getMeals(req, resp);
-			return;
-		case "get-pickup-details":
-			getPickupDetails(req, resp);
-			return;
-		case "get-all-orders":
-			getAllOrders(req, resp);
-			return;
-		case "get-all-orders-rest":
-			getAllOrdersRest(req, resp);
-			return;
-		case "get-all-orders-pickup":
-			getAllOrdersPickup(req, resp);
-			return;
+
+		this.html = "";
+		//get content of the html file
+		try (Stream<String> stream = Files.lines(Paths.get(Config.getConfigFor("index")))) {
+			stream.forEach(line -> html += line);
+		} catch (IOException exc) {
+			exc.printStackTrace();
 		}
+		System.out.println(html);
+
+		servletHelper.sendToClient(resp, html, "text/html", HttpServletResponse.SC_ACCEPTED);
+
+		//	    
+		//		String action = req.getParameter("action");
+		//		if (action == null) {
+		//			System.out.println("action is null");
+		//			return;
+		//		}
+		//		switch(action) {
+		//		case "get-all-venues":
+		//			getAllVenues(req, resp);
+		//			return;
+		//		case "get-all-restaurants":
+		//			getAllRestaurants(req, resp);
+		//			return;
+		//		case "get-all-meals":
+		//			getMeals(req, resp);
+		//			return;
+		//		case "get-pickup-details":
+		//			getPickupDetails(req, resp);
+		//			return;
+		//		case "get-all-orders":
+		//			getAllOrders(req, resp);
+		//			return;
+		//		
+		//		}
 	}
 
 
@@ -97,85 +141,174 @@ public class MyServlet extends DefaultServlet {
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) {
 		System.out.println("doPost");
-		String action = req.getParameter("action");
+
+		boolean isMultiPart = ServletFileUpload.isMultipartContent(req);
+		System.out.println(isMultiPart);
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		if(isMultiPart) {
+
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+
+			// maximum size that will be stored in memory
+			factory.setSizeThreshold(MAX_MEM_SIZE);
+
+			// Location to save data that is larger than maxMemSize.
+			factory.setRepository(new File("c:\\temp"));
+
+			// Create a new file upload handler
+			ServletFileUpload upload = new ServletFileUpload(factory);
+
+			// maximum file size to be uploaded.
+			upload.setSizeMax(MAX_FILE_SIZE);
+
+			try { 
+				// Parse the request to get file items.
+				List<FileItem> fileItems = upload.parseRequest(req);
+
+				// Process the uploaded file items
+				Iterator<FileItem> i = fileItems.iterator();
+				while ( i.hasNext () ) {
+					FileItem fi = (FileItem)i.next();
+					if ( !fi.isFormField () ) {
+						// Get the uploaded file parameters
+						String fieldName = fi.getFieldName();
+						String fileName = fi.getName();
+						System.out.println(fieldName + " : " + fileName);
+						if (!fi.getContentType().equalsIgnoreCase("image/jpeg")) {
+							continue;
+						}
+						byte[] bytes = fi.get();
+						String localDate = Utils.localDateToString(LocalDateTime.now());
+						String picture = fileName.substring(0, fileName.indexOf('.'))+"_"+ localDate + ".jpg";
+						if(req.getAttribute("pictureName") == null) { 
+							req.setAttribute("pictureName", new ArrayList<String>());
+							((List<String>)req.getAttribute("pictureName")).add(picture);
+							req.setAttribute("pictureFile", new ArrayList<byte[]>());
+							((List<byte[]>)req.getAttribute("pictureFile")).add(bytes);
+						}else{
+							List<String> names = (List<String>)req.getAttribute("pictureName");
+							names.add(picture);
+							List<byte[]> files = (List<byte[]>)req.getAttribute("pictureFile");
+							files.add(bytes);
+						}
+
+					}
+					else {
+						System.out.println(fi.getFieldName() + " : " + fi.getString());
+						parameters.put(fi.getFieldName(), fi.getString());
+					}
+				}
+			} catch(Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		System.out.println(req.getAttribute("pictureName"));
+
+		String action = servletHelper.getParameter(isMultiPart, req, parameters, "action");
+
 		// No handled call
 		if (action == null) {
 			return;
 		}
 		System.out.println(action);
-		
+
 		// Action checking
 		switch(action) {
 		case "login-user":
-			loginUser(req, resp);
+			loginUser(req, resp, isMultiPart, parameters);
 			return;
 		case "register-user":
-			registerUser(req, resp);
+			registerUser(req, resp, isMultiPart, parameters);
 			return;
 		case "login-restaurant":
-			loginRestaurant(req, resp);
+			loginRestaurant(req, resp, isMultiPart, parameters);
 			return;
 		case "login-pickup-station":
-			loginPickupStation(req, resp);
+			loginPickupStation(req, resp, isMultiPart, parameters);
+			return;
+		case "log-out" :
+			logOut(req,resp);
+			return;
+		case "verification" :
+			verification(req,resp);
 			return;
 		case "get-all-venues":
 			getAllVenues(req, resp);
 			return;
 		case "get-all-restaurants":
-			getAllRestaurants(req, resp);
+			getAllRestaurants(req, resp, isMultiPart, parameters);
 			return;
 		case "get-events":
-			getEvents(req, resp);
+			getEvents(req, resp, isMultiPart, parameters);
 			return;	
 		case "get-meals":
-			getMeals(req, resp);
+			getMeals(req, resp, isMultiPart, parameters);
 			return;	
 		case "edit-menu":
-			editMenu(req, resp);
+			editMenu(req, resp, isMultiPart, parameters);
 			return;	
 		case "add-meal":
-			addMeal(req, resp);
+			addMeal(req, resp, isMultiPart, parameters);
+			return;
+		case "get-all-orders-rest":
+			getAllOrdersRest(req, resp, isMultiPart, parameters);
+			return;
+		case "get-all-orders-pickup":
+			getAllOrdersPickup(req, resp, isMultiPart, parameters);
 			return;
 		default:
 			return;
 		}
 	}
 
-
-	private void addMeal(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	private void editMenu(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 	//for Preflight
 	@Override
 	protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		System.out.println("doOptions");
+		System.out.println(req.getHeader("origin"));
 		setAccessControlHeaders(resp);
 		resp.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	private void setAccessControlHeaders(HttpServletResponse resp) {
-		resp.setHeader("Access-Control-Allow-Origin", "http://localhost:8100");
+		System.out.println("SetAccess");
+		resp.setHeader("Access-Control-Allow-Origin", "http://localhost:8100, http://localhost:8080");
 		resp.setHeader("Access-Control-Allow-Methods", "POST, GET");
 		resp.setHeader("Access-Control-Allow-Headers","origin, content-type, accept");
 	}
 
+	private void addMeal(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+		// TODO Auto-generated method stub
 
-	private void loginUser(HttpServletRequest req, HttpServletResponse resp) {
+	}
+
+
+	private void editMenu(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void logOut(HttpServletRequest req, HttpServletResponse resp) {
+		// Creating null cookie
+		Cookie cookie = new Cookie("user", "");
+		cookie.setPath("/");
+		cookie.setMaxAge(0);
+		// Resetting cookie
+		resp.addCookie(cookie);
+	}
+	private void verification(HttpServletRequest req, HttpServletResponse resp) {
+
+	}
+
+	private void loginUser(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		//create dto
 		UserDto user = factory.getUserDto();
 
 		//get the data from the request
-		String email = req.getParameter("email");
-		String password = req.getParameter("password");
+		String email = servletHelper.getParameter(isMultiPart, req, parameters, "email");
+		String password = servletHelper.getParameter(isMultiPart, req, parameters, "password");
 		System.out.println(req.getParameterMap());
 
 		// check business for the data, we may need to creat a Util class for these checks
@@ -198,15 +331,16 @@ public class MyServlet extends DefaultServlet {
 			e.printStackTrace();
 		}
 	}
-	
-	private void registerUser(HttpServletRequest req, HttpServletResponse resp) {
+
+	private void registerUser(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		UserDto user = factory.getUserDto();
 
-		String firstName = req.getParameter("firstName");
-		String lastName = req.getParameter("lastName");
-		String phone = req.getParameter("phone");
-		String email = req.getParameter("email");
-		String password = req.getParameter("password");
+		String firstName = servletHelper.getParameter(isMultiPart, req, parameters,"firstName");
+		String lastName = servletHelper.getParameter(isMultiPart, req, parameters,"lastName");
+		String phone = servletHelper.getParameter(isMultiPart, req, parameters,"phone");
+		String email = servletHelper.getParameter(isMultiPart, req, parameters,"email");
+		String password = servletHelper.getParameter(isMultiPart, req, parameters,"password");
+		String image = ((List<String>)req.getAttribute("pictureName")).get(0);
 
 		if(!Utils.isNotNullOrEmpty(email) || !Utils.isNotNullOrEmpty(password)  || !Utils.isNotNullOrEmpty(firstName)  
 				|| !Utils.isNotNullOrEmpty(lastName))
@@ -220,9 +354,14 @@ public class MyServlet extends DefaultServlet {
 		user.setLastName(lastName);
 		user.setPassword(password);
 		user.setPhone(phone);
+		user.setProfilePicture(image);
 
-		userUcc.registerUser(user);
+		user = userUcc.registerUser(user);
 
+		if(user != null && Utils.isNotNullOrEmpty(user.getProfilePicture())) {
+			byte[] bytes = ((List<byte[]>) req.getAttribute("pictureFile")).get(0);
+			Utils.uploadPicture(user.getProfilePicture(), Config.getConfigFor("picturesPath") + File.separator + Config.getConfigFor("profilePictures"), bytes);
+		}
 		Genson genson = new Genson();
 		try {
 			resp.getOutputStream().write(genson.serialize(user).getBytes());
@@ -230,15 +369,14 @@ public class MyServlet extends DefaultServlet {
 			e.printStackTrace();
 		}
 	}
-	
-	private void loginRestaurant(HttpServletRequest req, HttpServletResponse resp) {
+
+	private void loginRestaurant(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		//create dto
 		RestaurantDto restaurant = factory.getRestaurantDto();
 
 		//get the data from the request
-		String email = req.getParameter("email");
-		String password = req.getParameter("password");
-		System.out.println(req.getParameterMap());
+		String email = servletHelper.getParameter(isMultiPart, req, parameters,"email");
+		String password = servletHelper.getParameter(isMultiPart, req, parameters,"password");
 
 		// check business for the data, we may need to creat a Util class for these checks
 		// with methods like isNotNull(String)
@@ -251,6 +389,10 @@ public class MyServlet extends DefaultServlet {
 
 		//Servlet -> Ucc
 		restaurant = restaurantUcc.loginRestaurant(restaurant);
+
+		if(restaurant != null)
+			this.servletHelper.addRestaurantCookie(restaurant, req, resp);
+
 		// the instance that will create the json
 		Genson genson = new Genson();
 		try {
@@ -259,16 +401,16 @@ public class MyServlet extends DefaultServlet {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
-	
-	private void loginPickupStation(HttpServletRequest req, HttpServletResponse resp) {
+
+	private void loginPickupStation(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		//create dto
-		PickupStationDto pickupstation = factory.getPickupStationDto();
+		PickupStationDto pickupStation = factory.getPickupStationDto();
 
 		//get the data from the request
-		String email = req.getParameter("email");
-		String password = req.getParameter("password");
-		System.out.println(req.getParameterMap());
+		String email = servletHelper.getParameter(isMultiPart, req, parameters,"email");
+		String password = servletHelper.getParameter(isMultiPart, req, parameters,"password");
 
 		// check business for the data, we may need to creat a Util class for these checks
 		// with methods like isNotNull(String)
@@ -276,22 +418,26 @@ public class MyServlet extends DefaultServlet {
 			return;
 
 		//checks are ok, so init dto
-		pickupstation.setEmail(email);
-		pickupstation.setPassword(password);
+		pickupStation.setEmail(email);
+		pickupStation.setPassword(password);
 
 		//Servlet -> Ucc
-		pickupstation = deliveryUcc.loginPickupStation(pickupstation);
+		pickupStation = deliveryUcc.loginPickupStation(pickupStation);
+
+		if(pickupStation != null)
+			this.servletHelper.addPickupCookie(pickupStation, req, resp);
+
 		// the instance that will create the json
 		Genson genson = new Genson();
 		try {
 			//send the json to the app, we can create a method for sending the data back
-			resp.getOutputStream().write(genson.serialize(pickupstation).getBytes());
+			resp.getOutputStream().write(genson.serialize(pickupStation).getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	
+
 
 
 	private void getAllVenues(HttpServletRequest req, HttpServletResponse resp) {
@@ -307,12 +453,12 @@ public class MyServlet extends DefaultServlet {
 	}
 
 
-	private void getAllRestaurants(HttpServletRequest req, HttpServletResponse resp) {
-		
-		String venueId = req.getParameter("venueId");
-		
+	private void getAllRestaurants(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+
+		String venueId = servletHelper.getParameter(isMultiPart, req, parameters,"venueId");
+
 		List<RestaurantDto> restaurant = userUcc.getAllRestaurants(venueId);
-		
+
 		Genson genson = new Genson();
 		try {
 			resp.getOutputStream().write(genson.serialize(restaurant).getBytes());
@@ -320,14 +466,14 @@ public class MyServlet extends DefaultServlet {
 			e.printStackTrace();
 		}
 	}
-	
-private void getEvents(HttpServletRequest req, HttpServletResponse resp) {
-		
-		
-		String venueId = req.getParameter("venueId");
-		
+
+	private void getEvents(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+
+
+		String venueId = servletHelper.getParameter(isMultiPart, req, parameters,"venueId");
+
 		List<EventDto> events = userUcc.getEvents(venueId);
-		
+
 		Genson genson = new Genson();
 		try {
 			resp.getOutputStream().write(genson.serialize(events).getBytes());
@@ -336,67 +482,67 @@ private void getEvents(HttpServletRequest req, HttpServletResponse resp) {
 		}
 	}
 
-private void getMeals(HttpServletRequest req, HttpServletResponse resp) {
-	
-	String restaurantId = req.getParameter("restaurantId");
-	
-	List<MealDto> meals = userUcc.getMeals(restaurantId);
-	
-	Genson genson = new Genson();
-	try {
-		resp.getOutputStream().write(genson.serialize(meals).getBytes());
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
-}
+	private void getMeals(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 
-private void getPickupDetails(HttpServletRequest req, HttpServletResponse resp) {
-	String venueId = req.getParameter("venueId");
-	List<PickupStationDto> pickupDetails = userUcc.getPickupDetails(venueId);
-	
-	Genson genson = new Genson();
-	try {
-		resp.getOutputStream().write(genson.serialize(pickupDetails).getBytes());
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
-}
+		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
 
-private void getAllOrders(HttpServletRequest req, HttpServletResponse resp) {
-	String userId = req.getParameter("userId");
-	List<OrderDto> orders = userUcc.getAllOrders(userId);
-	
-	Genson genson = new Genson();
-	try {
-		resp.getOutputStream().write(genson.serialize(orders).getBytes());
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
-}
+		List<MealDto> meals = userUcc.getMeals(restaurantId);
 
-private void getAllOrdersRest(HttpServletRequest req, HttpServletResponse resp) {
-	String restaurantId = req.getParameter("restaurantId");
-	List<OrderDto> orders = restaurantUcc.getAllOrders(restaurantId);
-	
-	Genson genson = new Genson();
-	try {
-		resp.getOutputStream().write(genson.serialize(orders).getBytes());
-	} catch (IOException e) {
-		e.printStackTrace();
+		Genson genson = new Genson();
+		try {
+			resp.getOutputStream().write(genson.serialize(meals).getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-}
 
-private void getAllOrdersPickup(HttpServletRequest req, HttpServletResponse resp) {
-	String restaurantId = req.getParameter("restaurantId");
-	List<OrderDto> orders = deliveryUcc.getAllOrders();
-	
-	Genson genson = new Genson();
-	try {
-		resp.getOutputStream().write(genson.serialize(orders).getBytes());
-	} catch (IOException e) {
-		e.printStackTrace();
+	private void getPickupDetails(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+		String venueId = servletHelper.getParameter(isMultiPart, req, parameters,"venueId");
+		List<PickupStationDto> pickupDetails = userUcc.getPickupDetails(venueId);
+
+		Genson genson = new Genson();
+		try {
+			resp.getOutputStream().write(genson.serialize(pickupDetails).getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-}
+
+	private void getAllOrders(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+		String userId = servletHelper.getParameter(isMultiPart, req, parameters,"userId");
+		List<OrderDto> orders = userUcc.getAllOrders(userId);
+
+		Genson genson = new Genson();
+		try {
+			resp.getOutputStream().write(genson.serialize(orders).getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void getAllOrdersRest(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
+		List<OrderDto> orders = restaurantUcc.getAllOrders(restaurantId);
+
+		Genson genson = new Genson();
+		try {
+			resp.getOutputStream().write(genson.serialize(orders).getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void getAllOrdersPickup(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
+		List<OrderDto> orders = deliveryUcc.getAllOrders();
+
+		Genson genson = new Genson();
+		try {
+			resp.getOutputStream().write(genson.serialize(orders).getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 
 

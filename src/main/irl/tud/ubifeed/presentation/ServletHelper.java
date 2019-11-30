@@ -3,15 +3,28 @@ package irl.tud.ubifeed.presentation;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.apache.commons.fileupload.FileItem;
+
+import com.auth0.jwt.JWTSigner;
+
+import irl.tud.ubifeed.Config;
+import irl.tud.ubifeed.Utils;
 import irl.tud.ubifeed.exception.FatalErrorException;
+import irl.tud.ubifeed.pickupstation.PickupStationDto;
+import irl.tud.ubifeed.restaurant.RestaurantDto;
 
 public class ServletHelper {
+
+	private static JWTSigner jwt = new JWTSigner(Config.getConfigFor("secret"));
 
 	/**
 	 * Send a text message to a client.
@@ -36,37 +49,46 @@ public class ServletHelper {
 		}
 	}
 
-	public File getFolderPath(String uploadFilePath) {
-		File toRet = new File(uploadFilePath);
-		if (!toRet.exists()) {
-			toRet.mkdirs();
-		}
-		return toRet;
+	public String getParameter(boolean isMultiPart, HttpServletRequest req, Map<String, String> parameters, String key) {
+		return (isMultiPart) ? parameters.get(key): req.getParameter(key);
 	}
 
-	public String uploadPicture(HttpServletRequest req,String uploadFilePath) {
-		// write all files in upload folder
-		String profilePicture = "";
-		try {
-			for (Part part : req.getParts()) {
-				if (part != null && part.getSize() > 0) {
-					String fileName = part.getSubmittedFileName();
-					String contentType = part.getContentType();
+	public void addPickupCookie(PickupStationDto pickup, HttpServletRequest req, HttpServletResponse resp) {
+		Map<String, Object> claims = new HashMap<String, Object>();
+		String url = req.getRequestURL().toString();
+		String role = "station";
 
-					// allows only JPEG files to be uploaded
-					if (!contentType.equalsIgnoreCase("image/jpeg")) {
-						continue;
-					}
-					profilePicture = fileName+"_"+LocalDateTime.now().toString();
-					part.write(uploadFilePath + File.separator + profilePicture);
-				}
-			}
-		} catch (IOException | ServletException e1) {
-			e1.printStackTrace();
-			throw new FatalErrorException(e1);
-		}
-		return profilePicture;
+		String token = createToken(claims, pickup.getPickupId(), role, url);
 
+		addCookie(token, resp);
+
+	}
+	public void addRestaurantCookie(RestaurantDto restaurant, HttpServletRequest req, HttpServletResponse resp) {
+		Map<String, Object> claims = new HashMap<String, Object>();
+		String url = req.getRequestURL().toString();
+		String role = "restaurant";
+
+		String token = createToken(claims, restaurant.getRestaurantId(), role, url);
+
+		addCookie(token, resp);
+
+	}
+	private void addCookie(String token, HttpServletResponse resp) {
+		Cookie cookie = new Cookie("user", token);
+		cookie.setPath("/");
+		cookie.setMaxAge(60 * 60 * 24 * 365);
+
+		resp.addCookie(cookie);
+	}
+
+	private String createToken(Map<String, Object> claims, int id, String role, String ip) {
+		claims.put("role", id);
+		claims.put("id", id);
+		claims.put("ip", ip);
+
+		String token = jwt.sign(claims);
+
+		return token;
 	}
 
 }

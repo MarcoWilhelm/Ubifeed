@@ -63,13 +63,14 @@ public class UserDaoImpl implements UserDao {
 			return null;
 		}
 		String insert = "INSERT INTO ubifeed.users (user_id, firstn, lastn, passw, email, phone, image)";
-		String values = "VALUES(DEFAULT, ?, ?, ?, ?, ?, NULL)";
+		String values = "VALUES(DEFAULT, ?, ?, ?, ?, ?, ?)";
 		try(PreparedStatement ps = dal.getPreparedStatement(insert + values)) {
 			ps.setString(1, user.getFirstName());
 			ps.setString(2, user.getLastName());
 			ps.setString(3, user.getPassword());
 			ps.setString(4, user.getEmail());
 			ps.setString(5, user.getPhone());
+			ps.setString(6, user.getProfilePicture());
 			ps.execute();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
