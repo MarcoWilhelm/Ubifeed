@@ -3,6 +3,7 @@ package irl.tud.ubifeed.presentation;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -95,12 +96,12 @@ public class MyServlet extends DefaultServlet {
 
 		this.html = "";
 		//get content of the html file
-		try (Stream<String> stream = Files.lines(Paths.get(Config.getConfigFor("index")))) {
-			stream.forEach(line -> html += line);
+		
+		try (Stream<String> lines = Files.lines(Paths.get(Config.getConfigFor("index")))) {
+			lines.forEach(line -> html += line);
 		} catch (IOException exc) {
 			exc.printStackTrace();
 		}
-		System.out.println(html);
 
 		servletHelper.sendToClient(resp, html, "text/html", HttpServletResponse.SC_ACCEPTED);
 
