@@ -362,12 +362,9 @@ public class MyServlet extends DefaultServlet {
 			byte[] bytes = ((List<byte[]>) req.getAttribute("pictureFile")).get(0);
 			Utils.uploadPicture(user.getProfilePictureName(), Config.getConfigFor("picturesPath") + File.separator + Config.getConfigFor("profilePictures"), bytes);
 		}
-		Genson genson = new Genson();
-		try {
-			resp.getOutputStream().write(genson.serialize(user).getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(user), "application/json", HttpServletResponse.SC_ACCEPTED);
+
 	}
 
 	private void loginRestaurant(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
@@ -393,14 +390,9 @@ public class MyServlet extends DefaultServlet {
 		if(restaurant != null)
 			this.servletHelper.addRestaurantCookie(restaurant, req, resp);
 
-		// the instance that will create the json
-		Genson genson = new Genson();
-		try {
-			//send the json to the app, we can create a method for sending the data back
-			resp.getOutputStream().write(genson.serialize(restaurant).getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+		//send the json to the app, we can create a method for sending the data back
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(restaurant), "application/json", HttpServletResponse.SC_ACCEPTED);
 
 	}
 
@@ -427,14 +419,9 @@ public class MyServlet extends DefaultServlet {
 		if(pickupStation != null)
 			this.servletHelper.addPickupCookie(pickupStation, req, resp);
 
-		// the instance that will create the json
-		Genson genson = new Genson();
-		try {
-			//send the json to the app, we can create a method for sending the data back
-			resp.getOutputStream().write(genson.serialize(pickupStation).getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		//send the json to the app, we can create a method for sending the data back
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(pickupStation), "application/json", HttpServletResponse.SC_ACCEPTED);
+
 	}
 
 
@@ -444,12 +431,8 @@ public class MyServlet extends DefaultServlet {
 
 		List<VenueDto> venue = userUcc.getAllVenues();
 
-		Genson genson = new Genson();
-		try {
-			resp.getOutputStream().write(genson.serialize(venue).getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(venue), "application/json", HttpServletResponse.SC_ACCEPTED);
+
 	}
 
 
@@ -457,14 +440,10 @@ public class MyServlet extends DefaultServlet {
 
 		String venueId = servletHelper.getParameter(isMultiPart, req, parameters,"venueId");
 
-		List<RestaurantDto> restaurant = userUcc.getAllRestaurants(venueId);
+		List<RestaurantDto> restaurants = userUcc.getAllRestaurants(venueId);
 
-		Genson genson = new Genson();
-		try {
-			resp.getOutputStream().write(genson.serialize(restaurant).getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(restaurants), "application/json", HttpServletResponse.SC_ACCEPTED);
+
 	}
 
 	private void getEvents(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
@@ -474,12 +453,8 @@ public class MyServlet extends DefaultServlet {
 
 		List<EventDto> events = userUcc.getEvents(venueId);
 
-		Genson genson = new Genson();
-		try {
-			resp.getOutputStream().write(genson.serialize(events).getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(events), "application/json", HttpServletResponse.SC_ACCEPTED);
+
 	}
 
 	private void getMeals(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
@@ -487,61 +462,41 @@ public class MyServlet extends DefaultServlet {
 		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
 
 		List<MealDto> meals = userUcc.getMeals(restaurantId);
+		
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(meals), "application/json", HttpServletResponse.SC_ACCEPTED);
 
-		Genson genson = new Genson();
-		try {
-			resp.getOutputStream().write(genson.serialize(meals).getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void getPickupDetails(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		String venueId = servletHelper.getParameter(isMultiPart, req, parameters,"venueId");
 		List<PickupStationDto> pickupDetails = userUcc.getPickupDetails(venueId);
 
-		Genson genson = new Genson();
-		try {
-			resp.getOutputStream().write(genson.serialize(pickupDetails).getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(pickupDetails), "application/json", HttpServletResponse.SC_ACCEPTED);
+		
 	}
 
 	private void getAllOrders(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		String userId = servletHelper.getParameter(isMultiPart, req, parameters,"userId");
 		List<OrderDto> orders = userUcc.getAllOrders(userId);
 
-		Genson genson = new Genson();
-		try {
-			resp.getOutputStream().write(genson.serialize(orders).getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
+
 	}
 
 	private void getAllOrdersRest(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
 		List<OrderDto> orders = restaurantUcc.getAllOrders(restaurantId);
 
-		Genson genson = new Genson();
-		try {
-			resp.getOutputStream().write(genson.serialize(orders).getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
+
 	}
 
 	private void getAllOrdersPickup(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
 		List<OrderDto> orders = deliveryUcc.getAllOrders();
 
-		Genson genson = new Genson();
-		try {
-			resp.getOutputStream().write(genson.serialize(orders).getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
+
 	}
 
 

@@ -15,6 +15,8 @@ import javax.servlet.http.Part;
 import org.apache.commons.fileupload.FileItem;
 
 import com.auth0.jwt.JWTSigner;
+import com.owlike.genson.Genson;
+import com.owlike.genson.GensonBuilder;
 
 import irl.tud.ubifeed.Config;
 import irl.tud.ubifeed.Utils;
@@ -25,6 +27,7 @@ import irl.tud.ubifeed.restaurant.RestaurantDto;
 public class ServletHelper {
 
 	private static JWTSigner jwt = new JWTSigner(Config.getConfigFor("secret"));
+	private Genson genson = new GensonBuilder().useRuntimeType(true).create();
 
 	/**
 	 * Send a text message to a client.
@@ -89,6 +92,15 @@ public class ServletHelper {
 		String token = jwt.sign(claims);
 
 		return token;
+	}
+
+	/**
+	 * Get the current genson instance.
+	 * 
+	 * @return the current genson instance
+	 */
+	public Genson getGenson() {
+		return genson;
 	}
 
 }
