@@ -2,24 +2,24 @@ package irl.tud.ubifeed.presentation;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
-import org.apache.commons.fileupload.FileItem;
-
+import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTSigner;
+import com.auth0.jwt.JWTVerifyException;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.owlike.genson.Genson;
 import com.owlike.genson.GensonBuilder;
 
 import irl.tud.ubifeed.Config;
-import irl.tud.ubifeed.Utils;
 import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
@@ -27,6 +27,7 @@ import irl.tud.ubifeed.restaurant.RestaurantDto;
 public class ServletHelper {
 
 	private static JWTSigner jwt = new JWTSigner(Config.getConfigFor("secret"));
+	private Algorithm algorithm = Algorithm.HMAC256(Config.getConfigFor("secret"));
 	private Genson genson = new GensonBuilder().useRuntimeType(true).create();
 
 	/**
@@ -85,13 +86,42 @@ public class ServletHelper {
 	}
 
 	private String createToken(Map<String, Object> claims, int id, String role, String ip) {
-		claims.put("role", id);
+		claims.put("role", role);
 		claims.put("id", id);
 		claims.put("ip", ip);
 
 		String token = jwt.sign(claims);
 
 		return token;
+	}
+	
+	public Map<String,String> getCookie(HttpServletRequest req) {
+		Map<String,String> map = new HashMap<String,String>();
+		Cookie[] cookies = req.getCookies();
+	    String token = null;
+	    if (cookies != null) {
+	      for (Cookie c : cookies) {
+	        if ("user".equals(c.getName()) && c.getSecure()) {
+	          token = c.getValue();
+	        } else if ("user".equals(c.getName()) && token == null) {
+	          token = c.getValue();
+	        }
+	      }
+	    }
+	    if (token == null) {
+	      return null;
+	    }
+	    try {
+	    	Map<String, Object> decodedPayload = JWT.require(algorithm).build().verify(token);
+	    	map.put("id", decodedPayload.get("id").toString());
+	    	map.put("role", decodedPayload.get("role").toString());
+		} catch (InvalidKeyException | NoSuchAlgorithmException | IllegalStateException | SignatureException
+				| IOException | JWTVerifyException e) {
+			e.printStackTrace();
+			throw new FatalErrorException(e);
+		}
+		
+		return map;
 	}
 
 	/**

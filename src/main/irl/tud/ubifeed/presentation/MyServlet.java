@@ -37,6 +37,7 @@ import irl.tud.ubifeed.business.RestaurantUcc;
 import irl.tud.ubifeed.business.UserUcc;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.event.EventDto;
+import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.order.OrderDto;
 import irl.tud.ubifeed.pickupstation.PickupStationDto;
@@ -96,7 +97,7 @@ public class MyServlet extends DefaultServlet {
 
 		this.html = "";
 		//get content of the html file
-		
+
 		try (Stream<String> lines = Files.lines(Paths.get(Config.getConfigFor("index")))) {
 			lines.forEach(line -> html += line);
 		} catch (IOException exc) {
@@ -201,11 +202,12 @@ public class MyServlet extends DefaultServlet {
 					}
 				}
 			} catch(Exception ex) {
+				servletHelper.sendToClient(resp, "Internal Server Error", "text/plain",
+						HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				ex.printStackTrace();
+				return;
 			}
 		}
-		System.out.println(req.getAttribute("pictureName"));
-
 		String action = servletHelper.getParameter(isMultiPart, req, parameters, "action");
 
 		// No handled call
@@ -213,53 +215,58 @@ public class MyServlet extends DefaultServlet {
 			return;
 		}
 		System.out.println(action);
-
-		// Action checking
-		switch(action) {
-		case "login-user":
-			loginUser(req, resp, isMultiPart, parameters);
-			return;
-		case "register-user":
-			registerUser(req, resp, isMultiPart, parameters);
-			return;
-		case "login-restaurant":
-			loginRestaurant(req, resp, isMultiPart, parameters);
-			return;
-		case "login-pickup-station":
-			loginPickupStation(req, resp, isMultiPart, parameters);
-			return;
-		case "log-out" :
-			logOut(req,resp);
-			return;
-		case "verification" :
-			verification(req,resp);
-			return;
-		case "get-all-venues":
-			getAllVenues(req, resp);
-			return;
-		case "get-all-restaurants":
-			getAllRestaurants(req, resp, isMultiPart, parameters);
-			return;
-		case "get-events":
-			getEvents(req, resp, isMultiPart, parameters);
-			return;	
-		case "get-meals":
-			getMeals(req, resp, isMultiPart, parameters);
-			return;	
-		case "edit-menu":
-			editMenu(req, resp, isMultiPart, parameters);
-			return;	
-		case "add-meal":
-			addMeal(req, resp, isMultiPart, parameters);
-			return;
-		case "get-all-orders-rest":
-			getAllOrdersRest(req, resp, isMultiPart, parameters);
-			return;
-		case "get-all-orders-pickup":
-			getAllOrdersPickup(req, resp, isMultiPart, parameters);
-			return;
-		default:
-			return;
+		
+		try {
+			// Action checking
+			switch(action) {
+			case "login-user":
+				loginUser(req, resp, isMultiPart, parameters);
+				return;
+			case "register-user":
+				registerUser(req, resp, isMultiPart, parameters);
+				return;
+			case "login-restaurant":
+				loginRestaurant(req, resp, isMultiPart, parameters);
+				return;
+			case "login-pickup-station":
+				loginPickupStation(req, resp, isMultiPart, parameters);
+				return;
+			case "log-out" :
+				logOut(req,resp);
+				return;
+			case "verification" :
+				verification(req,resp);
+				return;
+			case "get-all-venues":
+				getAllVenues(req, resp);
+				return;
+			case "get-all-restaurants":
+				getAllRestaurants(req, resp, isMultiPart, parameters);
+				return;
+			case "get-events":
+				getEvents(req, resp, isMultiPart, parameters);
+				return;	
+			case "get-meals":
+				getMeals(req, resp, isMultiPart, parameters);
+				return;	
+			case "edit-menu":
+				editMenu(req, resp, isMultiPart, parameters);
+				return;	
+			case "add-meal":
+				addMeal(req, resp, isMultiPart, parameters);
+				return;
+			case "get-all-orders-rest":
+				getAllOrdersRest(req, resp, isMultiPart, parameters);
+				return;
+			case "get-all-orders-pickup":
+				getAllOrdersPickup(req, resp, isMultiPart, parameters);
+				return;
+			default:
+				return;
+			}
+		}catch(FatalErrorException e) {
+			servletHelper.sendToClient(resp, "Internal Server Error", "text/plain",
+					HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -300,7 +307,14 @@ public class MyServlet extends DefaultServlet {
 		resp.addCookie(cookie);
 	}
 	private void verification(HttpServletRequest req, HttpServletResponse resp) {
-
+		Map<String,String> cookie = servletHelper.getCookie(req);
+		if (cookie.isEmpty()) {
+			servletHelper.sendToClient(resp, "Access denied", "text/plain",
+					HttpServletResponse.SC_UNAUTHORIZED);
+		} else {
+			servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(cookie), "application/json",
+					HttpServletResponse.SC_ACCEPTED);
+		}
 	}
 
 	private void loginUser(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
@@ -463,7 +477,7 @@ public class MyServlet extends DefaultServlet {
 		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
 
 		List<MealDto> meals = userUcc.getMeals(restaurantId);
-		
+
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(meals), "application/json", HttpServletResponse.SC_ACCEPTED);
 
 	}
@@ -473,7 +487,7 @@ public class MyServlet extends DefaultServlet {
 		List<PickupStationDto> pickupDetails = userUcc.getPickupDetails(venueId);
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(pickupDetails), "application/json", HttpServletResponse.SC_ACCEPTED);
-		
+
 	}
 
 	private void getAllOrders(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
