@@ -2,9 +2,11 @@ package irl.tud.ubifeed.business;
 
 import java.util.List;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.dbaccess.DalServices;
 import irl.tud.ubifeed.dbaccess.restaurantdao.RestaurantDao;
+import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.order.OrderDto;
 import irl.tud.ubifeed.restaurant.Restaurant;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
@@ -48,5 +50,17 @@ public class RestaurantUccImpl implements RestaurantUcc {
 			dal.rollbackTransaction();
 		}
 		return orders;
+	}
+
+	@Override
+	public MealDto addMeal(MealDto meal, String restaurantId) {
+		try {
+			dal.startTransaction();
+			meal = restaurantDao.addMeal(meal, restaurantId);
+			dal.commitTransaction();
+		} catch (Exception dbfExcept) {
+			dal.rollbackTransaction();
+		}
+		return meal;
 	}
 }

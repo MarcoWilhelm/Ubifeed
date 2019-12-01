@@ -281,7 +281,28 @@ public class MyServlet extends DefaultServlet {
 	}
 
 	private void addMeal(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
-		// TODO Auto-generated method stub
+		MealDto meal = factory.getMealDto();
+		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
+
+		String name = servletHelper.getParameter(isMultiPart, req, parameters,"name");
+		Double price = Double.parseDouble(servletHelper.getParameter(isMultiPart, req, parameters,"price")); 
+		String category = servletHelper.getParameter(isMultiPart, req, parameters,"category");
+		String image = ((List<String>)req.getAttribute("pictureName")).get(0);
+
+	
+		meal.setName(name);
+		meal.setPrice(price);
+		meal.setCategory(category);
+		meal.setPictures(image);
+
+		meal = restaurantUcc.addMeal(meal, restaurantId);
+		
+		if(meal != null && Utils.isNotNullOrEmpty(meal.getPictures())) {
+			byte[] bytes = ((List<byte[]>) req.getAttribute("pictureFile")).get(0);
+			Utils.uploadPicture(meal.getPictures(), Config.getConfigFor("picturesPath") + File.separator + Config.getConfigFor("profilePictures"), bytes);
+		}
+
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(meal), "application/json", HttpServletResponse.SC_ACCEPTED);
 
 	}
 
