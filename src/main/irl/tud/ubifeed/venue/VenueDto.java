@@ -42,5 +42,9 @@ public interface VenueDto {
 	String getCountryName();
 	
 	void setCountryName(String countryname);
+	
+	String getImagePath();
+	
+	void setImagePath(String path);
 
 }

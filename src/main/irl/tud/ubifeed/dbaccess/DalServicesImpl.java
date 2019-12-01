@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
@@ -48,7 +49,7 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 	public PreparedStatement getPreparedStatement(String query){
 		try {
 //			return this.conn.prepareStatement(query);
-			return connections.get().prepareStatement(query);
+			return connections.get().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 		} catch (SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 		}

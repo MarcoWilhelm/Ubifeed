@@ -3,6 +3,7 @@ package irl.tud.ubifeed.dbaccess.userdao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +59,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public UserDto register(UserDto user) {
+		int last_inserted_id = 0;
 		UserDto test = factory.getUserDto();
 		if((test = loginUser(user)) != null && test.getEmail() != null) {
 			return null;
@@ -71,10 +73,15 @@ public class UserDaoImpl implements UserDao {
 			ps.setString(4, user.getEmail());
 			ps.setString(5, user.getPhone());
 			ps.setString(6, user.getProfilePictureName());
-			ps.execute();
+			ps.executeUpdate();
+			ResultSet rs = ps.getGeneratedKeys();
+			if (rs.next()) {
+				last_inserted_id = rs.getInt(1);
+			}
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 		}
+		user.setUserId(last_inserted_id);
 		return user;
 	}
 	
@@ -97,6 +104,7 @@ public class UserDaoImpl implements UserDao {
 				toRet.setVenueId(rs.getInt(1));
 				toRet.setName(rs.getString(2));
 				toRet.setAddress(rs.getString(3));
+				toRet.setImagePath(rs.getString(4));
 				//toRet.setCityName(rs.getString(4));
 				//toRet.setCountryName(rs.getString(5));
 				list.add(toRet);

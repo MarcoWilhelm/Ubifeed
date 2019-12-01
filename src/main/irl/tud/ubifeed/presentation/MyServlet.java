@@ -252,12 +252,17 @@ public class MyServlet extends DefaultServlet {
 		case "add-meal":
 			addMeal(req, resp, isMultiPart, parameters);
 			return;
+		case "get-all-orders":
+			getAllOrders(req, resp, isMultiPart, parameters);
+			return;
 		case "get-all-orders-rest":
 			getAllOrdersRest(req, resp, isMultiPart, parameters);
 			return;
 		case "get-all-orders-pickup":
 			getAllOrdersPickup(req, resp, isMultiPart, parameters);
 			return;
+		case "get-pickup-details":
+			getPickupDetails(req, resp, isMultiPart, parameters);
 		default:
 			return;
 		}
@@ -341,7 +346,7 @@ public class MyServlet extends DefaultServlet {
 		String phone = servletHelper.getParameter(isMultiPart, req, parameters,"phone");
 		String email = servletHelper.getParameter(isMultiPart, req, parameters,"email");
 		String password = servletHelper.getParameter(isMultiPart, req, parameters,"password");
-		String image = ((List<String>)req.getAttribute("pictureName")).get(0);
+		//String image = ((List<String>)req.getAttribute("pictureName")).get(0);
 
 		if(!Utils.isNotNullOrEmpty(email) || !Utils.isNotNullOrEmpty(password)  || !Utils.isNotNullOrEmpty(firstName)  
 				|| !Utils.isNotNullOrEmpty(lastName))
@@ -355,7 +360,7 @@ public class MyServlet extends DefaultServlet {
 		user.setLastName(lastName);
 		user.setPassword(password);
 		user.setPhone(phone);
-		user.setProfilePictureName(image);
+		//user.setProfilePictureName(image);
 
 		user = userUcc.registerUser(user);
 
