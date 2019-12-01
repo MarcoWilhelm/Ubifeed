@@ -26,5 +26,5 @@ public interface UserDao {
 	
 	List<PickupStationDto> getPickupDetails(String venueId);
 	
-	List<OrderDto> getAllOrders(String userId);
+	List<OrderDto> getAllOrders(String userId, String seat_cat_ids);
 }

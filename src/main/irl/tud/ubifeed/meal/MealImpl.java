@@ -9,7 +9,7 @@ public class MealImpl implements MealDto {
 	private int mealId;
 	private String name;
 	private RestaurantDto restaurant;
-	private List<String> pictures;
+	private String pictures;
 	private int quantity;
 	private double price;
 	private String category;
@@ -40,11 +40,11 @@ public class MealImpl implements MealDto {
 		this.restaurant = restaurant;
 	}
 	@Override
-	public List<String> getPictures() {
+	public String getPictures() {
 		return pictures;
 	}
 	@Override
-	public void setPictures(List<String> pictures) {
+	public void setPictures(String pictures) {
 		this.pictures = pictures;
 	}
 	@Override

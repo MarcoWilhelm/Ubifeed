@@ -66,6 +66,6 @@ public interface UserUcc {
 	
 	List<PickupStationDto> getPickupDetails(String venueId);
 	
-	List<OrderDto> getAllOrders(String userId);
+	List<OrderDto> getAllOrders(String userId, String seat_cat_id);
 
 }
