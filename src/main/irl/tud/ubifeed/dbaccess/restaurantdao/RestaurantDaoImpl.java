@@ -23,7 +23,7 @@ public class RestaurantDaoImpl implements RestaurantDao{
 
 	@Override
 	public RestaurantDto loginRestaurant(RestaurantDto restaurant) {
-		String select = "SELECT r.rest_id, r.nme, r.address, r.descrip, r.passw, r.email, ";
+		String select = "SELECT r.rest_id, r.nme, r.address, r.descrip, r.passw, r.email ";
 		String from = "FROM ubifeed.restaurants r ";
 		String where = "WHERE r.email = ?";
 

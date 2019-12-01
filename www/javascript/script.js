@@ -1,23 +1,30 @@
 $(function(){
-    let cookie;
+    let cookie = {};
     //verification of the cookie
+    console.log("Before Ajax");
     $.ajax({
-        url:'localhost:8080/ubifeed/',
+        url:'/ubifeed/',
             data:{action:'verification'},
             type:'POST',
             success: function(response){
+                console.log("verification");
                 if(response != ""){
                     cookie = response;
                     if(cookie["role"] = "restaurant"){
                         $('#restaurant').show();
+                        $('#connection').hide();
+                        $('#pickup_station').hide();
                     }
                     else{
                         $('#pickup_station').show();
+                        $('#restaurant').hide()
+                        $('#connection').hide();
                     }
 
                 }
                 else{
                     $('#connection').show();
+                    $('#restaurant').hide()
                     $('#authentication-restaurant').show()
                 }
             }
@@ -30,27 +37,26 @@ $(function(){
         nextTr.is(':hidden') ? nextTr.show() : nextTr.hide();
     }
 
-    function addInfoCookie(response, role){
-        cookie["id"]=parseInt(response);
+    function addInfoCookie(id, role){
+        cookie["id"]=parseInt(id);
         cookie["role"]= role;
     }
     
     $('#restaurant_log_in').on('click', function(){
-        console.log("login restaurant")
-        let mail = $('#restaurant_mail').val();
+        let email = $('#restaurant_mail').val();
         let password = $('#restaurant_pswd').val();
-        
+        let role = "restaurant"
         $.ajax({
-            url:'localhost:8080/ubifeed',
-            data:{action:'login-pickup-station',mail:mail,password:password},
+            url:'/ubifeed',
+            data:{action:'login-restaurant',email:email,password:password},
             type:'POST',
-            success: function(reponse){
+            success: function(response){
                 if(response == null)
                     $('#alert').text("Email or password incorrect")
                 else{
-                    console.log(response,)//addInfoCookie(response, role)
-                    //$('#connection').hide();
-                    //$('#restaurant').show();
+                    addInfoCookie(response["restaurantId"], role)
+                    $('#connection').hide();
+                    $('#restaurant').show();
                 } 
             }
         });
@@ -58,21 +64,20 @@ $(function(){
     });
 
     $('#station_log_in').on('click', function(){
-        console.log("login station")
-        let mail = $('#station_mail').val();
+        let email = $('#station_mail').val();
         let password = $('#station_pswd').val();
         let role = "station";
         $.ajax({
-            url:'localhost:8080/ubifeed',
-            data:{action:'login-pickup-station',mail:mail,password:password},
+            url:'/ubifeed',
+            data:{action:'login-pickup-station',email:email,password:password},
             type:'POST',
-            success: function(reponse){
+            success: function(response){
                 if(response == null){
                     $('#alert').text("Email or password incorrect")
                 }else{
-                    console.log(response)//addInfoCookie(response, role)
-                    //$('#connection').hide();
-                    //$('#pickup_station').show();
+                    addInfoCookie(response, role)
+                    $('#connection').hide();
+                    $('#pickup_station').show();
                 }
             }
         });
@@ -91,6 +96,14 @@ $(function(){
         $('#authentication-restaurant').show()
     });
     $('.log_out').on('click', function(){
+        $.ajax({
+            url:'/ubifeed',
+            data:{action:'log-out'},
+            type:'POST',
+            success: function(response){
+                
+            }
+        });
         $('#alert').text("");
         $('#connection').show();
         $('#restaurant').hide()

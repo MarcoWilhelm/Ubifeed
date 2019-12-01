@@ -24,7 +24,7 @@ public class DeliveryDaoImpl implements DeliveryDao {
 
 	@Override
 	public PickupStationDto loginPickupStation(PickupStationDto pickupstation) {
-		String select = "SELECT ps.pickup_id,ps.passw, ps.email, ";
+		String select = "SELECT ps.pickup_id,ps.passw, ps.email ";
 		String from = "FROM ubifeed.pickup_stations ps ";
 		String where = "WHERE ps.email = ?";
 

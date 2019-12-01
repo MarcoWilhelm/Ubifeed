@@ -1,20 +1,19 @@
 package irl.tud.ubifeed.dbaccess;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
-import com.mysql.jdbc.Driver;
+import com.mysql.cj.jdbc.Driver;
+
 
 
 
 public class DalServicesImpl implements DalBackendServices, DalServices {
 
 	private BasicDataSource pool;
-	private Connection conn;
 	
 	
 	private ThreadLocal<Connection> connections;

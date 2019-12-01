@@ -3,7 +3,6 @@ package irl.tud.ubifeed.presentation;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Cookie;
@@ -23,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.servlet.DefaultServlet;
 
 import com.owlike.genson.Genson;
@@ -52,8 +49,6 @@ public class MyServlet extends DefaultServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private static final MultipartConfigElement MULTI_PART_CONFIG = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
 
 	private static final int MAX_MEM_SIZE = 1024*1024*1;
 	private static final int MAX_FILE_SIZE = 1024*1024*50;
@@ -215,7 +210,7 @@ public class MyServlet extends DefaultServlet {
 			return;
 		}
 		System.out.println(action);
-		
+
 		try {
 			// Action checking
 			switch(action) {
@@ -249,20 +244,31 @@ public class MyServlet extends DefaultServlet {
 			case "get-meals":
 				getMeals(req, resp, isMultiPart, parameters);
 				return;	
-			case "edit-menu":
-				editMenu(req, resp, isMultiPart, parameters);
-				return;	
-			case "add-meal":
-				addMeal(req, resp, isMultiPart, parameters);
+			}
+
+			Map<String,String> cookie = servletHelper.getCookie(req);
+			if(cookie == null || cookie.isEmpty()) {
 				return;
-			case "get-all-orders-rest":
-				getAllOrdersRest(req, resp, isMultiPart, parameters);
-				return;
-			case "get-all-orders-pickup":
-				getAllOrdersPickup(req, resp, isMultiPart, parameters);
-				return;
-			default:
-				return;
+			}
+			if(cookie.get("role").equals("restaurant")) {
+				switch(action) {
+				case "get-all-orders-rest":
+					getAllOrdersRest(req, resp, isMultiPart, parameters);
+					return;
+				case "edit-menu":
+					editMenu(req, resp, isMultiPart, parameters);
+					return;	
+				case "add-meal":
+					addMeal(req, resp, isMultiPart, parameters);
+					return;
+				}
+			}
+			if(cookie.get("role").equals("station")) {
+				switch(action) {
+				case "get-all-orders-pickup":
+					getAllOrdersPickup(req, resp, isMultiPart, parameters);
+					return;
+				}
 			}
 		}catch(FatalErrorException e) {
 			servletHelper.sendToClient(resp, "Internal Server Error", "text/plain",
@@ -308,7 +314,7 @@ public class MyServlet extends DefaultServlet {
 	}
 	private void verification(HttpServletRequest req, HttpServletResponse resp) {
 		Map<String,String> cookie = servletHelper.getCookie(req);
-		if (cookie.isEmpty()) {
+		if (cookie == null || cookie.isEmpty()) {
 			servletHelper.sendToClient(resp, "Access denied", "text/plain",
 					HttpServletResponse.SC_UNAUTHORIZED);
 		} else {
@@ -405,7 +411,7 @@ public class MyServlet extends DefaultServlet {
 		if(restaurant != null)
 			this.servletHelper.addRestaurantCookie(restaurant, req, resp);
 
-
+		System.out.println(restaurant);
 		//send the json to the app, we can create a method for sending the data back
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(restaurant), "application/json", HttpServletResponse.SC_ACCEPTED);
 
