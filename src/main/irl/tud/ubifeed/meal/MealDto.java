@@ -18,9 +18,9 @@ public interface MealDto {
 	
 	void setRestaurant(RestaurantDto restaurant);
 	
-	List<String> getPictures();
+	String getPictures();
 	
-	void setPictures(List<String> pictures);
+	void setPictures(String pictures);
 	
 	int getQuantity();
 	

@@ -3,6 +3,7 @@ package irl.tud.ubifeed.dbaccess.userdao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +59,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public UserDto register(UserDto user) {
+		int last_inserted_id = 0;
 		UserDto test = factory.getUserDto();
 		if((test = loginUser(user)) != null && test.getEmail() != null) {
 			return null;
@@ -71,10 +73,15 @@ public class UserDaoImpl implements UserDao {
 			ps.setString(4, user.getEmail());
 			ps.setString(5, user.getPhone());
 			ps.setString(6, user.getProfilePictureName());
-			ps.execute();
+			ps.executeUpdate();
+			ResultSet rs = ps.getGeneratedKeys();
+			if (rs.next()) {
+				last_inserted_id = rs.getInt(1);
+			}
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 		}
+		user.setUserId(last_inserted_id);
 		return user;
 	}
 	
@@ -97,6 +104,7 @@ public class UserDaoImpl implements UserDao {
 				toRet.setVenueId(rs.getInt(1));
 				toRet.setName(rs.getString(2));
 				toRet.setAddress(rs.getString(3));
+				toRet.setImagePath(rs.getString(4));
 				//toRet.setCityName(rs.getString(4));
 				//toRet.setCountryName(rs.getString(5));
 				list.add(toRet);
@@ -236,28 +244,45 @@ public class UserDaoImpl implements UserDao {
 	}
 	
 	@Override
-	public List<OrderDto> getAllOrders(String userId) {
+	public List<OrderDto> getAllOrders(String userId, String seat_cat_id) {
 		String select = "SELECT order_id, user_id, rest_id, pickup_id, order_status ";
 		String from = "FROM ubifeed.orders ";
 		String where = "WHERE user_id = " + userId + " AND order_status != 'DELIVERED' ";
 		String order = "ORDER BY order_id DESC;";
 		List<OrderDto> list = new ArrayList<OrderDto>();
+		OrderDto toRet = factory.getOrderDto();
 		
 		try (PreparedStatement ps = dal.getPreparedStatement(select + from + where + order)) {
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
-				OrderDto toRet = factory.getOrderDto();
 				toRet.setOrderId(rs.getInt(1));
 				toRet.setUserId(rs.getInt(2));
 				toRet.setRestaurantId(rs.getInt(3));
 				toRet.setPickupId(rs.getInt(4));
 				toRet.setOrderStatus(rs.getString(5));
-				list.add(toRet);
 			}
 			rs.close();
 		} catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 		}
+		
+		String selectPickup = "SELECT pickup_id, loc_description FROM ubifeed.pickup_stations ";
+		String wherePickup = "WHERE seat_cat_id = " + seat_cat_id + ";";
+		List<PickupStationDto> listPickup = new ArrayList<>();
+		PickupStationDto pickupStation = factory.getPickupStationDto();
+		
+		try (PreparedStatement pStmt = dal.getPreparedStatement(selectPickup + wherePickup)) {
+			ResultSet rs = pStmt.executeQuery();
+			while (rs.next()) {
+				pickupStation.setPickupId(rs.getInt(1));
+				pickupStation.setLocationDescription(rs.getString(2));
+				listPickup.add(pickupStation);
+			}
+		} catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+		}
+		toRet.setPickupStation(pickupStation);
+		list.add(toRet);
 		return list;
 	}
 }

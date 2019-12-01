@@ -9,6 +9,7 @@ import java.util.List;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.dbaccess.DalBackendServices;
+import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.order.OrderDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
@@ -74,5 +75,22 @@ public class RestaurantDaoImpl implements RestaurantDao{
 			sqlExcept.printStackTrace();
 		}
 		return list;
+	}
+
+	@Override
+	public MealDto addMeal(MealDto meal, String restaurantId) {
+		String insert = "INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) ";
+		String values = "VALUES(DEFAULT, ?, ?, ?, ?, ?)";
+		try(PreparedStatement ps = dal.getPreparedStatement(insert + values)) {
+			ps.setString(1, meal.getName());
+			ps.setDouble(2, meal.getPrice());
+			ps.setString(3, meal.getPictures() ); 
+			ps.setString(4, restaurantId);
+			ps.setString(5, meal.getCategory());
+			ps.execute();
+		}catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+		}
+		return meal;
 	}
 }

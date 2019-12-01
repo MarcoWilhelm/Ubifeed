@@ -101,30 +101,6 @@ public class MyServlet extends DefaultServlet {
 
 		servletHelper.sendToClient(resp, html, "text/html", HttpServletResponse.SC_ACCEPTED);
 
-		//	    
-		//		String action = req.getParameter("action");
-		//		if (action == null) {
-		//			System.out.println("action is null");
-		//			return;
-		//		}
-		//		switch(action) {
-		//		case "get-all-venues":
-		//			getAllVenues(req, resp);
-		//			return;
-		//		case "get-all-restaurants":
-		//			getAllRestaurants(req, resp);
-		//			return;
-		//		case "get-all-meals":
-		//			getMeals(req, resp);
-		//			return;
-		//		case "get-pickup-details":
-		//			getPickupDetails(req, resp);
-		//			return;
-		//		case "get-all-orders":
-		//			getAllOrders(req, resp);
-		//			return;
-		//		
-		//		}
 	}
 
 
@@ -243,7 +219,12 @@ public class MyServlet extends DefaultServlet {
 				return;	
 			case "get-meals":
 				getMeals(req, resp, isMultiPart, parameters);
-				return;	
+				return;
+			case "get-all-orders":
+				getAllOrders(req, resp, isMultiPart, parameters);
+				return;
+			case "get-pickup-details":
+				getPickupDetails(req, resp, isMultiPart, parameters);
 			}
 
 			Map<String,String> cookie = servletHelper.getCookie(req);
@@ -294,7 +275,28 @@ public class MyServlet extends DefaultServlet {
 	}
 
 	private void addMeal(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
-		// TODO Auto-generated method stub
+		MealDto meal = factory.getMealDto();
+		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
+
+		String name = servletHelper.getParameter(isMultiPart, req, parameters,"name");
+		Double price = Double.parseDouble(servletHelper.getParameter(isMultiPart, req, parameters,"price")); 
+		String category = servletHelper.getParameter(isMultiPart, req, parameters,"category");
+		String image = ((List<String>)req.getAttribute("pictureName")).get(0);
+
+	
+		meal.setName(name);
+		meal.setPrice(price);
+		meal.setCategory(category);
+		meal.setPictures(image);
+
+		meal = restaurantUcc.addMeal(meal, restaurantId);
+		
+		if(meal != null && Utils.isNotNullOrEmpty(meal.getPictures())) {
+			byte[] bytes = ((List<byte[]>) req.getAttribute("pictureFile")).get(0);
+			Utils.uploadPicture(meal.getPictures(), Config.getConfigFor("picturesPath") + File.separator + Config.getConfigFor("profilePictures"), bytes);
+		}
+
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(meal), "application/json", HttpServletResponse.SC_ACCEPTED);
 
 	}
 
@@ -361,7 +363,7 @@ public class MyServlet extends DefaultServlet {
 		String phone = servletHelper.getParameter(isMultiPart, req, parameters,"phone");
 		String email = servletHelper.getParameter(isMultiPart, req, parameters,"email");
 		String password = servletHelper.getParameter(isMultiPart, req, parameters,"password");
-		String image = ((List<String>)req.getAttribute("pictureName")).get(0);
+		//String image = ((List<String>)req.getAttribute("pictureName")).get(0);
 
 		if(!Utils.isNotNullOrEmpty(email) || !Utils.isNotNullOrEmpty(password)  || !Utils.isNotNullOrEmpty(firstName)  
 				|| !Utils.isNotNullOrEmpty(lastName))
@@ -375,7 +377,7 @@ public class MyServlet extends DefaultServlet {
 		user.setLastName(lastName);
 		user.setPassword(password);
 		user.setPhone(phone);
-		user.setProfilePictureName(image);
+		//user.setProfilePictureName(image);
 
 		user = userUcc.registerUser(user);
 
@@ -498,7 +500,8 @@ public class MyServlet extends DefaultServlet {
 
 	private void getAllOrders(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		String userId = servletHelper.getParameter(isMultiPart, req, parameters,"userId");
-		List<OrderDto> orders = userUcc.getAllOrders(userId);
+		String seat_cat_id = servletHelper.getParameter(isMultiPart, req, parameters, "seatCatId");
+		List<OrderDto> orders = userUcc.getAllOrders(userId, seat_cat_id);
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
 
