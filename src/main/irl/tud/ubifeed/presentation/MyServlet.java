@@ -225,12 +225,12 @@ public class MyServlet extends DefaultServlet {
 			}
 
 			Map<String,String> cookie = servletHelper.getCookie(req);
-			System.out.println(cookie.get("role"));
 			if(cookie == null || cookie.isEmpty()) {
 				servletHelper.sendToClient(resp, "Access denied", "text/plain",
 						HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
+			System.out.println(cookie.get("role"));
 			if(cookie.get("role").equals("restaurant")) {
 				switch(action) {
 				case "get-all-orders-rest":
@@ -314,7 +314,7 @@ public class MyServlet extends DefaultServlet {
 	private void verification(HttpServletRequest req, HttpServletResponse resp) {
 		Map<String,String> cookie = servletHelper.getCookie(req);
 		if (cookie == null || cookie.isEmpty()) {
-			servletHelper.sendToClient(resp, "Log in please", "text/plain",
+			servletHelper.sendToClient(resp, "", "text/plain",
 					HttpServletResponse.SC_ACCEPTED);
 		} else {
 			servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(cookie), "application/json",

@@ -28,11 +28,7 @@ public interface OrderDto {
 	List<MealDto> getMeals();
 
 	void setMeals(List<MealDto> meals);
-	
-	int getUserId();
-	
-	void setUserId(int userId);
-	
+		
 	RestaurantDto getRestaurant();
 	
 	void setRestaurant(RestaurantDto restaurant);

@@ -14,9 +14,7 @@ public class OrderImpl implements OrderDto {
 	private UserDto user;
 	private PickupStationDto pickupStation;
 	private List<MealDto> meals;
-	private int userId;
 	private RestaurantDto restaurant;
-	private int pickupId;
 	private String orderStatus;
 	
 	public int getOrderId() {
@@ -48,12 +46,6 @@ public class OrderImpl implements OrderDto {
 	}
 	public void setMeals(List<MealDto> meals) {
 		this.meals = meals;
-	}
-	public int getUserId() {
-		return this.userId;
-	}
-	public void setUserId(int userId) {
-		this.userId = userId;
 	}
 	public RestaurantDto getRestaurant() {
 		return this.restaurant;

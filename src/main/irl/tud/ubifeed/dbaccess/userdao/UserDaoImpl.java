@@ -10,6 +10,7 @@ import java.util.List;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.dbaccess.DalBackendServices;
+import irl.tud.ubifeed.dbaccess.deliverydao.DeliveryDao;
 import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.exception.FatalErrorException;
 import irl.tud.ubifeed.meal.MealDto;
@@ -26,6 +27,9 @@ public class UserDaoImpl implements UserDao {
 
 	@Inject
 	public DalBackendServices dal;
+	
+	@Inject
+	public DeliveryDao deliveryDao;
 
 	@Override
 	public UserDto loginUser(UserDto user) {
@@ -128,11 +132,12 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<RestaurantDto> getAllRestaurants(String venueId) {
 		
-		String select = "SELECT * FROM ubifeed.restaurants WHERE venue_id = " + venueId;
+		String select = "SELECT * FROM ubifeed.restaurants WHERE venue_id = ?";
 		
 		List<RestaurantDto> list = new ArrayList<RestaurantDto>();
 		//get the Prepared Statement, it will close automatically
 		try(PreparedStatement ps = dal.getPreparedStatement(select)) {
+			ps.setInt(1, Integer.parseInt(venueId));
 			//init prepared Statement
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
@@ -158,12 +163,13 @@ public class UserDaoImpl implements UserDao {
 	public List<EventDto> getEvents(String venueId) {
 		String select = "SELECT e.event_id, e.nme, e.dte ";
 		String from = "FROM ubifeed.events_ e ";
-		String where = "WHERE venue_id =" + venueId + " AND e.dte >= NOW();";
+		String where = "WHERE venue_id =? AND e.dte >= NOW();";
 		
 		List<EventDto> list = new ArrayList<EventDto>();
 		
 		//get the Prepared Statement, it will close automatically
 				try(PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
+					ps.setInt(1, Integer.parseInt(venueId));
 					//init prepared Statement
 					ResultSet rs = ps.executeQuery();
 					while(rs.next()) {
@@ -190,12 +196,13 @@ public class UserDaoImpl implements UserDao {
 	public List<MealDto> getMeals(String restaurantId) {
 		String select = "SELECT m.meal_id, m.nme, m.price, mc.meal_categ_id ";
 		String from = "FROM ubifeed.meals m, ubifeed.meals_categories mc ";
-		String where = "WHERE rest_id =" + restaurantId + " AND m.meal_categ_id = mc.meal_categ_id;";
+		String where = "WHERE rest_id =? AND m.meal_categ_id = mc.meal_categ_id;";
 		
 		List<MealDto> list = new ArrayList<MealDto>();
 		
 		//get the Prepared Statement, it will close automatically
 				try(PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
+					ps.setInt(1, Integer.parseInt(restaurantId));
 					//init prepared Statement
 					ResultSet rs = ps.executeQuery();
 					while(rs.next()) {
@@ -221,10 +228,11 @@ public class UserDaoImpl implements UserDao {
 		String select = "SELECT pickup_id, email, passw, loc_description, cat_name, p.seat_cat_id ";
 		String from = "FROM pickup_stations AS p ";
 		String join = "LEFT JOIN seat_categories AS s ON s.seat_cat_id = p.seat_cat_id ";
-		String where = "WHERE s.venue_id = " + venueId + ";";
+		String where = "WHERE s.venue_id = ?;";
 		List<PickupStationDto> list = new ArrayList<PickupStationDto>();
 		
 		try(PreparedStatement ps = dal.getPreparedStatement(select + from + join + where)) {
+			ps.setInt(1, Integer.parseInt(venueId));
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				PickupStationDto toRet = factory.getPickupStationDto();
@@ -245,26 +253,35 @@ public class UserDaoImpl implements UserDao {
 	
 	@Override
 	public List<OrderDto> getAllOrders(String userId, String seat_cat_id) {
-		String select = "SELECT order_id, user_id, rest_id, pickup_id, order_status ";
-		String from = "FROM ubifeed.orders ";
-		String where = "WHERE user_id = " + userId + " AND order_status != 'DELIVERED' ";
+		String select = "SELECT o.order_id, o.user_id, o.rest_id, o.pickup_id, o.order_status, r.nme, ps.loc_description ";
+		String from = "FROM ubifeed.orders o, ubifeed.restaurants r, ubifeed.pickup_stations ps ";
+		String where = "WHERE r.rest_id = o.rest_id AND "
+				+ "o.pickup_id = ps.pickup_id AND user_id = ? AND order_status != 'DELIVERED' ";
 		String order = "ORDER BY order_id DESC;";
 		List<OrderDto> list = new ArrayList<OrderDto>();
-		OrderDto toRet = factory.getOrderDto();
-		
+		OrderDto toRet = null;
 		try (PreparedStatement ps = dal.getPreparedStatement(select + from + where + order)) {
+			ps.setInt(1, Integer.parseInt(userId));
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				RestaurantDto restaurant = factory.getRestaurantDto();
 				PickupStationDto pickup = factory.getPickupStationDto();
+				UserDto user = factory.getUserDto();
+				toRet = factory.getOrderDto();
 				
 				toRet.setOrderId(rs.getInt(1));
-				toRet.setUserId(rs.getInt(2));
+				
+				user.setUserId(rs.getInt(2));
+				toRet.setUser(user);
+				
+				toRet.setMeals(deliveryDao.getMealFromOrder(toRet.getOrderId()));
 
 				restaurant.setRestaurantId(rs.getInt(3));
+				restaurant.setName(rs.getString(6));
 				toRet.setRestaurant(restaurant);
 				
 				pickup.setPickupId(rs.getInt(4));
+				pickup.setLocationDescription(rs.getString(7));
 				toRet.setPickupStation(pickup);
 				
 				toRet.setOrderStatus(rs.getString(5));
@@ -274,23 +291,43 @@ public class UserDaoImpl implements UserDao {
 			sqlExcept.printStackTrace();
 		}
 		
+//		String selectPickup = "SELECT pickup_id, loc_description FROM ubifeed.pickup_stations ";
+//		String wherePickup = "WHERE seat_cat_id = " + seat_cat_id + ";";
+//		List<PickupStationDto> listPickup = new ArrayList<>();
+//		PickupStationDto pickupStation = factory.getPickupStationDto();
+//		
+//		try (PreparedStatement pStmt = dal.getPreparedStatement(selectPickup + wherePickup)) {
+//			ResultSet rs = pStmt.executeQuery();
+//			while (rs.next()) {
+//				pickupStation.setPickupId(rs.getInt(1));
+//				pickupStation.setLocationDescription(rs.getString(2));
+//				listPickup.add(pickupStation);
+//			}
+//		} catch(SQLException sqlExcept) {
+//			sqlExcept.printStackTrace();
+//		}
+//		toRet.setPickupStation(pickupStation);
+//		list.add(toRet);
+		
+		list.add(toRet);
+		return list;
+	}
+	
+	public PickupStationDto getPickupFromSeat(String seat_cat_id) {
 		String selectPickup = "SELECT pickup_id, loc_description FROM ubifeed.pickup_stations ";
-		String wherePickup = "WHERE seat_cat_id = " + seat_cat_id + ";";
-		List<PickupStationDto> listPickup = new ArrayList<>();
+		String wherePickup = "WHERE seat_cat_id = ?;";
 		PickupStationDto pickupStation = factory.getPickupStationDto();
 		
-		try (PreparedStatement pStmt = dal.getPreparedStatement(selectPickup + wherePickup)) {
-			ResultSet rs = pStmt.executeQuery();
+		try (PreparedStatement ps = dal.getPreparedStatement(selectPickup + wherePickup)) {
+			ps.setInt(1, Integer.parseInt(seat_cat_id));
+			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				pickupStation.setPickupId(rs.getInt(1));
 				pickupStation.setLocationDescription(rs.getString(2));
-				listPickup.add(pickupStation);
 			}
 		} catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 		}
-		toRet.setPickupStation(pickupStation);
-		list.add(toRet);
-		return list;
+		return pickupStation;
 	}
 }
