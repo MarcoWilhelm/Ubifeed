@@ -14,4 +14,10 @@ public interface DeliveryDao {
 	List<OrderDto> getAllOrders(String pickupId);
 
 	List<MealDto> getMealFromOrder(int orderId);
+	
+	public String getOrderStatus(int orderId);
+	
+	public void takeOrder(int orderId);
+	
+	public void deliverOrder(int orderId);
 }

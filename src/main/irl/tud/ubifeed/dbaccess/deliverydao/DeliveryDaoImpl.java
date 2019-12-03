@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import irl.tud.ubifeed.Enum;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.dbaccess.DalBackendServices;
@@ -86,7 +87,7 @@ public class DeliveryDaoImpl implements DeliveryDao {
 
 				pickup.setPickupId(rs.getInt(4));
 				toRet.setPickupStation(pickup);
-				
+
 				toRet.setMeals(getMealFromOrder(toRet.getOrderId()));
 
 				toRet.setOrderStatus(rs.getString(5));
@@ -106,7 +107,7 @@ public class DeliveryDaoImpl implements DeliveryDao {
 		String from = "FROM ubifeed.meals m, ubifeed.order_meals om ";
 		String where = "WHERE m.meal_id = om.meal_id and om.order_id = ?";
 		List<MealDto> list = new ArrayList<MealDto>();
-		
+
 		try (PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
 			ps.setInt(1, orderId);
 			ResultSet rs = ps.executeQuery();
@@ -116,14 +117,70 @@ public class DeliveryDaoImpl implements DeliveryDao {
 				meal.setPictures(rs.getString(2));
 				meal.setQuantity(rs.getInt(3));
 				meal.setPrice(rs.getDouble(4));
-				
+
 				list.add(meal);
 			}
-			
+
 		} catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 			throw new FatalErrorException(sqlExcept);
 		}
 		return list;
+	}
+
+	@Override
+	public String getOrderStatus(int orderId) {
+		String select = "SELECT o.order_status ";
+		String from = "FROM ubifeed.orders o ";
+		String where ="WHERE o.order_id = ?";
+		
+		String toRet = null;
+		try (PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
+			ps.setInt(1, orderId);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				toRet = rs.getString(1);
+			}
+
+		} catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+			throw new FatalErrorException(sqlExcept);
+		}
+		return toRet;
+	}
+
+	@Override
+	public void takeOrder(int orderId) {
+		if(!Enum.States.valueOf(getOrderStatus(orderId)).equals(Enum.States.READY)){
+			return;
+		}
+		System.out.println("TAKE_ORDER");
+		String update = "UPDATE ubifeed.orders o SET o.order_status = ? ";
+		String where = "WHERE o.order_id = ?";
+		
+		try(PreparedStatement ps = dal.getPreparedStatement(update + where)) {
+			ps.setString(1, Enum.States.IN_STATION.toString());
+			ps.setInt(2, orderId);
+			ps.execute();
+		}catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+		}
+	}
+
+	@Override
+	public void deliverOrder(int orderId) {
+		if(!Enum.States.valueOf(getOrderStatus(orderId)).equals(Enum.States.IN_STATION)){
+			return;
+		}
+		String update = "UPDATE ubifeed.orders o SET o.order_status = ? ";
+		String where = "WHERE o.order_id = ?";
+		
+		try(PreparedStatement ps = dal.getPreparedStatement(update + where)) {
+			ps.setString(1, Enum.States.DELIVERED.toString());
+			ps.setInt(2, orderId);
+			ps.execute();
+		}catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+		}
 	}
 }

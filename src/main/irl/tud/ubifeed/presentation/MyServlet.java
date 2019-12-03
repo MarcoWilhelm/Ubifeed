@@ -244,8 +244,10 @@ public class MyServlet extends DefaultServlet {
 					editMenu(req, resp, isMultiPart, parameters);
 					return;
 				case "prepare-order":
+					prepareOrder(req, resp, isMultiPart, parameters);
 					return;
-				case "finish_order":
+				case "finish-order":
+					finishOrder(req, resp, isMultiPart, parameters);
 					return;
 				case "add-meal":
 					addMeal(req, resp, isMultiPart, parameters);
@@ -257,9 +259,11 @@ public class MyServlet extends DefaultServlet {
 				case "get-all-orders-pickup":
 					getAllOrdersPickup(req, resp, isMultiPart, parameters);
 					return;
-				case "take_order":
+				case "take-order":
+					takeOrder(req, resp, isMultiPart, parameters);
 					return;
 				case "deliver-order":
+					deliverOrder(req, resp, isMultiPart, parameters);
 					return;
 				}
 			}
@@ -283,6 +287,30 @@ public class MyServlet extends DefaultServlet {
 		resp.setHeader("Access-Control-Allow-Headers","origin, content-type, accept");
 	}
 
+	private void prepareOrder(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+		int orderId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"orderId"));
+		
+		restaurantUcc.prepareOrder(orderId);
+	}
+	
+	private void finishOrder(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+		int orderId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"orderId"));
+		
+		restaurantUcc.finishOrder(orderId);
+	}
+	
+	private void takeOrder(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+		int orderId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"orderId"));
+		System.out.println("UCC_TAKE_ORDER");
+		deliveryUcc.takeOrder(orderId);
+	}
+	
+	private void deliverOrder(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+		int orderId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"orderId"));
+		
+		deliveryUcc.deliverOrder(orderId);
+	}
+	
 	private void addMeal(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		MealDto meal = factory.getMealDto();
 		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
@@ -292,14 +320,14 @@ public class MyServlet extends DefaultServlet {
 		String category = servletHelper.getParameter(isMultiPart, req, parameters,"category");
 		String image = ((List<String>)req.getAttribute("pictureName")).get(0);
 
-	
+
 		meal.setName(name);
 		meal.setPrice(price);
 		meal.setCategory(category);
 		meal.setPictures(image);
 
 		meal = restaurantUcc.addMeal(meal, restaurantId);
-		
+
 		if(meal != null && Utils.isNotNullOrEmpty(meal.getPictures())) {
 			byte[] bytes = ((List<byte[]>) req.getAttribute("pictureFile")).get(0);
 			Utils.uploadPicture(meal.getPictures(), Config.getConfigFor("picturesPath") + File.separator + Config.getConfigFor("profilePictures"), bytes);
@@ -528,17 +556,17 @@ public class MyServlet extends DefaultServlet {
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
 
 	}
-	
+
 	private void addOrder(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		String foodBasketStr = servletHelper.getParameter(isMultiPart, req, parameters, "foodbasket");
 		String drinksBasketStr = servletHelper.getParameter(isMultiPart, req, parameters, "drinksbasket");
 		int restaurantId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "restaurantId"));
 		int userId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "userId"));
 		int seatCatId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "seatCatId"));
-		
+
 		List<MealDto> foodBasket = servletHelper.getGenson().deserialize(foodBasketStr, new GenericType<List<MealDto>>(){});
 		List<MealDto> drinksBasket = servletHelper.getGenson().deserialize(drinksBasketStr, new GenericType<List<MealDto>>(){});
-		
+
 		Map<MealDto, Long> basket = Stream.concat(foodBasket.stream(), drinksBasket.stream()).collect(Collectors.groupingBy(m -> m, Collectors.counting()));
 		System.out.println("Basket : " + basket);
 		userUcc.addOrder(basket, restaurantId, userId, seatCatId);

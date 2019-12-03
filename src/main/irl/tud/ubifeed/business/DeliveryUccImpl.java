@@ -49,4 +49,26 @@ public class DeliveryUccImpl implements DeliveryUcc {
 		}
 		return orders;
 	}
+
+	@Override
+	public void deliverOrder(int orderId) {
+		try {
+			dal.startTransaction();
+			deliveryDao.deliverOrder(orderId);
+			dal.commitTransaction();
+		} catch (Exception dbfExcept) {
+			dal.rollbackTransaction();
+		}
+	}
+
+	@Override
+	public void takeOrder(int orderId) {
+		try {
+			dal.startTransaction();
+			deliveryDao.takeOrder(orderId);
+			dal.commitTransaction();
+		} catch (Exception dbfExcept) {
+			dal.rollbackTransaction();
+		}
+	}
 }

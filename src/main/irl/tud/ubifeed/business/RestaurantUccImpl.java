@@ -63,4 +63,28 @@ public class RestaurantUccImpl implements RestaurantUcc {
 		}
 		return meal;
 	}
+
+	@Override
+	public void prepareOrder(int orderId) {
+		try {
+			dal.startTransaction();
+			restaurantDao.prepareOrder(orderId);
+			dal.commitTransaction();
+		} catch (Exception dbfExcept) {
+			dal.rollbackTransaction();
+		}
+		
+	}
+
+	@Override
+	public void finishOrder(int orderId) {
+		try {
+			dal.startTransaction();
+			restaurantDao.finishOrder(orderId);
+			dal.commitTransaction();
+		} catch (Exception dbfExcept) {
+			dal.rollbackTransaction();
+		}
+		
+	}
 }

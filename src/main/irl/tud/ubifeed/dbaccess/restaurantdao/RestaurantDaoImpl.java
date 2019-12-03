@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import irl.tud.ubifeed.Enum;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.dbaccess.DalBackendServices;
@@ -116,4 +117,42 @@ public class RestaurantDaoImpl implements RestaurantDao{
 		}
 		return meal;
 	}
+
+	@Override
+	public void prepareOrder(int orderId) {
+		if(!Enum.States.valueOf(deliveryDao.getOrderStatus(orderId)).equals(Enum.States.ORDERED)){
+			return;
+		}
+		String update = "UPDATE ubifeed.orders o SET o.order_status = ? ";
+		String where = "WHERE o.order_id = ?";
+		
+		try(PreparedStatement ps = dal.getPreparedStatement(update + where)) {
+			ps.setString(1, Enum.States.IN_PREPARATION.toString());
+			ps.setInt(2, orderId);
+			ps.execute();
+		}catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void finishOrder(int orderId) {
+		if(!Enum.States.valueOf(deliveryDao.getOrderStatus(orderId)).equals(Enum.States.IN_PREPARATION)){
+			return;
+		}
+		
+		String update = "UPDATE ubifeed.orders o SET o.order_status = ? ";
+		String where = "WHERE o.order_id = ?";
+		
+		try(PreparedStatement ps = dal.getPreparedStatement(update + where)) {
+			ps.setString(1, Enum.States.READY.toString());
+			ps.setInt(2, orderId);
+			ps.execute();
+		}catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+		}
+	}
+	
+	
+	
 }

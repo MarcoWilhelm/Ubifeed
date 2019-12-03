@@ -14,4 +14,8 @@ public interface RestaurantUcc {
 
 	MealDto addMeal(MealDto meal, String restaurantId);
 
+	void prepareOrder(int orderId);
+
+	void finishOrder(int orderId);
+
 }

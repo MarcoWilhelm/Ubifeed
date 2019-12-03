@@ -15,4 +15,8 @@ public interface RestaurantDao {
 
 	MealDto addMeal(MealDto meal, String restaurantId);
 
+	void prepareOrder(int orderId);
+	
+	void finishOrder(int orderId);
+
 }
