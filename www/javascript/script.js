@@ -95,6 +95,10 @@ $(function(){
         $('#meals').show();
         getMeals();
     })
+    $('#to_orders').on('click', function(){
+        $('#restaurant_orders').show();
+        $('#meals').hide();
+    })
     $('.log_out').on('click', function(){
         $.ajax({
             url:'/ubifeed',
