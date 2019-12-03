@@ -22,7 +22,7 @@ public class ServletHelper {
 
 
 	private Algorithm algorithm = Algorithm.HMAC256(Config.getConfigFor("secret"));
-	private Genson genson = new GensonBuilder().useRuntimeType(true).create();
+	private Genson genson = new GensonBuilder().useRuntimeType(true).useClassMetadata(true).create();
 
 	/**
 	 * Send a text message to a client.
@@ -117,5 +117,5 @@ public class ServletHelper {
 	public Genson getGenson() {
 		return genson;
 	}
-
+	
 }

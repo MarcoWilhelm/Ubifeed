@@ -521,7 +521,7 @@ public class MyServlet extends DefaultServlet {
 		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
 
 		List<MealDto> meals = userUcc.getMeals(restaurantId);
-
+		
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(meals), "application/json", HttpServletResponse.SC_ACCEPTED);
 
 	}
