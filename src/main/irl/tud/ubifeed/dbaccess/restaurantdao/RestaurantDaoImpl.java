@@ -9,8 +9,10 @@ import java.util.List;
 import irl.tud.ubifeed.Inject;
 import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.dbaccess.DalBackendServices;
+import irl.tud.ubifeed.dbaccess.deliverydao.DeliveryDao;
 import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.order.OrderDto;
+import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 
@@ -21,6 +23,9 @@ public class RestaurantDaoImpl implements RestaurantDao{
 	
 	@Inject
 	public DalBackendServices dal;
+	
+	@Inject
+	public DeliveryDao deliveryDao;
 
 	@Override
 	public RestaurantDto loginRestaurant(RestaurantDto restaurant) {
@@ -53,20 +58,37 @@ public class RestaurantDaoImpl implements RestaurantDao{
 
 	@Override
 	public List<OrderDto> getAllOrders(String restaurantId) {
-		String select = "SELECT order_id, user_id, rest_id, pickup_id, order_status ";
-		String from = "FROM ubifeed.orders ";
-		String where = "WHERE rest_id = " + restaurantId + " AND order_status != 'DELIVERED' ";
+		String select = "SELECT o.order_id, o.user_id, o.rest_id, o.pickup_id, o.order_status, ps.loc_description, "
+				+ "u.firstn, u.lastn ";
+		String from = "FROM ubifeed.orders o, ubifeed.pickup_stations ps, ubifeed.users u  ";
+		String where = "WHERE u.user_id = o.user_id AND ps.pickup_id = o.pickup_id AND o.rest_id = ? "
+				+ "AND o.order_status != 'DELIVERED' ";
 		String order = "ORDER BY order_id DESC;";
 		List<OrderDto> list = new ArrayList<OrderDto>();
 		
 		try (PreparedStatement ps = dal.getPreparedStatement(select + from + where + order)) {
+			ps.setInt(1, Integer.parseInt(restaurantId));
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
+				RestaurantDto restaurant = factory.getRestaurantDto();
+				PickupStationDto pickup = factory.getPickupStationDto();
+				UserDto user = factory.getUserDto();
 				OrderDto toRet = factory.getOrderDto();
+				
 				toRet.setOrderId(rs.getInt(1));
-				toRet.setUserId(rs.getInt(2));
-				toRet.setRestaurantId(rs.getInt(3));
-				toRet.setPickupId(rs.getInt(4));
+				user.setUserId(rs.getInt(2));
+				user.setFirstName(rs.getString(7));
+				user.setLastName(rs.getString(8));
+				toRet.setUser(user);
+				
+				toRet.setMeals(deliveryDao.getMealFromOrder(toRet.getOrderId()));
+				restaurant.setRestaurantId(rs.getInt(3));
+				toRet.setRestaurant(restaurant);
+				
+				pickup.setPickupId(rs.getInt(4));
+				pickup.setLocationDescription(rs.getString(6));
+				toRet.setPickupStation(pickup);
+				
 				toRet.setOrderStatus(rs.getString(5));
 				list.add(toRet);
 			}

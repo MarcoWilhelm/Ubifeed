@@ -9,6 +9,6 @@ public interface DeliveryUcc {
 
 	PickupStationDto loginPickupStation(PickupStationDto pickupstation);
 
-	List<OrderDto> getAllOrders();
+	List<OrderDto> getAllOrders(String pickupId);
 
 }

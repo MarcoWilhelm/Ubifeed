@@ -38,11 +38,11 @@ public class DeliveryUccImpl implements DeliveryUcc {
 	}
 
 	@Override
-	public List<OrderDto> getAllOrders() {
+	public List<OrderDto> getAllOrders(String pickupId) {
 		List<OrderDto> orders = null;
 		try {
 			dal.startTransaction();
-			orders = deliveryDao.getAllOrders();
+			orders = deliveryDao.getAllOrders(pickupId);
 			dal.commitTransaction();
 		} catch(Exception dbfExcept) {
 			dal.rollbackTransaction();

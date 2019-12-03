@@ -54,7 +54,6 @@ public class ServletHelper {
 	public void addPickupCookie(PickupStationDto pickup, HttpServletRequest req, HttpServletResponse resp) {
 		String url = req.getRequestURL().toString();
 		String role = "station";
-		System.out.println(pickup.getPickupId());
 		String token = createToken(pickup.getPickupId(), role, url);
 
 		addCookie(token, resp);
@@ -63,7 +62,6 @@ public class ServletHelper {
 	public void addRestaurantCookie(RestaurantDto restaurant, HttpServletRequest req, HttpServletResponse resp) {
 		String url = req.getRequestURL().toString();
 		String role = "restaurant";
-		System.out.println(restaurant.getRestaurantId());
 		String token = createToken(restaurant.getRestaurantId(), role, url);
 
 		addCookie(token, resp);
@@ -80,7 +78,6 @@ public class ServletHelper {
 	private String createToken(int id, String role, String ip) {	
 		Builder tokenBuilder = JWT.create();
 
-		System.out.println("Create token : " +id);
 		tokenBuilder.withClaim("role", role);
 		tokenBuilder.withClaim("id", id);
 		tokenBuilder.withClaim("ip", ip);
@@ -106,10 +103,6 @@ public class ServletHelper {
 			return null;
 		}
 
-		System.out.println(JWT.require(algorithm).build().verify(token).getClaims());
-		System.out.println(JWT.require(algorithm).build().verify(token).getClaim("id").asInt().toString());
-		System.out.println(JWT.require(algorithm).build().verify(token).getClaim("ip").asString());
-		System.out.println(JWT.require(algorithm).build().verify(token).getClaim("role").asString());
 		map.put("id", JWT.require(algorithm).build().verify(token).getClaim("id").asInt().toString());
 		map.put("role", JWT.require(algorithm).build().verify(token).getClaim("role").asString());
 

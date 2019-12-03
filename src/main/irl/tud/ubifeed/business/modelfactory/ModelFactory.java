@@ -9,6 +9,7 @@ import irl.tud.ubifeed.pickupstation.PickupStation;
 import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.Restaurant;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
+import irl.tud.ubifeed.seatcatdto.SeatCatDto;
 import irl.tud.ubifeed.user.User;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
@@ -38,5 +39,7 @@ public interface ModelFactory {
 	public VenueDto getVenueDto();
 
 	public EventDto getEventDto();
+	
+	public SeatCatDto getSeatCatDto();
 	
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.pickupstation.PickupStationDto;
+import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 
 public class OrderImpl implements OrderDto {
@@ -13,9 +14,7 @@ public class OrderImpl implements OrderDto {
 	private UserDto user;
 	private PickupStationDto pickupStation;
 	private List<MealDto> meals;
-	private int userId;
-	private int restaurantId;
-	private int pickupId;
+	private RestaurantDto restaurant;
 	private String orderStatus;
 	
 	public int getOrderId() {
@@ -48,23 +47,11 @@ public class OrderImpl implements OrderDto {
 	public void setMeals(List<MealDto> meals) {
 		this.meals = meals;
 	}
-	public int getUserId() {
-		return this.userId;
+	public RestaurantDto getRestaurant() {
+		return this.restaurant;
 	}
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-	public int getRestaurantId() {
-		return this.restaurantId;
-	}
-	public void setRestaurantId(int restaurantId) {
-		this.restaurantId = restaurantId;
-	}
-	public int getPickupId() {
-		return this.pickupId;
-	}
-	public void setPickupId(int pickupId) {
-		this.pickupId = pickupId;
+	public void setRestaurant(RestaurantDto restaurant) {
+		this.restaurant = restaurant;
 	}
 	public String getOrderStatus() {
 		return this.orderStatus;
