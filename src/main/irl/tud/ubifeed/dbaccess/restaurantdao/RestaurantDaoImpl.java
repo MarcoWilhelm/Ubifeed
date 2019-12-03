@@ -11,6 +11,7 @@ import irl.tud.ubifeed.business.modelfactory.ModelFactory;
 import irl.tud.ubifeed.dbaccess.DalBackendServices;
 import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.order.OrderDto;
+import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 
@@ -63,11 +64,19 @@ public class RestaurantDaoImpl implements RestaurantDao{
 			ps.setInt(1, Integer.parseInt(restaurantId));
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
+				RestaurantDto restaurant = factory.getRestaurantDto();
+				PickupStationDto pickup = factory.getPickupStationDto();
 				OrderDto toRet = factory.getOrderDto();
+				
 				toRet.setOrderId(rs.getInt(1));
 				toRet.setUserId(rs.getInt(2));
-				toRet.setRestaurantId(rs.getInt(3));
-				toRet.setPickupId(rs.getInt(4));
+
+				restaurant.setRestaurantId(rs.getInt(3));
+				toRet.setRestaurant(restaurant);
+				
+				pickup.setPickupId(rs.getInt(4));
+				toRet.setPickupStation(pickup);
+				
 				toRet.setOrderStatus(rs.getString(5));
 				list.add(toRet);
 			}

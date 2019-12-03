@@ -4,6 +4,7 @@ import java.util.List;
 
 import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.pickupstation.PickupStationDto;
+import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 
 public interface OrderDto {
@@ -32,13 +33,9 @@ public interface OrderDto {
 	
 	void setUserId(int userId);
 	
-	int getRestaurantId();
+	RestaurantDto getRestaurant();
 	
-	void setRestaurantId(int restaurantId);
-	
-	int getPickupId();
-	
-	void setPickupId(int pickupId);
+	void setRestaurant(RestaurantDto restaurant);
 	
 	String getOrderStatus();
 	

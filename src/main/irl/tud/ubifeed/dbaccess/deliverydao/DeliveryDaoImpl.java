@@ -60,11 +60,18 @@ public class DeliveryDaoImpl implements DeliveryDao {
 			ps.setInt(1, Integer.parseInt(pickupId));
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
+				RestaurantDto restaurant = factory.getRestaurantDto();
+				PickupStationDto pickup = factory.getPickupStationDto();
 				OrderDto toRet = factory.getOrderDto();
 				toRet.setOrderId(rs.getInt(1));
 				toRet.setUserId(rs.getInt(2));
-				toRet.setRestaurantId(rs.getInt(3));
-				toRet.setPickupId(rs.getInt(4));
+				
+				restaurant.setRestaurantId(rs.getInt(3));
+				toRet.setRestaurant(restaurant);
+				
+				pickup.setPickupId(rs.getInt(4));
+				toRet.setPickupStation(pickup);
+				
 				toRet.setOrderStatus(rs.getString(5));
 				list.add(toRet);
 			}
