@@ -158,7 +158,7 @@ $(function(){
     }
     function addTableRestaurant(order){
         $('#restaurant_orders tbody').append("<tr><td><button class=\"hide_show\">Hide/Show</button></td><td>"+order["orderId"] +"</td><td>"+ 
-        order["user"]["firstName"] + " " + order["user"]["lastName"] + "</td><td>"+order["orderStatus"]+"</td></tr>")
+        order["user"]["firstName"] + " " + order["user"]["lastName"] + "</td><td>"+order["pickupStation"]["name"] + "</td><td>"+order["orderStatus"]+"</td></tr>")
         $('#restaurant_orders tbody').append("<tr><td colspan=\"3\" class=\"order_meals\"></td></tr>");
         addMealsOrder(order["meals"], $("#restaurant_orders tbody *:last('.order_meals')"))
     }

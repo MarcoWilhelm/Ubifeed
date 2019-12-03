@@ -104,7 +104,7 @@ CREATE TABLE ubifeed.orders (
     user_id               		INT NOT NULL REFERENCES ubifeed.users(user_id),
     rest_id         			INT NOT NULL REFERENCES ubifeed.restaurants(rest_id),
     pickup_id   				INT NOT NULL REFERENCES ubifeed.pickup_stations(pick_id),
-    order_status 				VARCHAR(50) NOT NULL DEFAULT 'In Preparation'
+    order_status 				VARCHAR(50) NOT NULL DEFAULT 'ORDERED'
 );
 
 CREATE TABLE ubifeed.order_meals (
