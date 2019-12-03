@@ -1,6 +1,7 @@
 package irl.tud.ubifeed.business;
 
 import java.util.List;
+import java.util.Map;
 
 import irl.tud.ubifeed.event.EventDto;
 import irl.tud.ubifeed.meal.MealDto;
@@ -68,6 +69,6 @@ public interface UserUcc {
 	
 	List<OrderDto> getAllOrders(String userId, String seat_cat_id);
 	
-	void addOrder(String foodbasket, String drinksbasket, String restaurantId, String userId, String seatCatId);
+	void addOrder(Map<MealDto,Long> basket, int restaurantId, int userId, int seatCatId);
 
 }

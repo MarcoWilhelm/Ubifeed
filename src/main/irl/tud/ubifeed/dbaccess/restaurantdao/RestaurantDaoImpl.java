@@ -59,7 +59,7 @@ public class RestaurantDaoImpl implements RestaurantDao{
 	@Override
 	public List<OrderDto> getAllOrders(String restaurantId) {
 		String select = "SELECT o.order_id, o.user_id, o.rest_id, o.pickup_id, o.order_status, ps.loc_description, "
-				+ "u.firstn, u.lastn, ps.name ";
+				+ "u.firstn, u.lastn, ps.nme ";
 		String from = "FROM ubifeed.orders o, ubifeed.pickup_stations ps, ubifeed.users u  ";
 		String where = "WHERE u.user_id = o.user_id AND ps.pickup_id = o.pickup_id AND o.rest_id = ? "
 				+ "AND o.order_status != 'DELIVERED' ";

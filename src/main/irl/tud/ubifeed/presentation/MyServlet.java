@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.ServletException;
@@ -23,6 +24,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.eclipse.jetty.servlet.DefaultServlet;
 
+import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
@@ -551,12 +553,18 @@ public class MyServlet extends DefaultServlet {
 	}
 	
 	private void addOrder(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
-		String foodbasket = servletHelper.getParameter(isMultiPart, req, parameters, "foodbasket");
-		String drinksbasket = servletHelper.getParameter(isMultiPart, req, parameters, "drinksbasket");
-		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters, "restaurantId");
-		String userId = servletHelper.getParameter(isMultiPart, req, parameters, "userId");
-		String seatCatId = servletHelper.getParameter(isMultiPart, req, parameters, "seatCatId");
-		userUcc.addOrder(foodbasket, drinksbasket, restaurantId, userId, seatCatId);
+		String foodBasketStr = servletHelper.getParameter(isMultiPart, req, parameters, "foodbasket");
+		String drinksBasketStr = servletHelper.getParameter(isMultiPart, req, parameters, "drinksbasket");
+		int restaurantId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "restaurantId"));
+		int userId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "userId"));
+		int seatCatId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "seatCatId"));
+		
+		List<MealDto> foodBasket = servletHelper.getGenson().deserialize(foodBasketStr, new GenericType<List<MealDto>>(){});
+		List<MealDto> drinksBasket = servletHelper.getGenson().deserialize(drinksBasketStr, new GenericType<List<MealDto>>(){});
+		
+		Map<MealDto, Long> basket = Stream.concat(foodBasket.stream(), drinksBasket.stream()).collect(Collectors.groupingBy(m -> m, Collectors.counting()));
+		System.out.println("Basket : " + basket);
+		userUcc.addOrder(basket, restaurantId, userId, seatCatId);
 	}
 
 
