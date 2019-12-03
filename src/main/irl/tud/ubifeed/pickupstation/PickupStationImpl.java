@@ -11,6 +11,7 @@ public class PickupStationImpl implements PickupStation {
 	private String locationDescription;
 	private int seat_cat_id;
 	private String seatCategoryName;
+	private String name;
 	
 	@Override
 	public int getPickupId() {
@@ -64,5 +65,13 @@ public class PickupStationImpl implements PickupStation {
 	@Override
 	public void setSeatCategoryName(String name) {
 		this.seatCategoryName = name;
+	}
+	@Override
+	public String getName() {
+		return this.name;
+	}
+	@Override
+	public void setName(String name) {
+		this.name = name;
 	}
 }

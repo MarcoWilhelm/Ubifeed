@@ -27,5 +27,9 @@ public interface PickupStationDto {
 	String getSeatCategoryName();
 	
 	void setSeatCategoryName(String name);
+	
+	String getName();
+	
+	void setName(String name);
 
 }
