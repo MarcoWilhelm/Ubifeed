@@ -116,7 +116,6 @@ public class MyServlet extends DefaultServlet {
 		System.out.println("doPost");
 
 		boolean isMultiPart = ServletFileUpload.isMultipartContent(req);
-		System.out.println(isMultiPart);
 
 		Map<String, String> parameters = new HashMap<String, String>();
 		if(isMultiPart) {
@@ -147,7 +146,6 @@ public class MyServlet extends DefaultServlet {
 						// Get the uploaded file parameters
 						String fieldName = fi.getFieldName();
 						String fileName = fi.getName();
-						System.out.println(fieldName + " : " + fileName);
 						if (!fi.getContentType().equalsIgnoreCase("image/jpeg")) {
 							continue;
 						}
@@ -168,7 +166,6 @@ public class MyServlet extends DefaultServlet {
 
 					}
 					else {
-						System.out.println(fi.getFieldName() + " : " + fi.getString());
 						parameters.put(fi.getFieldName(), fi.getString());
 					}
 				}
@@ -228,7 +225,10 @@ public class MyServlet extends DefaultServlet {
 			}
 
 			Map<String,String> cookie = servletHelper.getCookie(req);
+			System.out.println(cookie.get("role"));
 			if(cookie == null || cookie.isEmpty()) {
+				servletHelper.sendToClient(resp, "Access denied", "text/plain",
+						HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
 			if(cookie.get("role").equals("restaurant")) {
@@ -261,14 +261,11 @@ public class MyServlet extends DefaultServlet {
 	@Override
 	protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		System.out.println("doOptions");
-		System.out.println(req.getHeader("origin"));
 		setAccessControlHeaders(resp);
 		resp.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	private void setAccessControlHeaders(HttpServletResponse resp) {
-		System.out.println("SetAccess");
 		resp.setHeader("Access-Control-Allow-Origin", "http://localhost:8100, http://localhost:8080");
 		resp.setHeader("Access-Control-Allow-Methods", "POST, GET");
 		resp.setHeader("Access-Control-Allow-Headers","origin, content-type, accept");
@@ -317,8 +314,8 @@ public class MyServlet extends DefaultServlet {
 	private void verification(HttpServletRequest req, HttpServletResponse resp) {
 		Map<String,String> cookie = servletHelper.getCookie(req);
 		if (cookie == null || cookie.isEmpty()) {
-			servletHelper.sendToClient(resp, "Access denied", "text/plain",
-					HttpServletResponse.SC_UNAUTHORIZED);
+			servletHelper.sendToClient(resp, "Log in please", "text/plain",
+					HttpServletResponse.SC_ACCEPTED);
 		} else {
 			servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(cookie), "application/json",
 					HttpServletResponse.SC_ACCEPTED);
@@ -332,7 +329,6 @@ public class MyServlet extends DefaultServlet {
 		//get the data from the request
 		String email = servletHelper.getParameter(isMultiPart, req, parameters, "email");
 		String password = servletHelper.getParameter(isMultiPart, req, parameters, "password");
-		System.out.println(req.getParameterMap());
 
 		// check business for the data, we may need to creat a Util class for these checks
 		// with methods like isNotNull(String)
@@ -413,7 +409,6 @@ public class MyServlet extends DefaultServlet {
 		if(restaurant != null)
 			this.servletHelper.addRestaurantCookie(restaurant, req, resp);
 
-		System.out.println(restaurant);
 		//send the json to the app, we can create a method for sending the data back
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(restaurant), "application/json", HttpServletResponse.SC_ACCEPTED);
 
@@ -508,7 +503,7 @@ public class MyServlet extends DefaultServlet {
 	}
 
 	private void getAllOrdersRest(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
-		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
+		String restaurantId = servletHelper.getCookie(req).get("id");
 		List<OrderDto> orders = restaurantUcc.getAllOrders(restaurantId);
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
@@ -516,8 +511,8 @@ public class MyServlet extends DefaultServlet {
 	}
 
 	private void getAllOrdersPickup(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
-		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
-		List<OrderDto> orders = deliveryUcc.getAllOrders();
+		String pickupId = servletHelper.getCookie(req).get("id");
+		List<OrderDto> orders = deliveryUcc.getAllOrders(pickupId);
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
 

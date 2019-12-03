@@ -53,13 +53,14 @@ public class RestaurantDaoImpl implements RestaurantDao{
 
 	@Override
 	public List<OrderDto> getAllOrders(String restaurantId) {
-		String select = "SELECT order_id, user_id, rest_id, pickup_id, order_status ";
-		String from = "FROM ubifeed.orders ";
-		String where = "WHERE rest_id = " + restaurantId + " AND order_status != 'DELIVERED' ";
+		String select = "SELECT o.order_id, o.user_id, o.rest_id, o.pickup_id, o.order_status ";
+		String from = "FROM ubifeed.orders o ";
+		String where = "WHERE rest_id = ? AND order_status != 'DELIVERED' ";
 		String order = "ORDER BY order_id DESC;";
 		List<OrderDto> list = new ArrayList<OrderDto>();
 		
 		try (PreparedStatement ps = dal.getPreparedStatement(select + from + where + order)) {
+			ps.setInt(1, Integer.parseInt(restaurantId));
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				OrderDto toRet = factory.getOrderDto();

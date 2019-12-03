@@ -49,14 +49,15 @@ public class DeliveryDaoImpl implements DeliveryDao {
 	}
 
 	@Override
-	public List<OrderDto> getAllOrders() {
-		String select = "SELECT order_id, user_id, rest_id, pickup_id, order_status ";
-		String from = "FROM ubifeed.orders ";
-		String where = "WHERE order_status != 'DELIVERED' ";
+	public List<OrderDto> getAllOrders(String pickupId) {
+		String select = "SELECT o.order_id, o.user_id, o.rest_id, o.pickup_id, o.order_status ";
+		String from = "FROM ubifeed.orders o ";
+		String where = "WHERE o.order_status != 'DELIVERED' AND o.pickup_id = ? ";
 		String order = "ORDER BY order_id DESC;";
 		List<OrderDto> list = new ArrayList<OrderDto>();
 		
 		try (PreparedStatement ps = dal.getPreparedStatement(select + from + where + order)) {
+			ps.setInt(1, Integer.parseInt(pickupId));
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				OrderDto toRet = factory.getOrderDto();

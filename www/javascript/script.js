@@ -1,5 +1,7 @@
 $(function(){
     let cookie = {};
+    let orders = {};
+    let timeout = null;
     //verification of the cookie
     console.log("Before Ajax");
     $.ajax({
@@ -10,15 +12,19 @@ $(function(){
                 console.log("verification");
                 if(response != ""){
                     cookie = response;
-                    if(cookie["role"] = "restaurant"){
+                    console.log(cookie);
+                    console.log(cookie["role"])
+                    if(cookie["role"] == "restaurant"){
                         $('#restaurant').show();
                         $('#connection').hide();
                         $('#pickup_station').hide();
+                        setRestTable();
                     }
                     else{
                         $('#pickup_station').show();
                         $('#restaurant').hide()
                         $('#connection').hide();
+                        setStationTable();
                     }
 
                 }
@@ -26,21 +32,10 @@ $(function(){
                     $('#connection').show();
                     $('#restaurant').hide()
                     $('#authentication-restaurant').show()
+                    clearTimeout(timeout);
                 }
             }
     });
-    function hideShowButtonInit(button) {
-        let parentTable = button.closest('table');
-        let nextRow = button.parent().parent().index()+1;
-        let nextTr = parentTable.find('tr:eq('+nextRow+')');
-        
-        nextTr.is(':hidden') ? nextTr.show() : nextTr.hide();
-    }
-
-    function addInfoCookie(id, role){
-        cookie["id"]=parseInt(id);
-        cookie["role"]= role;
-    }
     
     $('#restaurant_log_in').on('click', function(){
         let email = $('#restaurant_mail').val();
@@ -57,6 +52,7 @@ $(function(){
                     addInfoCookie(response["restaurantId"], role)
                     $('#connection').hide();
                     $('#restaurant').show();
+                    setRestTable();
                 } 
             }
         });
@@ -78,6 +74,7 @@ $(function(){
                     addInfoCookie(response, role)
                     $('#connection').hide();
                     $('#pickup_station').show();
+                    setStationTable();
                 }
             }
         });
@@ -104,6 +101,8 @@ $(function(){
                 
             }
         });
+        console.log(timeout)
+        clearTimeout(timeout);
         $('#alert').text("");
         $('#connection').show();
         $('#restaurant').hide()
@@ -113,6 +112,48 @@ $(function(){
         hideShowButtonInit($(this))
     })
 
+    function hideShowButtonInit(button) {
+        let parentTable = button.closest('table');
+        let nextRow = button.parent().parent().index()+1;
+        let nextTr = parentTable.find('tr:eq('+nextRow+')');
+        
+        nextTr.is(':hidden') ? nextTr.show() : nextTr.hide();
+    }
 
+    function addInfoCookie(id, role){
+        cookie["id"]=parseInt(id);
+        cookie["role"]= role;
+    }
+
+    function getOrdersRest(){
+        $.ajax({
+            url:'/ubifeed',
+            data:{action:'get-all-orders-rest'},
+            type:'POST',
+            success: function(response){
+                console.log(response);
+            }
+        });
+    }
+
+    function getOrdersStation(){
+        $.ajax({
+            url:'/ubifeed',
+            data:{action:'get-all-orders-pickup'},
+            type:'POST',
+            success: function(response){
+                console.log(response);
+            }
+        });
+    }
+
+    function setRestTable(){
+        getOrdersRest();
+        timeout = setInterval(getOrdersRest,10000);
+    }
     
+    function setStationTable(){
+        getOrdersStation();
+        timeout = setInterval(getOrdersStation,10000);
+    }
 });

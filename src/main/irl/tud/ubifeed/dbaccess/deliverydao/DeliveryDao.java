@@ -10,6 +10,6 @@ public interface DeliveryDao {
 
 	PickupStationDto loginPickupStation(PickupStationDto pickupstation);
 
-	List<OrderDto> getAllOrders();
+	List<OrderDto> getAllOrders(String pickupId);
 
 }
