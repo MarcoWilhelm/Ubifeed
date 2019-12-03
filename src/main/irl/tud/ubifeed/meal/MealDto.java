@@ -38,5 +38,9 @@ public interface MealDto {
 	
 	void setCategoryId(int mealCategoryId);
 	
+	public int hashCode();
+	
+	public boolean equals(Object obj);
+	
 	
 }

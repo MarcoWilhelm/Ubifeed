@@ -1,6 +1,7 @@
 package irl.tud.ubifeed.business;
 
 import java.util.List;
+import java.util.Map;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import irl.tud.ubifeed.Inject;
@@ -135,10 +136,10 @@ public class UserUccImpl implements UserUcc {
 	}
 	
 	@Override
-	public void addOrder(String foodbasket, String drinksbasket, String restaurantId, String userId, String seatCatId) {
+	public void addOrder(Map<MealDto,Long> basket, int restaurantId, int userId, int seatCatId) {
 		try {
 			dal.startTransaction();
-			//orders = userDao.getAllOrders(userId, seat_cat_id);
+			userDao.addOrders(basket, restaurantId, userId, seatCatId);
 			dal.commitTransaction();
 		} catch(Exception dbfExcept) {
 			dal.rollbackTransaction();
