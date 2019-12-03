@@ -19,6 +19,7 @@ import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.order.OrderDto;
 import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
+import irl.tud.ubifeed.seatcatdto.SeatCatDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
 
@@ -226,21 +227,22 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public List<PickupStationDto> getPickupDetails(String venueId) {		
+	public List<SeatCatDto> getPickupDetails(String venueId) {		
 		String select = "SELECT seat_cat_id, cat_name, venue_id ";
 		String from = "FROM ubifeed.seat_categories s ";
 		String where = "WHERE s.venue_id = ?";
 
 
-		List<PickupStationDto> list = new ArrayList<PickupStationDto>();
+		List<SeatCatDto> list = new ArrayList<SeatCatDto>();
 
 		try(PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
 			ps.setInt(1, Integer.parseInt(venueId));
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
-				//SeatCatDto toRet = factory.getSeatCatDto();
-				//toRet.set
-				//list.add(toRet);
+				SeatCatDto toRet = factory.getSeatCatDto();
+				toRet.setSeatCatId(rs.getInt(1));
+				toRet.setName(rs.getString(2));
+				list.add(toRet);
 			}
 			rs.close();
 		} catch(SQLException sqlExcept) {
