@@ -16,6 +16,8 @@ import irl.tud.ubifeed.pickupstation.PickupStationImpl;
 import irl.tud.ubifeed.restaurant.Restaurant;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.restaurant.RestaurantImpl;
+import irl.tud.ubifeed.seatcatdto.SeatCatDto;
+import irl.tud.ubifeed.seatcatdto.SeatCatDtoImpl;
 import irl.tud.ubifeed.user.User;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.user.UserImpl;
@@ -82,6 +84,11 @@ public class ModelFactoryImpl implements ModelFactory {
 	@Override
 	public EventDto getEventDto() {
 		return new EventImpl();
+	}
+	
+	@Override
+	public SeatCatDto getSeatCatDto() {
+		return new SeatCatDtoImpl();
 	}
 
 

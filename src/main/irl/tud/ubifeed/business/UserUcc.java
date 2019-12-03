@@ -67,5 +67,7 @@ public interface UserUcc {
 	List<PickupStationDto> getPickupDetails(String venueId);
 	
 	List<OrderDto> getAllOrders(String userId, String seat_cat_id);
+	
+	void addOrder(String foodbasket, String drinksbasket, String restaurantId, String userId, String seatCatId);
 
 }

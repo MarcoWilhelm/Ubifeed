@@ -501,7 +501,6 @@ public class MyServlet extends DefaultServlet {
 		List<OrderDto> orders = userUcc.getAllOrders(userId, seat_cat_id);
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
-
 	}
 
 	private void getAllOrdersRest(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
@@ -526,6 +525,7 @@ public class MyServlet extends DefaultServlet {
 		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters, "restaurantId");
 		String userId = servletHelper.getParameter(isMultiPart, req, parameters, "userId");
 		String seatCatId = servletHelper.getParameter(isMultiPart, req, parameters, "seatCatId");
+		userUcc.addOrder(foodbasket, drinksbasket, restaurantId, userId, seatCatId);
 	}
 
 

@@ -133,4 +133,15 @@ public class UserUccImpl implements UserUcc {
 		}
 		return orders;
 	}
+	
+	@Override
+	public void addOrder(String foodbasket, String drinksbasket, String restaurantId, String userId, String seatCatId) {
+		try {
+			dal.startTransaction();
+			//orders = userDao.getAllOrders(userId, seat_cat_id);
+			dal.commitTransaction();
+		} catch(Exception dbfExcept) {
+			dal.rollbackTransaction();
+		}
+	}
 }
