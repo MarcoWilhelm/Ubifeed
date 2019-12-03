@@ -90,6 +90,11 @@ $(function(){
         $('#authentication-station').hide()
         $('#authentication-restaurant').show()
     });
+    $('#to_meals').on('click', function(){
+        $('#restaurant_orders').hide();
+        $('#meals').show();
+        getMeals();
+    })
     $('.log_out').on('click', function(){
         $.ajax({
             url:'/ubifeed',
@@ -155,7 +160,7 @@ $(function(){
         $('#restaurant_orders tbody').append("<tr><td><button class=\"hide_show\">Hide/Show</button></td><td>"+order["orderId"] +"</td><td>"+ 
         order["user"]["firstName"] + " " + order["user"]["lastName"] + "</td><td>"+order["orderStatus"]+"</td></tr>")
         $('#restaurant_orders tbody').append("<tr><td colspan=\"3\" class=\"order_meals\"></td></tr>");
-        addMealsTable(order["meals"], $("#restaurant_orders tbody *:last('.order_meals')"))
+        addMealsOrder(order["meals"], $("#restaurant_orders tbody *:last('.order_meals')"))
     }
     function addTableStation(order){
         $('#station_orders tbody').append("<tr><td><button class=\"hide_show\">Hide/Show</button></td><td>"+order["orderId"] +"</td><td>"+ 
@@ -163,10 +168,10 @@ $(function(){
         order["restaurant"]["address"]+"</td><td>"+order["orderStatus"]+"</td></tr>")
         $('#station_orders tbody').append("<tr><td colspan=\"3\" class=\"order_meals\"></td></tr>");
         console.log(order)
-        addMealsTable(order["meals"], $("#station_orders tbody *:last('.order_meals')"))
+        addMealsOrder(order["meals"], $("#station_orders tbody *:last('.order_meals')"))
     }
 
-    function addMealsTable(meals, td){
+    function addMealsOrder(meals, td){
         td.append("<ul>");
         for(x in meals){
             td.append("<li>"+meals[x]["name"]+ " *"+ meals[x]["quantity"]+"</li>");
@@ -182,5 +187,23 @@ $(function(){
     function setStationTable(){
         getOrdersStation();
         timeout = setInterval(getOrdersStation,30000);
+    }
+
+    function getMeals(){
+        $.ajax({
+            url:'/ubifeed',
+            data:{action:'get-meals', restaurantId:cookie["id"]},
+            type:'POST',
+            success: function(response){
+                $("#meals_table tbody").empty();
+                for(x in response){
+                    addMealTable(response[x], $("#meals_table tbody"));
+                }
+            }
+        });
+    }
+    function addMealTable(meal, tbody){
+        tbody.append("<tr><td>"+meal["mealId"]+"</td><td>"+meal["name"]+"</td><td>"+meal["price"]+"</td><td>"+
+        meal["categoryId"]+"</td><td>"+meal["pictures"]+"</td></tr>")
     }
 });
