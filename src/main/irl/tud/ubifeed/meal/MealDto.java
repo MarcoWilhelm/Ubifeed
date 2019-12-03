@@ -5,7 +5,7 @@ import java.util.List;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 
 public interface MealDto {
-	
+		
 	int getMealId();
 	
 	void setMealId(int mealId);
