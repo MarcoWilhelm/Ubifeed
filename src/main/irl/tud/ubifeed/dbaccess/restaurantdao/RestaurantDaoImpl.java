@@ -93,4 +93,19 @@ public class RestaurantDaoImpl implements RestaurantDao{
 		}
 		return meal;
 	}
+
+	@Override
+	public MealDto deleteMeal(MealDto meal, String restaurantId) {
+		String delete = "DELETE FROM ubifeed.meals ";
+		String where = "WHERE meal_id = ? AND rest_id = " + restaurantId +";";
+		
+		try(PreparedStatement ps = dal.getPreparedStatement(delete + where)) {
+			ps.setInt(1, meal.getMealId());
+			ps.execute();
+			System.out.println("deleted");
+		}catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+		}
+		return meal;
+	}
 }

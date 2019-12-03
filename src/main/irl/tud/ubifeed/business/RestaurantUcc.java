@@ -14,4 +14,6 @@ public interface RestaurantUcc {
 
 	MealDto addMeal(MealDto meal, String restaurantId);
 
+	MealDto deleteMeal(MealDto meal, String restaurantId);
+
 }

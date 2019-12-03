@@ -118,10 +118,10 @@ CREATE TABLE ubifeed.order_meals (
     CONSTRAINT order_meal_PK PRIMARY KEY(order_id, meal_id)
 );
 
-<<<<<<< HEAD
+-- <<<<<<< HEAD
 INSERT INTO ubifeed.countries(country_id, nme) VALUES (DEFAULT, 'Ireland');
 INSERT INTO ubifeed.countries(country_id, nme) VALUES (DEFAULT, "Italy");
-INSERT INTO ubifeed.countries(country_id, nme) VALUES (3, "France");
+INSERT INTO ubifeed.countries(country_id, nme) VALUES (DEFAULT, "France");
 
 INSERT INTO ubifeed.cities(city_id, nme, country_id) VALUES (DEFAULT, 'Dublin', 1);
 INSERT INTO ubifeed.cities(city_id, nme, country_id) VALUES (DEFAULT, "Cork", 1);
@@ -214,7 +214,7 @@ INSERT INTO ubifeed.events_ (event_id, nme, dte, venue_id) values
 INSERT INTO ubifeed.events_ (event_id, nme, dte, venue_id) values
 (DEFAULT, "Italy vs Ireland", "2020-1-19", 4);
 
-=======
+/*========
 
 Use ubifeed;
 
@@ -400,3 +400,4 @@ INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) values
 (4, "Pizza");
 INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) values
 (5, "Main Course");
+*/

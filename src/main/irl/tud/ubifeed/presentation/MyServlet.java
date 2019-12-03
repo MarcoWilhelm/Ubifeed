@@ -225,6 +225,9 @@ public class MyServlet extends DefaultServlet {
 				return;
 			case "get-pickup-details":
 				getPickupDetails(req, resp, isMultiPart, parameters);
+			case "delete-meal":
+				deleteMeal(req, resp, isMultiPart, parameters);
+				return;
 			}
 
 			Map<String,String> cookie = servletHelper.getCookie(req);
@@ -241,6 +244,9 @@ public class MyServlet extends DefaultServlet {
 					return;	
 				case "add-meal":
 					addMeal(req, resp, isMultiPart, parameters);
+					return;
+				case "delete-meal":
+					deleteMeal(req, resp, isMultiPart, parameters);
 					return;
 				}
 			}
@@ -300,10 +306,21 @@ public class MyServlet extends DefaultServlet {
 
 	}
 
+	private void deleteMeal(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+		MealDto meal = factory.getMealDto();
+		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
+		int mealId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"mealId"));
+		
+		meal.setMealId(mealId);
+		
+		meal = restaurantUcc.deleteMeal(meal, restaurantId);
+   
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(meal), "application/json", HttpServletResponse.SC_ACCEPTED);
+
+	}
 
 	private void editMenu(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		// TODO Auto-generated method stub
-
 	}
 
 	private void logOut(HttpServletRequest req, HttpServletResponse resp) {
@@ -516,7 +533,7 @@ public class MyServlet extends DefaultServlet {
 	}
 
 	private void getAllOrdersPickup(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
-		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
+		//String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
 		List<OrderDto> orders = deliveryUcc.getAllOrders();
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
