@@ -257,9 +257,9 @@ public class MyServlet extends DefaultServlet {
 				case "add-meal":
 					addMeal(req, resp, isMultiPart, parameters);
 					return;
-				case "delete-meal":
+				/*case "delete-meal":
 					deleteMeal(req, resp, isMultiPart, parameters);
-					return;
+					return;*/
 				}
 			}
 			if(cookie.get("role").equals("station")) {
@@ -346,15 +346,13 @@ public class MyServlet extends DefaultServlet {
 	}
 
 	private void deleteMeal(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
-		MealDto meal = factory.getMealDto();
+		
 		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
 		int mealId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"mealId"));
 		
-		meal.setMealId(mealId);
-		
-		meal = restaurantUcc.deleteMeal(meal, restaurantId);
+		restaurantUcc.deleteMeal(mealId, restaurantId);
    
-		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(meal), "application/json", HttpServletResponse.SC_ACCEPTED);
+		//servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(meal), "application/json", HttpServletResponse.SC_ACCEPTED);
 
 	}
 

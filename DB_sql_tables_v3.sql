@@ -1,4 +1,4 @@
-DROP SCHEMA  if exists ubifeed ;
+DROP SCHEMA  if exists ubifeed;
 CREATE SCHEMA ubifeed;
 
 CREATE TABLE ubifeed.countries (
@@ -77,6 +77,7 @@ CREATE TABLE ubifeed.meals (
     nme                        		 VARCHAR(30) NOT NULL,
     price                       	 FLOAT NOT NULL,
     image                            VARCHAR(60),
+    isDeleted						 BOOL DEFAULT 0,
     rest_id                          INT NOT NULL REFERENCES ubifeed.restaurants(rest_id) ,
     meal_categ_id                    INT NOT NULL REFERENCES ubifeed.meals_categories(meal_categ_id)
 );
@@ -127,6 +128,7 @@ CREATE TABLE ubifeed.order_meals (
     meal_id			INT NOT NULL REFERENCES ubifeed.meals(meal_id),
     CONSTRAINT order_meal_PK PRIMARY KEY(order_id, meal_id)
 );
+
 
 -- <<<<<<< HEAD
 INSERT INTO ubifeed.countries(country_id, nme) VALUES (DEFAULT, 'Ireland');
@@ -246,7 +248,7 @@ INSERT INTO ubifeed.events_ (event_id, nme, dte, venue_id) values
 (DEFAULT, "Italy vs Ireland", "2020-1-19", 4);
 
 select* from ubifeed.meals;
-
+UPDATE ubifeed.meals SET isDeleted = 1  WHERE meal_id = 6 AND rest_id = 1;
 /*========
 
 Use ubifeed;

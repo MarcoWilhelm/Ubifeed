@@ -118,28 +118,30 @@ public class RestaurantDaoImpl implements RestaurantDao{
 		return meal;
 	}
 
-	@Override
-<<<<<<< HEAD
-	public MealDto deleteMeal(MealDto meal, String restaurantId) {
-		String delete = "DELETE FROM ubifeed.meals ";
-		String where = "WHERE meal_id = ? AND rest_id = " + restaurantId +";";
+	
+@Override
+	public void deleteMeal(int mealId, String restaurantId) {
+		String update = "UPDATE ubifeed.meals m SET m.isDeleted = 1 ";
+		String where = "WHERE meal_id = ? AND rest_id = ?;";
 		
-		try(PreparedStatement ps = dal.getPreparedStatement(delete + where)) {
-			ps.setInt(1, meal.getMealId());
+		try(PreparedStatement ps = dal.getPreparedStatement(update + where);) {
+			ps.setInt(1, mealId);
+			ps.setString(2, restaurantId);
 			ps.execute();
 			System.out.println("deleted");
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 		}
-		return meal;
+
 	}
-=======
+
+	@Override
 	public void prepareOrder(int orderId) {
 		if(!Enum.States.valueOf(deliveryDao.getOrderStatus(orderId)).equals(Enum.States.ORDERED)){
 			return;
 		}
 		String update = "UPDATE ubifeed.orders o SET o.order_status = ? ";
-		String where = "WHERE o.order_id = ?";
+		String where = "WHERE o.order_id = ?;";
 		
 		try(PreparedStatement ps = dal.getPreparedStatement(update + where)) {
 			ps.setString(1, Enum.States.IN_PREPARATION.toString());
@@ -157,7 +159,7 @@ public class RestaurantDaoImpl implements RestaurantDao{
 		}
 		
 		String update = "UPDATE ubifeed.orders o SET o.order_status = ? ";
-		String where = "WHERE o.order_id = ?";
+		String where = "WHERE o.order_id = ?;";
 		
 		try(PreparedStatement ps = dal.getPreparedStatement(update + where)) {
 			ps.setString(1, Enum.States.READY.toString());
@@ -170,5 +172,5 @@ public class RestaurantDaoImpl implements RestaurantDao{
 	
 	
 	
->>>>>>> 9aaafefff5f65214d023f92a852452fd56715d08
+
 }

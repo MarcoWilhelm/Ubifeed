@@ -199,7 +199,7 @@ public class UserDaoImpl implements UserDao {
 	public List<MealDto> getMeals(String restaurantId) {
 		String select = "SELECT m.meal_id, m.nme, m.price, mc.meal_categ_id ";
 		String from = "FROM ubifeed.meals m, ubifeed.meals_categories mc ";
-		String where = "WHERE rest_id =? AND m.meal_categ_id = mc.meal_categ_id;";
+		String where = "WHERE rest_id =? AND m.meal_categ_id = mc.meal_categ_id AND isDeleted = 0;";
 
 		List<MealDto> list = new ArrayList<MealDto>();
 
