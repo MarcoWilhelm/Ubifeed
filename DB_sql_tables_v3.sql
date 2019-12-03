@@ -142,14 +142,7 @@ INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES
 (DEFAULT, 'Food');
 INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES 
 (DEFAULT, 'Drinks');
-INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES
-(DEFAULT, "Sandwich");
-INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES
-(DEFAULT, "Desserts");
-INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES
-(DEFAULT, "Pizza");
-INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES
-(DEFAULT, "Main Course");
+
 
 INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) VALUES 
 (DEFAULT, 'Hamburger', 5.20, null, 1, 1);
@@ -166,9 +159,9 @@ INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) v
 INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) values
 (DEFAULT, "Big Mac", 6.70, null, 1, 2);
 INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) values
-(DEFAULT, "Pizza Margherita", 7.35, null, 3, 4);
+(DEFAULT, "Pizza Margherita", 7.35, null, 3, 1);
 INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) values
-(DEFAULT, "Fish & Chips", 12.45, null, 2, 5);
+(DEFAULT, "Fish & Chips", 12.45, null, 2, 1);
 
 INSERT INTO ubifeed.seat_categories (seat_cat_id, cat_name, venue_id) VALUES 
 (DEFAULT, 'Sector A', 1);
@@ -185,9 +178,6 @@ INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description, s
 (DEFAULT, 'test2@station.com', '$2a$12$miPEhip/zvpGSDXrDi7yxOlX8ggFgwP5bNq8xW.Vr6/cuF/3Po8Ai', 'At the entrance to Sektor D', 2);
 INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description, seat_cat_id) VALUES 
 (DEFAULT, 'test3@station.com', '$2a$12$TTI7Py9HQ6TUH5Ccyhxh9.dQ9CSrT/cqt6QT2wLxuBnjHjdq7LN2.', 'At the entrance to Sektor B', 3);
-
-INSERT INTO ubifeed.users(user_id, firstn, lastn, passw, email, phone, image) VALUES 
-(DEFAULT, 'Yann', 'Pollet', '$2a$12$PeA9KrgPyhI91/PVNLJy1eejU8NVUnPC7I4yCiY9KLKuvnSdEUYEy', 'test@user.com', '0123456789', NULL);
  
 INSERT INTO ubifeed.orders (order_id, user_id, rest_id, pickup_id, order_status) VALUES 
 (DEFAULT, 1, 1, 1, DEFAULT);
