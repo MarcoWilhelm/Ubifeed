@@ -226,11 +226,14 @@ public class MyServlet extends DefaultServlet {
 			case "get-pickup-details":
 				getPickupDetails(req, resp, isMultiPart, parameters);
 
+
 			case "delete-meal":
 				deleteMeal(req, resp, isMultiPart, parameters);
+
 				return;
 			case "add-order":
 				addOrder(req, resp, isMultiPart, parameters);
+				return;
 			}
 
 			Map<String,String> cookie = servletHelper.getCookie(req);
@@ -537,7 +540,7 @@ public class MyServlet extends DefaultServlet {
 		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
 
 		List<MealDto> meals = userUcc.getMeals(restaurantId);
-
+		
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(meals), "application/json", HttpServletResponse.SC_ACCEPTED);
 
 	}
@@ -586,8 +589,14 @@ public class MyServlet extends DefaultServlet {
 		int userId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "userId"));
 		int seatCatId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "seatCatId"));
 
+		System.out.println(foodBasketStr);
+		//Map<Integer, MealDto> foodBasket = servletHelper.getGenson().deserialize(foodBasketStr, new GenericType<Map<Integer,MealDto>>(){});
+		//Map<Integer, MealDto> drinksBasket = servletHelper.getGenson().deserialize(drinksBasketStr, new GenericType<Map<Integer, MealDto>>(){});
+
+
 		List<MealDto> foodBasket = servletHelper.getGenson().deserialize(foodBasketStr, new GenericType<List<MealDto>>(){});
 		List<MealDto> drinksBasket = servletHelper.getGenson().deserialize(drinksBasketStr, new GenericType<List<MealDto>>(){});
+
 
 		Map<MealDto, Long> basket = Stream.concat(foodBasket.stream(), drinksBasket.stream()).collect(Collectors.groupingBy(m -> m, Collectors.counting()));
 		System.out.println("Basket : " + basket);

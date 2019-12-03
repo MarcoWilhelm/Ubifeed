@@ -15,6 +15,21 @@ public class MealImpl implements MealDto {
 	private String category;
 	private int mealCategoryId;
 	
+	public MealImpl() {
+		
+	}
+	
+	public MealImpl(int mealId, String name, RestaurantDto restaurant, String pictures, int quantity, double price, String category, int mealCategoryId) {
+		this.mealId = mealId;
+		this.name = name;
+		this.restaurant = restaurant;
+		this.pictures = pictures;
+		this.quantity = quantity;
+		this.price = price;
+		this.category = category;
+		this.mealCategoryId = mealCategoryId;
+	}
+	
 	@Override
 	public int getMealId() {
 		return mealId;
