@@ -565,11 +565,10 @@ public class MyServlet extends DefaultServlet {
 		int userId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "userId"));
 		int seatCatId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "seatCatId"));
 
-		Map<Integer, MealDto> foodBasket = servletHelper.getGenson().deserialize(foodBasketStr, new GenericType<Map<Integer,MealDto>>(){});
-		Map<Integer, MealDto> drinksBasket = servletHelper.getGenson().deserialize(drinksBasketStr, new GenericType<Map<Integer, MealDto>>(){});
+		List<MealDto> foodBasket = servletHelper.getGenson().deserialize(foodBasketStr, new GenericType<List<MealDto>>(){});
+		List<MealDto> drinksBasket = servletHelper.getGenson().deserialize(drinksBasketStr, new GenericType<List<MealDto>>(){});
 
-		
-		Map<MealDto, Long> basket = Stream.concat(foodBasket.values().stream(), drinksBasket.values().stream()).collect(Collectors.groupingBy(m -> m, Collectors.counting()));
+		Map<MealDto, Long> basket = Stream.concat(foodBasket.stream(), drinksBasket.stream()).collect(Collectors.groupingBy(m -> m, Collectors.counting()));
 		System.out.println("Basket : " + basket);
 		userUcc.addOrder(basket, restaurantId, userId, seatCatId);
 	}
