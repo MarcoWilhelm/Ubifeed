@@ -1,6 +1,5 @@
 $(function(){
     let cookie = {};
-    let orders = {};
     let timeout = null;
     //verification of the cookie
     console.log("Before Ajax");
@@ -12,6 +11,8 @@ $(function(){
                 console.log("verification");
                 if(response != ""){
                     cookie = response;
+                    console.log("cookie");
+                    console.log(cookie);
                     if(cookie["role"] == "restaurant"){
                         $('#restaurant').show();
                         $('#connection').hide();
@@ -38,7 +39,7 @@ $(function(){
     $('#restaurant_log_in').on('click', function(){
         let email = $('#restaurant_mail').val();
         let password = $('#restaurant_pswd').val();
-        let role = "restaurant"
+        let role = "restaurant";
         $.ajax({
             url:'/ubifeed',
             data:{action:'login-restaurant',email:email,password:password},
@@ -47,6 +48,7 @@ $(function(){
                 if(response == null)
                     $('#alert').text("Email or password incorrect")
                 else{
+                    console.log("Log in rest")
                     addInfoCookie(response["restaurantId"], role)
                     $('#connection').hide();
                     $('#restaurant').show();
@@ -69,7 +71,9 @@ $(function(){
                 if(response == null){
                     $('#alert').text("Email or password incorrect")
                 }else{
-                    addInfoCookie(response, role)
+                    console.log("response");
+                    console.log(response);
+                    addInfoCookie(response["pickupId"], role)
                     $('#connection').hide();
                     $('#pickup_station').show();
                     setStationTable();
@@ -109,6 +113,7 @@ $(function(){
             }
         });
         clearTimeout(timeout);
+        cookie={};
         $('#alert').text("");
         $('#connection').show();
         $('#restaurant').hide()
@@ -122,22 +127,86 @@ $(function(){
         
         nextTr.is(':hidden') ? nextTr.show() : nextTr.hide();
     }
+    function prepareOrder(orderId){
+        $.ajax({
+            url:'/ubifeed',
+            data:{action:'prepare-order', orderId:orderId},
+            type:'POST',
+            success: function(response){
+                getOrdersRest();
+            }
+        });
+    }
+    function finishOrder(orderId){
+        $.ajax({
+            url:'/ubifeed',
+            data:{action:'finish-order', orderId:orderId},
+            type:'POST',
+            success: function(response){
+                getOrdersRest();
+            }
+        });
+    }
+
+    function takeOrder(orderId){
+        console.log("OrderId : " + orderId)
+        $.ajax({
+            url:'/ubifeed',
+            data:{action:'take-order', orderId:orderId},
+            type:'POST',
+            success: function(response){
+                getOrdersStation();
+            }
+        });
+    }
+
+    function deliverOrder(orderId){
+        $.ajax({
+            url:'/ubifeed',
+            data:{action:'deliver-order', orderId:orderId},
+            type:'POST',
+            success: function(response){
+                getOrdersStation();
+            }
+        });
+    }
 
     function changeStatus(button) {
+        console.log("CHANGE STATUS")
         let parentRow = button.closest('tr');
         console.log(parentRow);
-        console.log(parentRow[0].id);
+        //console.log(parentRow.get(0).attr('id'));
         let orderStatus = parentRow.children('.orderStatus');
-        console.log(orderStatus);
-
-        switch(orderStatus[0].textContent) {
-            case "ORDERED":
-                console.log("ORDERED");
-            
+        //console.log(orderStatus);
+        
+        if(cookie["role"] == "restaurant"){
+            switch(orderStatus[0].textContent) {
+                case "ORDERED":
+                    prepareOrder(parentRow[0].id);
+                    return;
+                case "IN_PREPARATION":
+                    finishOrder(parentRow[0].id);
+                    return;
+                
+            }
         }
+        console.log(cookie["role"]);
+        if(cookie["role"] == "station"){
+            switch(orderStatus[0].textContent) {
+                case "READY":
+                    takeOrder(parentRow[0].id);
+                    return;
+                case "IN_STATION":
+                    deliverOrder(parentRow[0].id);
+                    return;
+                
+            }
+        }
+        
     }
 
     function addInfoCookie(id, role){
+        console.log("Role : " + role)
         cookie["id"]=parseInt(id);
         cookie["role"]= role;
     }
@@ -174,22 +243,25 @@ $(function(){
                 $('.hide_show').on('click', function(){
                     hideShowButtonInit($(this))
                 })
+                $('.statusButton').on('click', function(event) {
+                    changeStatus($(this));
+                })
             }
         });
     }
     function addTableRestaurant(order){
         $('#restaurant_orders tbody').append("<tr id=\"" + order["orderId"] + "\"><td><button class=\"hide_show\">Hide/Show</button></td><td>"+order["orderId"] +"</td><td>"+ 
         order["user"]["firstName"] + " " + order["user"]["lastName"] + "</td><td>"+order["pickupStation"]["name"] + "</td><td class=\"orderStatus\">"+order["orderStatus"]+"</td><td>"+
-        "<button class=\"statusButton\" id=\"" + order["orderId"] + "\">Change Status</button>" + "</td></tr>")
+        "<button class=\"statusButton\" id=\"" + order["orderId"] + "\">Change Status</button></td></tr>")
         $('#restaurant_orders tbody').append("<tr><td colspan=\"5\" class=\"order_meals\"></td></tr>");
         addMealsOrder(order["meals"], $("#restaurant_orders tbody *:last('.order_meals')"))
     }
     function addTableStation(order){
-        $('#station_orders tbody').append("<tr><td><button class=\"hide_show\">Hide/Show</button></td><td>"+order["orderId"] +"</td><td>"+ 
+        $('#station_orders tbody').append("<tr id=\"" + order["orderId"] + "\"><td><button class=\"hide_show\">Hide/Show</button></td><td>"+order["orderId"] +"</td><td>"+ 
         order["user"]["firstName"] + " " + order["user"]["lastName"] + "</td><td>"+order["restaurant"]["name"] + " : " + 
-        order["restaurant"]["address"]+"</td><td>"+order["orderStatus"]+"</td></tr>")
+        order["restaurant"]["address"]+"</td><td class=\"orderStatus\">"+order["orderStatus"]+"</td><td>"+
+        "<button class=\"statusButton\" id=\"" + order["orderId"] + "\">Change Status</button></td></tr>")
         $('#station_orders tbody').append("<tr><td colspan=\"3\" class=\"order_meals\"></td></tr>");
-        console.log(order)
         addMealsOrder(order["meals"], $("#station_orders tbody *:last('.order_meals')"))
     }
 
