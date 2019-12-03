@@ -225,8 +225,10 @@ public class MyServlet extends DefaultServlet {
 				return;
 			case "get-pickup-details":
 				getPickupDetails(req, resp, isMultiPart, parameters);
+				return;
 			case "add-order":
 				addOrder(req, resp, isMultiPart, parameters);
+				return;
 			}
 
 			Map<String,String> cookie = servletHelper.getCookie(req);
