@@ -1,10 +1,11 @@
 package irl.tud.ubifeed.meal;
 
+import java.io.Serializable;
 import java.util.List;
 
 import irl.tud.ubifeed.restaurant.RestaurantDto;
 
-public interface MealDto {
+public interface MealDto extends Serializable {
 	
 	int getMealId();
 	
