@@ -224,14 +224,15 @@ public class UserDaoImpl implements UserDao {
 	}
 	
 	@Override
-	public List<PickupStationDto> getPickupDetails(String venueId) {
-		String select = "SELECT pickup_id, email, passw, loc_description, cat_name, p.seat_cat_id ";
-		String from = "FROM pickup_stations AS p ";
-		String join = "LEFT JOIN seat_categories AS s ON s.seat_cat_id = p.seat_cat_id ";
-		String where = "WHERE s.venue_id = ?;";
+	public List<PickupStationDto> getPickupDetails(String venueId) {		
+		String select = "SELECT seat_cat_id, cat_name, venue_id ";
+		String from = "FROM ubifeed.seat_categories s ";
+		String where = "WHERE s.venue_id = ?";
+				
+		
 		List<PickupStationDto> list = new ArrayList<PickupStationDto>();
 		
-		try(PreparedStatement ps = dal.getPreparedStatement(select + from + join + where)) {
+		try(PreparedStatement ps = dal.getPreparedStatement(select + from + where)) {
 			ps.setInt(1, Integer.parseInt(venueId));
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {

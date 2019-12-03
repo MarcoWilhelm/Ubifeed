@@ -222,6 +222,8 @@ public class MyServlet extends DefaultServlet {
 				return;
 			case "get-pickup-details":
 				getPickupDetails(req, resp, isMultiPart, parameters);
+			case "add-order":
+				addOrder(req, resp, isMultiPart, parameters);
 			}
 
 			Map<String,String> cookie = servletHelper.getCookie(req);
@@ -507,7 +509,6 @@ public class MyServlet extends DefaultServlet {
 		List<OrderDto> orders = userUcc.getAllOrders(userId, seat_cat_id);
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
-
 	}
 
 	private void getAllOrdersRest(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
@@ -524,6 +525,15 @@ public class MyServlet extends DefaultServlet {
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
 
+	}
+	
+	private void addOrder(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+		String foodbasket = servletHelper.getParameter(isMultiPart, req, parameters, "foodbasket");
+		String drinksbasket = servletHelper.getParameter(isMultiPart, req, parameters, "drinksbasket");
+		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters, "restaurantId");
+		String userId = servletHelper.getParameter(isMultiPart, req, parameters, "userId");
+		String seatCatId = servletHelper.getParameter(isMultiPart, req, parameters, "seatCatId");
+		userUcc.addOrder(foodbasket, drinksbasket, restaurantId, userId, seatCatId);
 	}
 
 

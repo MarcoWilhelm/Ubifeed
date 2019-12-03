@@ -141,14 +141,7 @@ INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES
 (DEFAULT, 'Food');
 INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES 
 (DEFAULT, 'Drinks');
-INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES
-(DEFAULT, "Sandwich");
-INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES
-(DEFAULT, "Desserts");
-INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES
-(DEFAULT, "Pizza");
-INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES
-(DEFAULT, "Main Course");
+
 
 INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) VALUES 
 (DEFAULT, 'Hamburger', 5.20, null, 1, 1);
@@ -165,9 +158,10 @@ INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) v
 INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) values
 (DEFAULT, "Big Mac", 6.70, null, 1, 2);
 INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) values
-(DEFAULT, "Pizza Margherita", 7.35, null, 3, 4);
+(DEFAULT, "Pizza Margherita", 7.35, null, 3, 1);
 INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) values
-(DEFAULT, "Fish & Chips", 12.45, null, 2, 5);
+(DEFAULT, "Fish & Chips", 12.45, null, 2, 1);
+
 
 INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description) VALUES 
 (DEFAULT, 'test1@station.com', '$2a$12$qKAJXUXOCY0EM0/mmTXHhO8LT0zML2M0w/f6JFwByFUATRgZf0Mqu', 'At the entrance to Sektor C');
