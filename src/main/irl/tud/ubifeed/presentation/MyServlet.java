@@ -564,7 +564,7 @@ public class MyServlet extends DefaultServlet {
 		int restaurantId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "restaurantId"));
 		int userId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "userId"));
 		int seatCatId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "seatCatId"));
-
+		System.out.println(foodBasketStr);
 		Map<Integer, MealDto> foodBasket = servletHelper.getGenson().deserialize(foodBasketStr, new GenericType<Map<Integer,MealDto>>(){});
 		Map<Integer, MealDto> drinksBasket = servletHelper.getGenson().deserialize(drinksBasketStr, new GenericType<Map<Integer, MealDto>>(){});
 
