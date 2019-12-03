@@ -80,7 +80,8 @@ CREATE TABLE ubifeed.pickup_stations (
     pickup_id         	SERIAL PRIMARY KEY,
     email      			VARCHAR(30) NOT NULL,
     passw   			VARCHAR(60) NOT NULL,
-    loc_description		VARCHAR(100) NOT NULL
+    loc_description		VARCHAR(100) NOT NULL,
+    nme					VARCHAR(100) NOT NULL
 );
 CREATE TABLE ubifeed.seat_categories (
 	seat_cat_id			SERIAL PRIMARY KEY,
@@ -104,7 +105,7 @@ CREATE TABLE ubifeed.orders (
     user_id               		INT NOT NULL REFERENCES ubifeed.users(user_id),
     rest_id         			INT NOT NULL REFERENCES ubifeed.restaurants(rest_id),
     pickup_id   				INT NOT NULL REFERENCES ubifeed.pickup_stations(pick_id),
-    order_status 				VARCHAR(50) NOT NULL DEFAULT 'In Preparation'
+    order_status 				VARCHAR(50) NOT NULL DEFAULT 'ORDERED'
 );
 
 CREATE TABLE ubifeed.order_meals (
@@ -163,12 +164,12 @@ INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) v
 (DEFAULT, "Fish & Chips", 12.45, null, 2, 1);
 
 
-INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description) VALUES 
-(DEFAULT, 'test1@station.com', '$2a$12$qKAJXUXOCY0EM0/mmTXHhO8LT0zML2M0w/f6JFwByFUATRgZf0Mqu', 'At the entrance to Sektor C');
-INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description) VALUES 
-(DEFAULT, 'test2@station.com', '$2a$12$miPEhip/zvpGSDXrDi7yxOlX8ggFgwP5bNq8xW.Vr6/cuF/3Po8Ai', 'At the entrance to Sektor D');
-INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description) VALUES 
-(DEFAULT, 'test3@station.com', '$2a$12$TTI7Py9HQ6TUH5Ccyhxh9.dQ9CSrT/cqt6QT2wLxuBnjHjdq7LN2.', 'At the entrance to Sektor B');
+INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description, nme) VALUES 
+(DEFAULT, 'test1@station.com', '$2a$12$qKAJXUXOCY0EM0/mmTXHhO8LT0zML2M0w/f6JFwByFUATRgZf0Mqu', 'At the entrance to Sektor C', 'Station A');
+INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description, nme) VALUES 
+(DEFAULT, 'test2@station.com', '$2a$12$miPEhip/zvpGSDXrDi7yxOlX8ggFgwP5bNq8xW.Vr6/cuF/3Po8Ai', 'At the entrance to Sektor D', 'Station B');
+INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description, nme) VALUES 
+(DEFAULT, 'test3@station.com', '$2a$12$TTI7Py9HQ6TUH5Ccyhxh9.dQ9CSrT/cqt6QT2wLxuBnjHjdq7LN2.', 'At the entrance to Sektor B', 'Station C');
 
 INSERT INTO ubifeed.seat_categories (seat_cat_id, cat_name, venue_id, pickup_id) VALUES 
 (DEFAULT, 'Sector A', 1, 3);

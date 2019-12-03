@@ -123,6 +123,20 @@ $(function(){
         nextTr.is(':hidden') ? nextTr.show() : nextTr.hide();
     }
 
+    function changeStatus(button) {
+        let parentRow = button.closest('tr');
+        console.log(parentRow);
+        console.log(parentRow[0].id);
+        let orderStatus = parentRow.children('.orderStatus');
+        console.log(orderStatus);
+
+        switch(orderStatus[0].textContent) {
+            case "ORDERED":
+                console.log("ORDERED");
+            
+        }
+    }
+
     function addInfoCookie(id, role){
         cookie["id"]=parseInt(id);
         cookie["role"]= role;
@@ -134,12 +148,15 @@ $(function(){
             data:{action:'get-all-orders-rest'},
             type:'POST',
             success: function(response){
-                $("#restaurant_orders tbody").empty();
+                $("#tbody").empty();
                 for(x in response){
                     addTableRestaurant(response[x]);
                 }
                 $('.hide_show').on('click', function(){
                     hideShowButtonInit($(this))
+                })
+                $('.statusButton').on('click', function(event) {
+                    changeStatus($(this));
                 })
             }
         });
@@ -150,7 +167,7 @@ $(function(){
             data:{action:'get-all-orders-pickup'},
             type:'POST',
             success: function(response){
-                $("#station_orders tbody").empty();
+                $("tbody").empty();
                 for(x in response){
                     addTableStation(response[x]);
                 }
@@ -161,9 +178,10 @@ $(function(){
         });
     }
     function addTableRestaurant(order){
-        $('#restaurant_orders tbody').append("<tr><td><button class=\"hide_show\">Hide/Show</button></td><td>"+order["orderId"] +"</td><td>"+ 
-        order["user"]["firstName"] + " " + order["user"]["lastName"] + "</td><td>"+order["orderStatus"]+"</td></tr>")
-        $('#restaurant_orders tbody').append("<tr><td colspan=\"3\" class=\"order_meals\"></td></tr>");
+        $('#restaurant_orders tbody').append("<tr id=\"" + order["orderId"] + "\"><td><button class=\"hide_show\">Hide/Show</button></td><td>"+order["orderId"] +"</td><td>"+ 
+        order["user"]["firstName"] + " " + order["user"]["lastName"] + "</td><td>"+order["pickupStation"]["name"] + "</td><td class=\"orderStatus\">"+order["orderStatus"]+"</td><td>"+
+        "<button class=\"statusButton\" id=\"" + order["orderId"] + "\">Change Status</button>" + "</td></tr>")
+        $('#restaurant_orders tbody').append("<tr><td colspan=\"5\" class=\"order_meals\"></td></tr>");
         addMealsOrder(order["meals"], $("#restaurant_orders tbody *:last('.order_meals')"))
     }
     function addTableStation(order){
@@ -210,4 +228,8 @@ $(function(){
         tbody.append("<tr><td>"+meal["mealId"]+"</td><td>"+meal["name"]+"</td><td>"+meal["price"]+"</td><td>"+
         meal["categoryId"]+"</td><td>"+meal["pictures"]+"</td></tr>")
     }
+
+
+
+
 });

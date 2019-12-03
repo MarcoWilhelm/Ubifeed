@@ -238,14 +238,9 @@ public class UserDaoImpl implements UserDao {
 			ps.setInt(1, Integer.parseInt(venueId));
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
-				PickupStationDto toRet = factory.getPickupStationDto();
-				toRet.setPickupId(rs.getInt(1));
-				toRet.setEmail(rs.getString(2));
-				toRet.setPassword(rs.getString(3));
-				toRet.setLocationDescription(rs.getString(4));
-				toRet.setSeatCategoryName(rs.getString(5));
-				toRet.setSeatCategoryId(rs.getInt(6));
-				list.add(toRet);
+				//SeatCatDto toRet = factory.getSeatCatDto();
+				//toRet.set
+				//list.add(toRet);
 			}
 			rs.close();
 		} catch(SQLException sqlExcept) {
