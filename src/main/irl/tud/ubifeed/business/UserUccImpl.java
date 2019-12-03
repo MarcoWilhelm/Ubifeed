@@ -13,6 +13,7 @@ import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.order.OrderDto;
 import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
+import irl.tud.ubifeed.seatcatdto.SeatCatDto;
 import irl.tud.ubifeed.user.User;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
@@ -110,8 +111,8 @@ public class UserUccImpl implements UserUcc {
 	}
 	
 	@Override
-	public List<PickupStationDto> getPickupDetails(String venueId) {
-		List<PickupStationDto> details = null;
+	public List<SeatCatDto> getPickupDetails(String venueId) {
+		List<SeatCatDto> details = null;
 		try {
 			dal.startTransaction();
 			details = userDao.getPickupDetails(venueId);

@@ -41,6 +41,7 @@ import irl.tud.ubifeed.meal.MealDto;
 import irl.tud.ubifeed.order.OrderDto;
 import irl.tud.ubifeed.pickupstation.PickupStationDto;
 import irl.tud.ubifeed.restaurant.RestaurantDto;
+import irl.tud.ubifeed.seatcatdto.SeatCatDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
 
@@ -517,7 +518,7 @@ public class MyServlet extends DefaultServlet {
 
 	private void getPickupDetails(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		String venueId = servletHelper.getParameter(isMultiPart, req, parameters,"venueId");
-		List<PickupStationDto> pickupDetails = userUcc.getPickupDetails(venueId);
+		List<SeatCatDto> pickupDetails = userUcc.getPickupDetails(venueId);
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(pickupDetails), "application/json", HttpServletResponse.SC_ACCEPTED);
 
