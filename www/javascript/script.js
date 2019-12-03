@@ -12,8 +12,6 @@ $(function(){
                 console.log("verification");
                 if(response != ""){
                     cookie = response;
-                    console.log(cookie);
-                    console.log(cookie["role"])
                     if(cookie["role"] == "restaurant"){
                         $('#restaurant').show();
                         $('#connection').hide();
@@ -101,19 +99,15 @@ $(function(){
                 
             }
         });
-        console.log(timeout)
         clearTimeout(timeout);
         $('#alert').text("");
         $('#connection').show();
         $('#restaurant').hide()
         $('#pickup_station').hide()
     })
-    $('.hide_show').on('click', function(){
-        hideShowButtonInit($(this))
-    })
 
     function hideShowButtonInit(button) {
-        let parentTable = button.closest('table');
+        let parentTable = button.closest('tbody');
         let nextRow = button.parent().parent().index()+1;
         let nextTr = parentTable.find('tr:eq('+nextRow+')');
         
@@ -131,29 +125,62 @@ $(function(){
             data:{action:'get-all-orders-rest'},
             type:'POST',
             success: function(response){
-                console.log(response);
+                $("#restaurant_orders tbody").empty();
+                for(x in response){
+                    addTableRestaurant(response[x]);
+                }
+                $('.hide_show').on('click', function(){
+                    hideShowButtonInit($(this))
+                })
             }
         });
     }
-
     function getOrdersStation(){
         $.ajax({
             url:'/ubifeed',
             data:{action:'get-all-orders-pickup'},
             type:'POST',
             success: function(response){
-                console.log(response);
+                $("#station_orders tbody").empty();
+                for(x in response){
+                    addTableStation(response[x]);
+                }
+                $('.hide_show').on('click', function(){
+                    hideShowButtonInit($(this))
+                })
             }
         });
+    }
+    function addTableRestaurant(order){
+        $('#restaurant_orders tbody').append("<tr><td><button class=\"hide_show\">Hide/Show</button></td><td>"+order["orderId"] +"</td><td>"+ 
+        order["user"]["firstName"] + " " + order["user"]["lastName"] + "</td><td>"+order["orderStatus"]+"</td></tr>")
+        $('#restaurant_orders tbody').append("<tr><td colspan=\"3\" class=\"order_meals\"></td></tr>");
+        addMealsTable(order["meals"], $("#restaurant_orders tbody *:last('.order_meals')"))
+    }
+    function addTableStation(order){
+        $('#station_orders tbody').append("<tr><td><button class=\"hide_show\">Hide/Show</button></td><td>"+order["orderId"] +"</td><td>"+ 
+        order["user"]["firstName"] + " " + order["user"]["lastName"] + "</td><td>"+order["restaurant"]["name"] + " : " + 
+        order["restaurant"]["address"]+"</td><td>"+order["orderStatus"]+"</td></tr>")
+        $('#station_orders tbody').append("<tr><td colspan=\"3\" class=\"order_meals\"></td></tr>");
+        console.log(order)
+        addMealsTable(order["meals"], $("#station_orders tbody *:last('.order_meals')"))
+    }
+
+    function addMealsTable(meals, td){
+        td.append("<ul>");
+        for(x in meals){
+            td.append("<li>"+meals[x]["name"]+ " *"+ meals[x]["quantity"]+"</li>");
+        }
+        td.append("</ul>");
     }
 
     function setRestTable(){
         getOrdersRest();
-        timeout = setInterval(getOrdersRest,10000);
+        timeout = setInterval(getOrdersRest,30000);
     }
     
     function setStationTable(){
         getOrdersStation();
-        timeout = setInterval(getOrdersStation,10000);
+        timeout = setInterval(getOrdersStation,30000);
     }
 });
