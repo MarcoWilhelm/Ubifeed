@@ -238,7 +238,11 @@ public class MyServlet extends DefaultServlet {
 					return;
 				case "edit-menu":
 					editMenu(req, resp, isMultiPart, parameters);
-					return;	
+					return;
+				case "prepare-order":
+					return;
+				case "finish_order":
+					return;
 				case "add-meal":
 					addMeal(req, resp, isMultiPart, parameters);
 					return;
@@ -248,6 +252,10 @@ public class MyServlet extends DefaultServlet {
 				switch(action) {
 				case "get-all-orders-pickup":
 					getAllOrdersPickup(req, resp, isMultiPart, parameters);
+					return;
+				case "take_order":
+					return;
+				case "deliver-order":
 					return;
 				}
 			}
