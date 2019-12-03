@@ -11,4 +11,8 @@ public interface DeliveryUcc {
 
 	List<OrderDto> getAllOrders(String pickupId);
 
+	void deliverOrder(int orderId);
+
+	void takeOrder(int orderId);
+
 }

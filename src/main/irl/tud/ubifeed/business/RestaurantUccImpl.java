@@ -65,15 +65,38 @@ public class RestaurantUccImpl implements RestaurantUcc {
 	}
 
 	@Override
+<<<<<<< HEAD
 	public MealDto deleteMeal(MealDto meal, String restaurantId) {
 		try {
 			dal.startTransaction();
 			meal = restaurantDao.deleteMeal(meal, restaurantId);
 			System.out.println("ucc arrived");
+=======
+	public void prepareOrder(int orderId) {
+		try {
+			dal.startTransaction();
+			restaurantDao.prepareOrder(orderId);
+>>>>>>> 9aaafefff5f65214d023f92a852452fd56715d08
 			dal.commitTransaction();
 		} catch (Exception dbfExcept) {
 			dal.rollbackTransaction();
 		}
+<<<<<<< HEAD
 		return meal;
+=======
+		
+	}
+
+	@Override
+	public void finishOrder(int orderId) {
+		try {
+			dal.startTransaction();
+			restaurantDao.finishOrder(orderId);
+			dal.commitTransaction();
+		} catch (Exception dbfExcept) {
+			dal.rollbackTransaction();
+		}
+		
+>>>>>>> 9aaafefff5f65214d023f92a852452fd56715d08
 	}
 }
