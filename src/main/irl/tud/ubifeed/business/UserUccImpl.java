@@ -56,6 +56,20 @@ public class UserUccImpl implements UserUcc {
 		}
 		return user;
 	}
+	/*
+	@Override
+	public UserDto changeUser(UserDto user) {
+		try {
+			user.setPassword(BCrypt.withDefaults().hashToString(12, user.getPassword().toCharArray()));
+			dal.startTransaction();
+			user = userDao.changeUser(user);
+			dal.commitTransaction();
+		} catch(Exception dbfExcept) {
+			dal.rollbackTransaction();
+		}
+		return user;
+	}
+	*/
 	@Override
 	public List<VenueDto> getAllVenues() {
 		List<VenueDto> venue = null;

@@ -34,6 +34,9 @@ public interface UserUcc {
 	 */
 	UserDto registerUser(UserDto user);
 	
+	//UserDto changeUser(UserDto user);
+
+	
 	
 	/**
 	 * Gets a list of venues stored in the DB

@@ -114,11 +114,8 @@ CREATE TABLE ubifeed.orders (
     order_id                    SERIAL PRIMARY KEY,
     user_id               		INT NOT NULL REFERENCES ubifeed.users(user_id),
     rest_id         			INT NOT NULL REFERENCES ubifeed.restaurants(rest_id),
-    pickup_id   				INT NOT NULL REFERENCES ubifeed.pickup_stations(pick_id)
-);
-
-ALTER TABLE ubifeed.orders ADD (
-	order_status VARCHAR(50) NOT NULL DEFAULT 'In Preperation'
+    pickup_id   				INT NOT NULL REFERENCES ubifeed.pickup_stations(pick_id),
+    order_status				VARCHAR(50) NOT NULL DEFAULT 'ORDERED'
 );
 
 CREATE TABLE ubifeed.order_meals (
@@ -129,16 +126,20 @@ CREATE TABLE ubifeed.order_meals (
     CONSTRAINT order_meal_PK PRIMARY KEY(order_id, meal_id)
 );
 
-
--- <<<<<<< HEAD
 INSERT INTO ubifeed.countries(country_id, nme) VALUES (DEFAULT, 'Ireland');
-INSERT INTO ubifeed.countries(country_id, nme) VALUES (DEFAULT, "Italy");
-INSERT INTO ubifeed.countries(country_id, nme) VALUES (DEFAULT, "France");
 
 INSERT INTO ubifeed.cities(city_id, nme, country_id) VALUES (DEFAULT, 'Dublin', 1);
-INSERT INTO ubifeed.cities(city_id, nme, country_id) VALUES (DEFAULT, "Cork", 1);
-INSERT INTO ubifeed.cities(city_id, nme, country_id) VALUES (DEFAULT, "Roma", 2);
-INSERT INTO ubifeed.cities(city_id, nme, country_id) VALUES (DEFAULT, "Paris", 3);
+
+INSERT INTO ubifeed.venues (venue_id, nme, address, city_id, image_path) VALUES 
+(DEFAULT, "Croke park", "Dublin 3", 1, '../../../../assets/img/crokepark.jpg');
+INSERT INTO ubifeed.venues (venue_id, nme, address, city_id, image_path) VALUES 
+(DEFAULT, "Aviva Stadium", "Dublin 4", 1, '../../../../assets/img/aviva.jpg');
+INSERT INTO ubifeed.venues (venue_id, nme, address, city_id, image_path) VALUES 
+(DEFAULT, 'Dalymount Park', 'Phibsborough, Dublin 7', 1, '../../../../assets/img/dalymount.png');
+-- INSERT INTO ubifeed.venues (venue_id, nme, address, city_id, image_path) VALUES 
+-- (DEFAULT, "Pàirc Uì Chaoimh", "Ballintemple", 2, '../../../../assets/img/pairc.jpg');
+-- INSERT INTO ubifeed.venues (venue_id, nme, address, city_id, image_path) VALUES 
+-- (DEFAULT, "Stadio Olimpico", "Viale dei Gladiatori", 3, '../../../../assets/img/olimpico.jpg');
 
 INSERT INTO ubifeed.restaurants (rest_id, nme, address, descrip, email, passw, venue_id, rest_img_id) VALUES 
 (DEFAULT, 'McDonalds', 'Sector A', 'Fast Food', 'test1@restaurant.com', '$2a$12$641VfNdBN0HMMKwTYEP51.ixcc9k0SxFQmBge.yUpWXWEmoJlkjJG', 1, NULL);
@@ -151,13 +152,12 @@ INSERT INTO ubifeed.restaurants (rest_id, nme, address, descrip, email, passw, v
 INSERT INTO ubifeed.restaurants (rest_id, nme, address, descrip, email, passw, venue_id, rest_img_id) VALUES
 (DEFAULT, "SpaghettiPizza", "a place", 'italian stereotypes', 'test5@restaurant.com', '$2a$12$S8tZXD8cfhenDUzHzpNvS.iX0JiLrsyTozAMUCTZt7AkmT5/fj6Pe', 2, NULL);
 INSERT INTO ubifeed.restaurants (rest_id, nme, address, descrip, email, passw, venue_id, rest_img_id) VALUES
-(DEFAULT, "Il Legionario", "a place", 'Good Food', 'test6@restaurant.com', '$2a$12$U9ixOfSXKyg0mHD.5rqKs.k8TAPWZcrRMvyG6qIYH3aOQPNqpaNZi', 4, NULL);
+(DEFAULT, "Il Legionario", "a place", 'Good Food', 'test6@restaurant.com', '$2a$12$U9ixOfSXKyg0mHD.5rqKs.k8TAPWZcrRMvyG6qIYH3aOQPNqpaNZi', 2, NULL);
 
 INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES 
 (DEFAULT, 'Food');
 INSERT INTO ubifeed.meals_categories (meal_categ_id, nme) VALUES 
 (DEFAULT, 'Drinks');
-
 
 INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) VALUES 
 (DEFAULT, 'Hamburger', 5.20, null, 1, 1);
@@ -177,6 +177,63 @@ INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) v
 (DEFAULT, "Pizza Margherita", 7.35, null, 3, 1);
 INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) values
 (DEFAULT, "Fish & Chips", 12.45, null, 2, 1);
+
+INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description, nme) VALUES 
+(DEFAULT, 'test1@station.com', '$2a$12$qKAJXUXOCY0EM0/mmTXHhO8LT0zML2M0w/f6JFwByFUATRgZf0Mqu', 'At the entrance to Sektor A', 'Station A');
+INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description, nme) VALUES 
+(DEFAULT, 'test2@station.com', '$2a$12$miPEhip/zvpGSDXrDi7yxOlX8ggFgwP5bNq8xW.Vr6/cuF/3Po8Ai', 'At the entrance to Sektor B', 'Station B');
+INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description, nme) VALUES 
+(DEFAULT, 'test3@station.com', '$2a$12$TTI7Py9HQ6TUH5Ccyhxh9.dQ9CSrT/cqt6QT2wLxuBnjHjdq7LN2.', 'At the entrance to Sektor C', 'Station C');
+INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description, nme) VALUES 
+(DEFAULT, 'test4@station.com', '$2a$12$TTI7Py9HQ6TUH5Ccyhxh9.dQ9CSrT/cqt6QT2wLxuBnjHjdq7LN2.', 'At the entrance to Sektor D', 'Station D');
+
+INSERT INTO ubifeed.seat_categories (seat_cat_id, cat_name, venue_id, pickup_id) VALUES 
+(DEFAULT, 'Stand A', 1, 3);
+INSERT INTO ubifeed.seat_categories (seat_cat_id, cat_name, venue_id, pickup_id) VALUES 
+(DEFAULT, 'Stand B', 1, 3);
+INSERT INTO ubifeed.seat_categories (seat_cat_id, cat_name, venue_id, pickup_id)VALUES 
+(DEFAULT, 'Stand C', 1, 1);
+INSERT INTO ubifeed.seat_categories (seat_cat_id, cat_name, venue_id, pickup_id) VALUES 
+(DEFAULT, 'Stand D', 1, 2);
+
+INSERT INTO ubifeed.users(user_id, firstn, lastn, passw, email, phone, image) VALUES 
+(DEFAULT, 'Yann', 'Pollet', '$2a$12$PeA9KrgPyhI91/PVNLJy1eejU8NVUnPC7I4yCiY9KLKuvnSdEUYEy', 'test@user.com', '0123456789', NULL);
+
+INSERT INTO ubifeed.orders (order_id, user_id, rest_id, pickup_id, order_status) VALUES 
+(DEFAULT, 1, 1, 1, DEFAULT);
+INSERT INTO ubifeed.orders (order_id, user_id, rest_id, pickup_id, order_status) VALUES 
+(DEFAULT, 1, 1, 1, DEFAULT);
+INSERT INTO ubifeed.orders (order_id, user_id, rest_id, pickup_id, order_status) VALUES 
+(DEFAULT, 1, 1, 1, DEFAULT);
+
+INSERT INTO ubifeed.order_meals (quantity, price, order_id, meal_id) VALUES
+ (1, 5.4, 1, 1);
+
+INSERT INTO ubifeed.events_ (event_id, nme, dte, venue_id) VALUES
+(DEFAULT, "Clapping hands", "2019-12-6", 1);
+INSERT INTO ubifeed.events_ (event_id, nme, dte, venue_id) values
+(DEFAULT, "Yelling", "2020-1-14", 1);
+INSERT INTO ubifeed.events_ (event_id, nme, dte, venue_id) values
+(DEFAULT, "Italy vs Ireland", "2020-1-19", 4);
+
+select* from ubifeed.meals;
+UPDATE ubifeed.meals SET isDeleted = 1  WHERE meal_id = 6 AND rest_id = 1;
+
+
+-- INSERT INTO ubifeed.countries(country_id, nme) VALUES (DEFAULT, "Italy");
+-- INSERT INTO ubifeed.countries(country_id, nme) VALUES (DEFAULT, "France");
+
+-- INSERT INTO ubifeed.cities(city_id, nme, country_id) VALUES (DEFAULT, "Cork", 1);
+-- INSERT INTO ubifeed.cities(city_id, nme, country_id) VALUES (DEFAULT, "Roma", 2);
+-- INSERT INTO ubifeed.cities(city_id, nme, country_id) VALUES (DEFAULT, "Paris", 3);
+
+
+
+
+
+
+
+
 /*
 INSERT INTO ubifeed.seat_categories (seat_cat_id, cat_name, venue_id) VALUES 
 (DEFAULT, 'Sector A', 1);
@@ -198,57 +255,21 @@ INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description, s
 -- INSERT INTO ubifeed.users(user_id, firstn, lastn, passw, email, phone, image) VALUES 
 -- (DEFAULT, 'abc', 'abc', '$2a$12$PeA9KrgPyhI91/PVNLJy1eejU8NVUnPC7I4yCiY9KLKuvnSdEUYEy', 'test@user.com', '0123456789', NULL);
 */
-INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description, nme) VALUES 
-(DEFAULT, 'test1@station.com', '$2a$12$qKAJXUXOCY0EM0/mmTXHhO8LT0zML2M0w/f6JFwByFUATRgZf0Mqu', 'At the entrance to Sektor C', 'Station A');
-INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description, nme) VALUES 
-(DEFAULT, 'test2@station.com', '$2a$12$miPEhip/zvpGSDXrDi7yxOlX8ggFgwP5bNq8xW.Vr6/cuF/3Po8Ai', 'At the entrance to Sektor D', 'Station B');
-INSERT INTO ubifeed.pickup_stations (pickup_id, email, passw, loc_description, nme) VALUES 
-(DEFAULT, 'test3@station.com', '$2a$12$TTI7Py9HQ6TUH5Ccyhxh9.dQ9CSrT/cqt6QT2wLxuBnjHjdq7LN2.', 'At the entrance to Sektor B', 'Station C');
 
-INSERT INTO ubifeed.seat_categories (seat_cat_id, cat_name, venue_id, pickup_id) VALUES 
-(DEFAULT, 'Sector A', 1, 3);
-INSERT INTO ubifeed.seat_categories (seat_cat_id, cat_name, venue_id, pickup_id) VALUES 
-(DEFAULT, 'Sector B', 1, 3);
-INSERT INTO ubifeed.seat_categories (seat_cat_id, cat_name, venue_id, pickup_id)VALUES 
-(DEFAULT, 'Sektor C', 1, 1);
-INSERT INTO ubifeed.seat_categories (seat_cat_id, cat_name, venue_id, pickup_id) VALUES 
-(DEFAULT, 'Sektor D', 1, 2);
 
-INSERT INTO ubifeed.users(user_id, firstn, lastn, passw, email, phone, image) VALUES 
-(DEFAULT, 'Yann', 'Pollet', '$2a$12$PeA9KrgPyhI91/PVNLJy1eejU8NVUnPC7I4yCiY9KLKuvnSdEUYEy', 'test@user.com', '0123456789', NULL);
+
+
+
 
  
-INSERT INTO ubifeed.orders (order_id, user_id, rest_id, pickup_id, order_status) VALUES 
-(DEFAULT, 1, 1, 1, DEFAULT);
-INSERT INTO ubifeed.orders (order_id, user_id, rest_id, pickup_id, order_status) VALUES 
-(DEFAULT, 1, 1, 1, DEFAULT);
-INSERT INTO ubifeed.orders (order_id, user_id, rest_id, pickup_id, order_status) VALUES 
-(DEFAULT, 1, 1, 1, DEFAULT);
-
-INSERT INTO ubifeed.order_meals (quantity, price, order_id, meal_id) VALUES
- (1, 5.4, 1, 1);
 
 
-INSERT INTO ubifeed.venues (venue_id, nme, address, city_id, image_path) VALUES 
-(DEFAULT, "Croke park", "Dublin 3", 1, '../../../../assets/img/crokepark.jpg');
-INSERT INTO ubifeed.venues (venue_id, nme, address, city_id, image_path) VALUES 
-(DEFAULT, "Aviva Stadium", "Dublin 4", 1, '../../../../assets/img/aviva.jpg');
-INSERT INTO ubifeed.venues (venue_id, nme, address, city_id, image_path) VALUES 
-(DEFAULT, 'Dalymount Park', 'Phibsborough, Dublin 7', 1, '../../../../assets/img/dalymount.png');
-INSERT INTO ubifeed.venues (venue_id, nme, address, city_id, image_path) VALUES 
-(DEFAULT, "Pàirc Uì Chaoimh", "Ballintemple", 2, '../../../../assets/img/pairc.jpg');
-INSERT INTO ubifeed.venues (venue_id, nme, address, city_id, image_path) VALUES 
-(DEFAULT, "Stadio Olimpico", "Viale dei Gladiatori", 3, '../../../../assets/img/olimpico.jpg');
 
-INSERT INTO ubifeed.events_ (event_id, nme, dte, venue_id) VALUES
-(DEFAULT, "Clapping hands", "2019-12-6", 1);
-INSERT INTO ubifeed.events_ (event_id, nme, dte, venue_id) values
-(DEFAULT, "Yelling", "2020-1-14", 1);
-INSERT INTO ubifeed.events_ (event_id, nme, dte, venue_id) values
-(DEFAULT, "Italy vs Ireland", "2020-1-19", 4);
 
-select* from ubifeed.meals;
-UPDATE ubifeed.meals SET isDeleted = 1  WHERE meal_id = 6 AND rest_id = 1;
+
+
+
+
 /*========
 
 Use ubifeed;

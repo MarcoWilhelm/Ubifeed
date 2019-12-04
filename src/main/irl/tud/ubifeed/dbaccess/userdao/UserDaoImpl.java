@@ -91,8 +91,28 @@ public class UserDaoImpl implements UserDao {
 		user.setUserId(last_inserted_id);
 		return user;
 	}
-
-
+	
+	/*
+	@Override
+	public UserDto changeUser(UserDto user) {
+		String update = "UPDATE ubifeed.users u SET ";
+		String cols = "u.firstn = ?, u.lastn = ?, u.passw = ?, u.email = ?, u.phone = ? ";
+		String where = "u.user_id = ?";
+		
+		try (PreparedStatement ps = dal.getPreparedStatement(update + cols + where)) {
+			ps.setString(1, user.getFirstName());
+			ps.setString(2, user.getLastName());
+			ps.setString(2, user.getPassword());
+			ps.setString(3, user.getEmail());
+			ps.setString(4, user.getPhone());
+			ps.setInt(5, user.getUserId());
+			ps.executeQuery();
+		} catch(SQLException sqlExcept) {
+			sqlExcept.printStackTrace();
+		}
+		return user;
+	}
+	*/
 
 	@Override
 	public List<VenueDto> getAllVenues() {
@@ -253,7 +273,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public List<OrderDto> getAllOrders(String userId, String seat_cat_id) {
-		String select = "SELECT o.order_id, o.user_id, o.rest_id, o.pickup_id, o.order_status, r.nme, ps.loc_description ";
+		String select = "SELECT o.order_id, o.user_id, o.rest_id, o.pickup_id, o.order_status, r.nme, ps.loc_description, ps.nme ";
 		String from = "FROM ubifeed.orders o, ubifeed.restaurants r, ubifeed.pickup_stations ps ";
 		String where = "WHERE r.rest_id = o.rest_id AND "
 				+ "o.pickup_id = ps.pickup_id AND user_id = ? AND order_status != 'DELIVERED' ";
@@ -282,6 +302,7 @@ public class UserDaoImpl implements UserDao {
 
 				pickup.setPickupId(rs.getInt(4));
 				pickup.setLocationDescription(rs.getString(7));
+				pickup.setName(rs.getString(8));
 				toRet.setPickupStation(pickup);
 
 				toRet.setOrderStatus(rs.getString(5));
