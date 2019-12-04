@@ -18,6 +18,8 @@ public interface UserDao {
 
 	UserDto register(UserDto user);
 	
+	//UserDto changeUser(UserDto user);
+	
 	List<VenueDto> getAllVenues();
 
 	List<RestaurantDto> getAllRestaurants(String venueId);

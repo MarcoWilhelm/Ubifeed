@@ -196,6 +196,11 @@ public class MyServlet extends DefaultServlet {
 			case "register-user":
 				registerUser(req, resp, isMultiPart, parameters);
 				return;
+				/*
+			case "change-user":
+				changeUser(req, resp, isMultiPart, parameters);
+				return;
+				*/
 			case "login-restaurant":
 				loginRestaurant(req, resp, isMultiPart, parameters);
 				return;
@@ -225,8 +230,7 @@ public class MyServlet extends DefaultServlet {
 				return;
 			case "get-pickup-details":
 				getPickupDetails(req, resp, isMultiPart, parameters);
-
-
+				return;
 			case "delete-meal":
 				deleteMeal(req, resp, isMultiPart, parameters);
 				return;
@@ -604,6 +608,42 @@ public class MyServlet extends DefaultServlet {
 		System.out.println("Basket : " + basket);
 		userUcc.addOrder(basket, restaurantId, userId, seatCatId);
 	}
+	
+	/*
+	private void changeUser(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
+		UserDto user = factory.getUserDto();
+		
+		int userId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "userId"));
+		String firstName = servletHelper.getParameter(isMultiPart, req, parameters,"firstName");
+		String lastName = servletHelper.getParameter(isMultiPart, req, parameters,"lastName");
+		String phone = servletHelper.getParameter(isMultiPart, req, parameters,"phone");
+		String email = servletHelper.getParameter(isMultiPart, req, parameters,"email");
+		String password = servletHelper.getParameter(isMultiPart, req, parameters,"password");
+		
+		if(!Utils.isNotNullOrEmpty(email) || !Utils.isNotNullOrEmpty(password)  || !Utils.isNotNullOrEmpty(firstName)  
+				|| !Utils.isNotNullOrEmpty(lastName))
+			return;
+		if(!Utils.isPhoneNumber(phone))
+			return;
+		if(!Utils.isEmail(email))
+			return;
+		user.setUserId(userId);
+		user.setEmail(email);
+		user.setFirstName(firstName);
+		user.setLastName(lastName);
+		user.setPassword(password);
+		user.setPhone(phone);
+		
+		user = userUcc.changeUser(user);
+
+		if(user != null && Utils.isNotNullOrEmpty(user.getProfilePictureName())) {
+			byte[] bytes = ((List<byte[]>) req.getAttribute("pictureFile")).get(0);
+			Utils.uploadPicture(user.getProfilePictureName(), Config.getConfigFor("picturesPath") + File.separator + Config.getConfigFor("profilePictures"), bytes);
+		}
+
+		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(user), "application/json", HttpServletResponse.SC_ACCEPTED);
+	}
+	*/
 
 
 
