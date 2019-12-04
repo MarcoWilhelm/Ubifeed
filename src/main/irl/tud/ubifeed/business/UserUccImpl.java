@@ -124,11 +124,11 @@ public class UserUccImpl implements UserUcc {
 	}
 	
 	@Override
-	public List<OrderDto> getAllOrders(String userId, String seat_cat_id) {
+	public List<OrderDto> getAllOrders(String userId) {
 		List<OrderDto> orders = null;
 		try {
 			dal.startTransaction();
-			orders = userDao.getAllOrders(userId, seat_cat_id);
+			orders = userDao.getAllOrders(userId);
 			dal.commitTransaction();
 		} catch(Exception dbfExcept) {
 			dal.rollbackTransaction();

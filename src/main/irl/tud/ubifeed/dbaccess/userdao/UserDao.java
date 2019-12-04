@@ -28,7 +28,7 @@ public interface UserDao {
 	
 	List<SeatCatDto> getPickupDetails(String venueId);
 	
-	List<OrderDto> getAllOrders(String userId, String seat_cat_ids);
+	List<OrderDto> getAllOrders(String userId);
 
 	void addOrders(Map<MealDto, Long> basket, int restaurantId, int userId, int seatCatId);
 }

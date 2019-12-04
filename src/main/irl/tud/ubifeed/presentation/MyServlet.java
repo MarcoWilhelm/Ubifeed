@@ -229,7 +229,6 @@ public class MyServlet extends DefaultServlet {
 
 			case "delete-meal":
 				deleteMeal(req, resp, isMultiPart, parameters);
-
 				return;
 			case "add-order":
 				addOrder(req, resp, isMultiPart, parameters);
@@ -260,9 +259,9 @@ public class MyServlet extends DefaultServlet {
 				case "add-meal":
 					addMeal(req, resp, isMultiPart, parameters);
 					return;
-				/*case "delete-meal":
+				case "delete-meal":
 					deleteMeal(req, resp, isMultiPart, parameters);
-					return;*/
+					return;
 				}
 			}
 			if(cookie.get("role").equals("station")) {
@@ -324,7 +323,7 @@ public class MyServlet extends DefaultServlet {
 	
 	private void addMeal(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		MealDto meal = factory.getMealDto();
-		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
+		int restaurantId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId"));
 
 		String name = servletHelper.getParameter(isMultiPart, req, parameters,"name");
 		Double price = Double.parseDouble(servletHelper.getParameter(isMultiPart, req, parameters,"price")); 
@@ -350,12 +349,16 @@ public class MyServlet extends DefaultServlet {
 
 	private void deleteMeal(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		
-		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
+		int restaurantId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId"));
 		int mealId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"mealId"));
 		
-		restaurantUcc.deleteMeal(mealId, restaurantId);
-   
-		//servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(meal), "application/json", HttpServletResponse.SC_ACCEPTED);
+		if(restaurantUcc.deleteMeal(mealId, restaurantId)) {
+			servletHelper.sendToClient(resp, "Deleted", "plain/text", HttpServletResponse.SC_ACCEPTED);
+		}
+		else {
+			servletHelper.sendToClient(resp, "NotDeleted", "plain/text", HttpServletResponse.SC_BAD_REQUEST);
+		}
+		
 
 	}
 
@@ -555,8 +558,7 @@ public class MyServlet extends DefaultServlet {
 
 	private void getAllOrders(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		String userId = servletHelper.getParameter(isMultiPart, req, parameters,"userId");
-		String seat_cat_id = servletHelper.getParameter(isMultiPart, req, parameters, "seatCatId");
-		List<OrderDto> orders = userUcc.getAllOrders(userId, seat_cat_id);
+		List<OrderDto> orders = userUcc.getAllOrders(userId);
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
 	}

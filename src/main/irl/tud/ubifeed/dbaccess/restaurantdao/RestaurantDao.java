@@ -13,10 +13,10 @@ public interface RestaurantDao {
 
 	List<OrderDto> getAllOrders(String restaurantId);
 
-	MealDto addMeal(MealDto meal, String restaurantId);
+	MealDto addMeal(MealDto meal, int restaurantId);
 
 
-	void deleteMeal(int mealId, String restaurantId);
+	boolean deleteMeal(int mealId, int restaurantId);
 
 	void prepareOrder(int orderId);
 	

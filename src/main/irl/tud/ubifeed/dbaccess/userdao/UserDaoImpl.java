@@ -252,7 +252,7 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public List<OrderDto> getAllOrders(String userId, String seat_cat_id) {
+	public List<OrderDto> getAllOrders(String userId) {
 		String select = "SELECT o.order_id, o.user_id, o.rest_id, o.pickup_id, o.order_status, r.nme, ps.loc_description ";
 		String from = "FROM ubifeed.orders o, ubifeed.restaurants r, ubifeed.pickup_stations ps ";
 		String where = "WHERE r.rest_id = o.rest_id AND "
@@ -285,31 +285,13 @@ public class UserDaoImpl implements UserDao {
 				toRet.setPickupStation(pickup);
 
 				toRet.setOrderStatus(rs.getString(5));
+				list.add(toRet);
 			}
 			rs.close();
 		} catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 		}
 
-		//		String selectPickup = "SELECT pickup_id, loc_description FROM ubifeed.pickup_stations ";
-		//		String wherePickup = "WHERE seat_cat_id = " + seat_cat_id + ";";
-		//		List<PickupStationDto> listPickup = new ArrayList<>();
-		//		PickupStationDto pickupStation = factory.getPickupStationDto();
-		//		
-		//		try (PreparedStatement pStmt = dal.getPreparedStatement(selectPickup + wherePickup)) {
-		//			ResultSet rs = pStmt.executeQuery();
-		//			while (rs.next()) {
-		//				pickupStation.setPickupId(rs.getInt(1));
-		//				pickupStation.setLocationDescription(rs.getString(2));
-		//				listPickup.add(pickupStation);
-		//			}
-		//		} catch(SQLException sqlExcept) {
-		//			sqlExcept.printStackTrace();
-		//		}
-		//		toRet.setPickupStation(pickupStation);
-		//		list.add(toRet);
-
-		list.add(toRet);
 		return list;
 	}
 

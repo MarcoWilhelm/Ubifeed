@@ -18,13 +18,13 @@ import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.UserDto;
 
 public class RestaurantDaoImpl implements RestaurantDao{
-	
+
 	@Inject
 	public ModelFactory	factory;
-	
+
 	@Inject
 	public DalBackendServices dal;
-	
+
 	@Inject
 	public DeliveryDao deliveryDao;
 
@@ -66,7 +66,7 @@ public class RestaurantDaoImpl implements RestaurantDao{
 				+ "AND o.order_status != 'DELIVERED' ";
 		String order = "ORDER BY order_id DESC;";
 		List<OrderDto> list = new ArrayList<OrderDto>();
-		
+
 		try (PreparedStatement ps = dal.getPreparedStatement(select + from + where + order)) {
 			ps.setInt(1, Integer.parseInt(restaurantId));
 			ResultSet rs = ps.executeQuery();
@@ -75,22 +75,22 @@ public class RestaurantDaoImpl implements RestaurantDao{
 				PickupStationDto pickup = factory.getPickupStationDto();
 				UserDto user = factory.getUserDto();
 				OrderDto toRet = factory.getOrderDto();
-				
+
 				toRet.setOrderId(rs.getInt(1));
 				user.setUserId(rs.getInt(2));
 				user.setFirstName(rs.getString(7));
 				user.setLastName(rs.getString(8));
 				toRet.setUser(user);
-				
+
 				toRet.setMeals(deliveryDao.getMealFromOrder(toRet.getOrderId()));
 				restaurant.setRestaurantId(rs.getInt(3));
 				toRet.setRestaurant(restaurant);
-				
+
 				pickup.setPickupId(rs.getInt(4));
 				pickup.setLocationDescription(rs.getString(6));
 				pickup.setName(rs.getString(9));
 				toRet.setPickupStation(pickup);
-				
+
 				toRet.setOrderStatus(rs.getString(5));
 				list.add(toRet);
 			}
@@ -102,14 +102,14 @@ public class RestaurantDaoImpl implements RestaurantDao{
 	}
 
 	@Override
-	public MealDto addMeal(MealDto meal, String restaurantId) {
+	public MealDto addMeal(MealDto meal, int restaurantId) {
 		String insert = "INSERT INTO ubifeed.meals (meal_id, nme, price, image, rest_id, meal_categ_id) ";
 		String values = "VALUES(DEFAULT, ?, ?, ?, ?, ?)";
 		try(PreparedStatement ps = dal.getPreparedStatement(insert + values)) {
 			ps.setString(1, meal.getName());
 			ps.setDouble(2, meal.getPrice());
 			ps.setString(3, meal.getPictures() ); 
-			ps.setString(4, restaurantId);
+			ps.setInt(4, restaurantId);
 			ps.setString(5, meal.getCategory());
 			ps.execute();
 		}catch(SQLException sqlExcept) {
@@ -118,20 +118,23 @@ public class RestaurantDaoImpl implements RestaurantDao{
 		return meal;
 	}
 
-	
-@Override
-	public void deleteMeal(int mealId, String restaurantId) {
-		String update = "UPDATE ubifeed.meals m SET m.isDeleted = 1 ";
-		String where = "WHERE meal_id = ? AND rest_id = ?;";
-		
+
+	@Override
+	public boolean deleteMeal(int mealId, int restaurantId) {
+		String update = "UPDATE ubifeed.meals m SET m.is_deleted = TRUE ";
+		String where = "WHERE m.meal_id = ? AND m.rest_id = ?;";
+		int rows = 0;
 		try(PreparedStatement ps = dal.getPreparedStatement(update + where);) {
 			ps.setInt(1, mealId);
-			ps.setString(2, restaurantId);
-			ps.execute();
+			ps.setInt(2, restaurantId);
+			System.out.println(ps);
+			rows = ps.executeUpdate();
 			System.out.println("deleted");
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 		}
+		System.out.println(rows);
+		return rows !=0;
 
 	}
 
@@ -142,7 +145,7 @@ public class RestaurantDaoImpl implements RestaurantDao{
 		}
 		String update = "UPDATE ubifeed.orders o SET o.order_status = ? ";
 		String where = "WHERE o.order_id = ?;";
-		
+
 		try(PreparedStatement ps = dal.getPreparedStatement(update + where)) {
 			ps.setString(1, Enum.States.IN_PREPARATION.toString());
 			ps.setInt(2, orderId);
@@ -151,16 +154,16 @@ public class RestaurantDaoImpl implements RestaurantDao{
 			sqlExcept.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void finishOrder(int orderId) {
 		if(!Enum.States.valueOf(deliveryDao.getOrderStatus(orderId)).equals(Enum.States.IN_PREPARATION)){
 			return;
 		}
-		
+
 		String update = "UPDATE ubifeed.orders o SET o.order_status = ? ";
 		String where = "WHERE o.order_id = ?;";
-		
+
 		try(PreparedStatement ps = dal.getPreparedStatement(update + where)) {
 			ps.setString(1, Enum.States.READY.toString());
 			ps.setInt(2, orderId);
@@ -169,8 +172,8 @@ public class RestaurantDaoImpl implements RestaurantDao{
 			sqlExcept.printStackTrace();
 		}
 	}
-	
-	
-	
+
+
+
 
 }

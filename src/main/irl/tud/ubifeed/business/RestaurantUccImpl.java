@@ -53,7 +53,7 @@ public class RestaurantUccImpl implements RestaurantUcc {
 	}
 
 	@Override
-	public MealDto addMeal(MealDto meal, String restaurantId) {
+	public MealDto addMeal(MealDto meal, int restaurantId) {
 		try {
 			dal.startTransaction();
 			meal = restaurantDao.addMeal(meal, restaurantId);
@@ -66,15 +66,16 @@ public class RestaurantUccImpl implements RestaurantUcc {
 
 	@Override
 
-	public void deleteMeal(int mealId, String restaurantId) {
+	public boolean deleteMeal(int mealId, int restaurantId) {
+		boolean bool = false;
 		try {
 			dal.startTransaction();
-			restaurantDao.deleteMeal(mealId, restaurantId);
+			bool = restaurantDao.deleteMeal(mealId, restaurantId);
 			//System.out.println("ucc arrived");
 			} catch (Exception dbfExcept) {
 			dal.rollbackTransaction();
 		}
-		//return meal
+		return bool;
 	}
 
 	@Override
@@ -86,9 +87,6 @@ public class RestaurantUccImpl implements RestaurantUcc {
 		} catch (Exception dbfExcept) {
 			dal.rollbackTransaction();
 		}
-
-		//return meal;
-
 		
 	}
 
