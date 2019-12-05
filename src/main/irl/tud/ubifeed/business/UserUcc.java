@@ -68,11 +68,27 @@ public interface UserUcc {
 	 */
 	List<EventDto> getEvents(String venueId);
 	
-	
+	/**
+	 * Get the seat categories of a venue
+	 * @param venueId the venue id
+	 * @return a list of the seat categories
+	 */
 	List<SeatCatDto> getPickupDetails(String venueId);
 	
+	/**
+	 * get a list of orders of a user
+	 * @param userId the user
+	 * @return as list of the orders
+	 */
 	List<OrderDto> getAllOrders(String userId);
 	
+	/**
+	 * add an order in the database
+	 * @param basket a map of the meals with their quantity
+	 * @param restaurantId the restaurant
+	 * @param userId the user
+	 * @param seatCatId the seat category of the user
+	 */
 	void addOrder(Map<MealDto,Long> basket, int restaurantId, int userId, int seatCatId);
 
 }

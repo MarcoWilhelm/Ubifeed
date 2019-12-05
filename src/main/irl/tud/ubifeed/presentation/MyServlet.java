@@ -45,6 +45,12 @@ import irl.tud.ubifeed.seatcatdto.SeatCatDto;
 import irl.tud.ubifeed.user.UserDto;
 import irl.tud.ubifeed.venue.VenueDto;
 
+/**
+ * Servlet entry point of the application get and post requests.
+ * 
+ * @author Yann Pollet, Carlo
+ *
+ */
 @MultipartConfig
 public class MyServlet extends DefaultServlet {
 
@@ -113,7 +119,6 @@ public class MyServlet extends DefaultServlet {
 	 * @param req The HttpServletRequest.
 	 * @param resp The HttpServletResponse.
 	 */
-
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) {
 		System.out.println("doPost");
@@ -200,7 +205,7 @@ public class MyServlet extends DefaultServlet {
 			case "change-user":
 				changeUser(req, resp, isMultiPart, parameters);
 				return;
-				*/
+				 */
 			case "login-restaurant":
 				loginRestaurant(req, resp, isMultiPart, parameters);
 				return;
@@ -237,7 +242,7 @@ public class MyServlet extends DefaultServlet {
 			case "add-meal":
 				addMeal(req, resp, isMultiPart, parameters);
 				return;	
-				
+
 			case "add-order":
 				addOrder(req, resp, isMultiPart, parameters);
 				return;
@@ -264,13 +269,15 @@ public class MyServlet extends DefaultServlet {
 				case "finish-order":
 					finishOrder(req, resp, isMultiPart, parameters);
 					return;
-				/*case "add-meal":
+					/*case "add-meal":
 					addMeal(req, resp, isMultiPart, parameters);
 					return;
 				case "delete-meal":
 					deleteMeal(req, resp, isMultiPart, parameters);
 					return;
+					 */
 				}
+
 			}
 			if(cookie.get("role").equals("station")) {
 				switch(action) {
@@ -292,43 +299,85 @@ public class MyServlet extends DefaultServlet {
 	}
 
 	//for Preflight
+
 	@Override
 	protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		setAccessControlHeaders(resp);
 		resp.setStatus(HttpServletResponse.SC_OK);
 	}
-
+	/**
+	 * allows http requests with same header
+	 * @param resp the httpservlet response
+	 */
 	private void setAccessControlHeaders(HttpServletResponse resp) {
 		resp.setHeader("Access-Control-Allow-Origin", "http://localhost:8100, http://localhost:8080");
 		resp.setHeader("Access-Control-Allow-Methods", "POST, GET");
 		resp.setHeader("Access-Control-Allow-Headers","origin, content-type, accept");
 	}
 
+	/**
+	 * Set order_status to "IN_PREPARATION"
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void prepareOrder(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		int orderId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"orderId"));
-		
 		restaurantUcc.prepareOrder(orderId);
 	}
-	
+
+	/**
+	 * Set order_status to "READY"
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void finishOrder(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		int orderId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"orderId"));
-		
+
 		restaurantUcc.finishOrder(orderId);
 	}
-	
+
+	/**
+	 * Set order_status to "IN_STATION"
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void takeOrder(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		int orderId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"orderId"));
-		System.out.println("UCC_TAKE_ORDER");
 		deliveryUcc.takeOrder(orderId);
 	}
-	
+
+	/**
+	 * Set order_status to "DELIVERED"
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void deliverOrder(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		int orderId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"orderId"));
-		
+
 		deliveryUcc.deliverOrder(orderId);
 	}
-	
+
+	/**
+	 * Add meal to the restaurant menu
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void addMeal(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		MealDto meal = factory.getMealDto();
 		int restaurantId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId"));
@@ -337,6 +386,10 @@ public class MyServlet extends DefaultServlet {
 		Double price = Double.parseDouble(servletHelper.getParameter(isMultiPart, req, parameters,"price")); 
 		String category = servletHelper.getParameter(isMultiPart, req, parameters,"category");
 		String image = ((List<String>)req.getAttribute("pictureName")).get(0);
+		
+		if(!Utils.isNotNullOrEmpty(name) || !Utils.isNotNullOrEmpty(category) || !Utils.isNotNullOrEmpty(image)) {
+			return;
+		}
 
 
 		meal.setName(name);
@@ -355,25 +408,49 @@ public class MyServlet extends DefaultServlet {
 
 	}
 
+	/**
+	 * delete meal from restaurant menu
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void deleteMeal(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
-		
+
 		int restaurantId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId"));
 		int mealId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters,"mealId"));
-		
+
 		if(restaurantUcc.deleteMeal(mealId, restaurantId)) {
 			servletHelper.sendToClient(resp, "Deleted", "plain/text", HttpServletResponse.SC_ACCEPTED);
 		}
 		else {
 			servletHelper.sendToClient(resp, "NotDeleted", "plain/text", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		
+
 
 	}
 
+	/**
+	 * change meal information from restaurant menu
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void editMenu(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
-		// TODO Auto-generated method stub
+
 	}
 
+	/**
+	 * Delete cookie for the web interface
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void logOut(HttpServletRequest req, HttpServletResponse resp) {
 		// Creating null cookie
 		Cookie cookie = new Cookie("user", "");
@@ -382,6 +459,15 @@ public class MyServlet extends DefaultServlet {
 		// Resetting cookie
 		resp.addCookie(cookie);
 	}
+	
+	/**
+	 * verify cookie for the web interface
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void verification(HttpServletRequest req, HttpServletResponse resp) {
 		Map<String,String> cookie = servletHelper.getCookie(req);
 		if (cookie == null || cookie.isEmpty()) {
@@ -393,6 +479,14 @@ public class MyServlet extends DefaultServlet {
 		}
 	}
 
+	/**
+	 * Log in user for the mobile app
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void loginUser(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		//create dto
 		UserDto user = factory.getUserDto();
@@ -422,6 +516,14 @@ public class MyServlet extends DefaultServlet {
 		}
 	}
 
+	/**
+	 * Register a new user
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void registerUser(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		UserDto user = factory.getUserDto();
 
@@ -457,6 +559,14 @@ public class MyServlet extends DefaultServlet {
 
 	}
 
+	/**
+	 * Log in restaurant for the web interface
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void loginRestaurant(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		//create dto
 		RestaurantDto restaurant = factory.getRestaurantDto();
@@ -485,6 +595,14 @@ public class MyServlet extends DefaultServlet {
 
 	}
 
+	/**
+	 * log in pickupStation for the web interface
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void loginPickupStation(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		//create dto
 		PickupStationDto pickupStation = factory.getPickupStationDto();
@@ -515,7 +633,14 @@ public class MyServlet extends DefaultServlet {
 
 
 
-
+	/**
+	 * get all the venues
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void getAllVenues(HttpServletRequest req, HttpServletResponse resp) {
 
 		List<VenueDto> venue = userUcc.getAllVenues();
@@ -525,9 +650,21 @@ public class MyServlet extends DefaultServlet {
 	}
 
 
+	/**
+	 * Get all the restaurants from a venue
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void getAllRestaurants(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 
 		String venueId = servletHelper.getParameter(isMultiPart, req, parameters,"venueId");
+		
+		if(!Utils.isNotNullOrEmpty(venueId)) {
+			return;
+		}
 
 		List<RestaurantDto> restaurants = userUcc.getAllRestaurants(venueId);
 
@@ -535,56 +672,120 @@ public class MyServlet extends DefaultServlet {
 
 	}
 
+	/**
+	 * get all the events from a venue
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void getEvents(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 
-
 		String venueId = servletHelper.getParameter(isMultiPart, req, parameters,"venueId");
-
+		
+		if(!Utils.isNotNullOrEmpty(venueId)) {
+			return;
+		}
 		List<EventDto> events = userUcc.getEvents(venueId);
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(events), "application/json", HttpServletResponse.SC_ACCEPTED);
 
 	}
 
+	/**
+	 * get meals from a restaurant
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void getMeals(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 
 		String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
 
+		if(!Utils.isNotNullOrEmpty(restaurantId)) {
+			return;
+		}
 		List<MealDto> meals = userUcc.getMeals(restaurantId);
-		
+
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(meals), "application/json", HttpServletResponse.SC_ACCEPTED);
 
 	}
 
+	/**
+	 * get Seat categories from a venue
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void getPickupDetails(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		String venueId = servletHelper.getParameter(isMultiPart, req, parameters,"venueId");
+		if(!Utils.isNotNullOrEmpty(venueId)) {
+			return;
+		}
 		List<SeatCatDto> pickupDetails = userUcc.getPickupDetails(venueId);
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(pickupDetails), "application/json", HttpServletResponse.SC_ACCEPTED);
 
 	}
 
+	/**
+	 * get the orders from a user
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void getAllOrders(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		String userId = servletHelper.getParameter(isMultiPart, req, parameters,"userId");
+		if(Utils.isNotNullOrEmpty(userId)) {
+			return;
+		}
+		
 		List<OrderDto> orders = userUcc.getAllOrders(userId);
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
 	}
 
+	/**
+	 * get the orders for a restaurant
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void getAllOrdersRest(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		String restaurantId = servletHelper.getCookie(req).get("id");
+		
+		if(!Utils.isNotNullOrEmpty(restaurantId)) {
+			return;
+		}
 		List<OrderDto> orders = restaurantUcc.getAllOrders(restaurantId);
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(orders), "application/json", HttpServletResponse.SC_ACCEPTED);
 
 	}
 
+	/**
+	 * get orders for a pickup_station
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void getAllOrdersPickup(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 
-		//String restaurantId = servletHelper.getParameter(isMultiPart, req, parameters,"restaurantId");
-		//List<OrderDto> orders = deliveryUcc.getAllOrders();
-
 		String pickupId = servletHelper.getCookie(req).get("id");
+		if(!Utils.isNotNullOrEmpty(pickupId)) {
+			return;
+		}
 		List<OrderDto> orders = deliveryUcc.getAllOrders(pickupId);
 
 
@@ -592,6 +793,14 @@ public class MyServlet extends DefaultServlet {
 
 	}
 
+	/**
+	 * Add a new order to the database
+	 * 
+	 * @param req the httpServlet request
+	 * @param resp the httpservlet response
+	 * @param isMultiPart true if request is multipart/form-data
+	 * @param parameters if isMultipart, get parameters from this
+	 */
 	private void addOrder(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		String foodBasketStr = servletHelper.getParameter(isMultiPart, req, parameters, "foodbasket");
 		String drinksBasketStr = servletHelper.getParameter(isMultiPart, req, parameters, "drinksbasket");
@@ -599,9 +808,6 @@ public class MyServlet extends DefaultServlet {
 		int userId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "userId"));
 		int seatCatId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "seatCatId"));
 
-		System.out.println(foodBasketStr);
-		//Map<Integer, MealDto> foodBasket = servletHelper.getGenson().deserialize(foodBasketStr, new GenericType<Map<Integer,MealDto>>(){});
-		//Map<Integer, MealDto> drinksBasket = servletHelper.getGenson().deserialize(drinksBasketStr, new GenericType<Map<Integer, MealDto>>(){});
 
 
 		List<MealDto> foodBasket = servletHelper.getGenson().deserialize(foodBasketStr, new GenericType<List<MealDto>>(){});
@@ -609,21 +815,24 @@ public class MyServlet extends DefaultServlet {
 
 
 		Map<MealDto, Long> basket = Stream.concat(foodBasket.stream(), drinksBasket.stream()).collect(Collectors.groupingBy(m -> m, Collectors.counting()));
-		System.out.println("Basket : " + basket);
+		if(basket.isEmpty()) {
+			return;
+		}
+		
 		userUcc.addOrder(basket, restaurantId, userId, seatCatId);
 	}
-	
+
 	/*
 	private void changeUser(HttpServletRequest req, HttpServletResponse resp, boolean isMultiPart, Map<String,String> parameters) {
 		UserDto user = factory.getUserDto();
-		
+
 		int userId = Integer.parseInt(servletHelper.getParameter(isMultiPart, req, parameters, "userId"));
 		String firstName = servletHelper.getParameter(isMultiPart, req, parameters,"firstName");
 		String lastName = servletHelper.getParameter(isMultiPart, req, parameters,"lastName");
 		String phone = servletHelper.getParameter(isMultiPart, req, parameters,"phone");
 		String email = servletHelper.getParameter(isMultiPart, req, parameters,"email");
 		String password = servletHelper.getParameter(isMultiPart, req, parameters,"password");
-		
+
 		if(!Utils.isNotNullOrEmpty(email) || !Utils.isNotNullOrEmpty(password)  || !Utils.isNotNullOrEmpty(firstName)  
 				|| !Utils.isNotNullOrEmpty(lastName))
 			return;
@@ -637,7 +846,7 @@ public class MyServlet extends DefaultServlet {
 		user.setLastName(lastName);
 		user.setPassword(password);
 		user.setPhone(phone);
-		
+
 		user = userUcc.changeUser(user);
 
 		if(user != null && Utils.isNotNullOrEmpty(user.getProfilePictureName())) {
@@ -647,7 +856,7 @@ public class MyServlet extends DefaultServlet {
 
 		servletHelper.sendToClient(resp, servletHelper.getGenson().serialize(user), "application/json", HttpServletResponse.SC_ACCEPTED);
 	}
-	*/
+	 */
 
 
 

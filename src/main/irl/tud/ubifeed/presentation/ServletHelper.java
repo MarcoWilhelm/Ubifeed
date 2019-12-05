@@ -47,10 +47,25 @@ public class ServletHelper {
 		}
 	}
 
+	/**
+	 * Get the parameter
+	 * 
+	 * @param isMultiPart true if is a multipart/form-data request
+	 * @param req the request, getParameters if isn't multipart
+	 * @param parameters parameters if isMultiPart
+	 * @param key key for the parameter
+	 * @return the parameter
+	 */
 	public String getParameter(boolean isMultiPart, HttpServletRequest req, Map<String, String> parameters, String key) {
 		return (isMultiPart) ? parameters.get(key): req.getParameter(key);
 	}
 
+	/**
+	 * Add a cookie with a station role
+	 * @param pickup the pickupStation
+	 * @param req the request
+	 * @param resp the response server to add Cookie
+	 */
 	public void addPickupCookie(PickupStationDto pickup, HttpServletRequest req, HttpServletResponse resp) {
 		String url = req.getRequestURL().toString();
 		String role = "station";
@@ -59,6 +74,12 @@ public class ServletHelper {
 		addCookie(token, resp);
 
 	}
+	/**
+	 * Add a cookie with a restaurant role
+	 * @param pickup the pickupStation
+	 * @param req the request
+	 * @param resp the response server to add Cookie
+	 */
 	public void addRestaurantCookie(RestaurantDto restaurant, HttpServletRequest req, HttpServletResponse resp) {
 		String url = req.getRequestURL().toString();
 		String role = "restaurant";
@@ -67,6 +88,11 @@ public class ServletHelper {
 		addCookie(token, resp);
 
 	}
+	/**
+	 * Add cookie to the server
+	 * @param token token for the cookie
+	 * @param resp the HttpServletResponse
+	 */
 	private void addCookie(String token, HttpServletResponse resp) {
 		Cookie cookie = new Cookie("user", token);
 		cookie.setPath("/");
@@ -75,6 +101,13 @@ public class ServletHelper {
 		resp.addCookie(cookie);
 	}
 
+	/**
+	 * Create token for the cookie
+	 * @param id id of the restaurant or pickupStation
+	 * @param role of the user, restaurant or station
+	 * @param ip URL of the request
+	 * @return
+	 */
 	private String createToken(int id, String role, String ip) {	
 		Builder tokenBuilder = JWT.create();
 
@@ -86,6 +119,11 @@ public class ServletHelper {
 		return token;
 	}
 
+	/**
+	 * get the cookie if exists
+	 * @param req the httpServletRequest
+	 * @return a map with the parameters in the cookie
+	 */
 	public Map<String,String> getCookie(HttpServletRequest req) {
 		Map<String,String> map = new HashMap<String,String>();
 		Cookie[] cookies = req.getCookies();

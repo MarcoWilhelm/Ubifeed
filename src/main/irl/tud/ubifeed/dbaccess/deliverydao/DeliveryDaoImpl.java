@@ -154,7 +154,6 @@ public class DeliveryDaoImpl implements DeliveryDao {
 		if(!Enum.States.valueOf(getOrderStatus(orderId)).equals(Enum.States.READY)){
 			return;
 		}
-		System.out.println("TAKE_ORDER");
 		String update = "UPDATE ubifeed.orders o SET o.order_status = ? ";
 		String where = "WHERE o.order_id = ?";
 		

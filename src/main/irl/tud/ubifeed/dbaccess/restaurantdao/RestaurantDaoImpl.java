@@ -98,6 +98,7 @@ public class RestaurantDaoImpl implements RestaurantDao{
 		} catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 		}
+		System.out.println(list);
 		return list;
 	}
 
@@ -128,14 +129,11 @@ public class RestaurantDaoImpl implements RestaurantDao{
 			ps.setInt(1, mealId);
 
 			ps.setInt(2, restaurantId);
-			System.out.println(ps);
 			rows = ps.executeUpdate();
-			System.out.println("deleted");
 
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 		}
-		System.out.println(rows);
 		return rows !=0;
 
 	}

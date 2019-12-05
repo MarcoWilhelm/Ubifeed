@@ -13,10 +13,10 @@ import irl.tud.ubifeed.restaurant.RestaurantDto;
 import irl.tud.ubifeed.user.User;
 
 public class RestaurantUccImpl implements RestaurantUcc {
-	
+
 	@Inject
 	public RestaurantDao restaurantDao;
-	
+
 	@Inject
 	public DalServices dal;
 
@@ -71,8 +71,7 @@ public class RestaurantUccImpl implements RestaurantUcc {
 		try {
 			dal.startTransaction();
 			bool = restaurantDao.deleteMeal(mealId, restaurantId);
-			//System.out.println("ucc arrived");
-			} catch (Exception dbfExcept) {
+		} catch (Exception dbfExcept) {
 			dal.rollbackTransaction();
 		}
 		return bool;
@@ -87,7 +86,7 @@ public class RestaurantUccImpl implements RestaurantUcc {
 		} catch (Exception dbfExcept) {
 			dal.rollbackTransaction();
 		}
-		
+
 	}
 
 	@Override
@@ -99,7 +98,7 @@ public class RestaurantUccImpl implements RestaurantUcc {
 		} catch (Exception dbfExcept) {
 			dal.rollbackTransaction();
 		}
-		
+
 
 	}
 }
