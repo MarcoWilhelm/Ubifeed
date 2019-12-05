@@ -1,9 +1,0 @@
-[  
-    { "venue_id": 1, "restaurant_id": "1", "name": "Mc Donalds", "address": "Testroad 1, 7 Dublin", "description": "Fast Food, Drinks, Coffee" },
-    { "venue_id": 1, "restaurant_id": "2", "name": "Dall Italia Pastabar", "address": "Testroad 2, 15 Dublin", "description": "Pasta, Drinks" },
-    { "venue_id": 1, "restaurant_id": "3", "name": "KFC", "address": "Testroad 3, 7 Dublin", "description": "Chicken Wings, Fast Food, Drinks" },
-    { "venue_id": 2, "restaurant_id": "4", "name": "Burger King", "address": "Testroad 1, 7 Dublin", "description": "Fast Food, Drinks, Coffee" },
-    { "venue_id": 2, "restaurant_id": "5", "name": "Segafredo", "address": "Testroad 2, 15 Dublin", "description": "Pasta, Drinks" },
-    { "venue_id": 3, "restaurant_id": "6", "name": "KingWedges", "address": "Testroad 3, 7 Dublin", "description": "Chicken Wings, Fast Food, Drinks" }
-
-]
