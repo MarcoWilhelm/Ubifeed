@@ -248,7 +248,8 @@ INSERT INTO ubifeed.events_ (event_id, nme, dte, venue_id) values
 (DEFAULT, "Italy vs Ireland", "2020-1-19", 4);
 
 select* from ubifeed.meals;
-UPDATE ubifeed.meals SET isDeleted = 1  WHERE meal_id = 6 AND rest_id = 1;
+-- UPDATE ubifeed.meals m SET m.isDeleted = 1 WHERE meal_id = 3 AND rest_id = '1';
+-- UPDATE ubifeed.meals SET isDeleted = 1  WHERE meal_id = 5 AND rest_id = 1;
 /*========
 
 Use ubifeed;

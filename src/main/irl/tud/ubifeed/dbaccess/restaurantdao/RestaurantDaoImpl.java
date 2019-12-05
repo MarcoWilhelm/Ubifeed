@@ -127,8 +127,7 @@ public class RestaurantDaoImpl implements RestaurantDao{
 		try(PreparedStatement ps = dal.getPreparedStatement(update + where);) {
 			ps.setInt(1, mealId);
 			ps.setString(2, restaurantId);
-			ps.execute();
-			System.out.println("deleted");
+			ps.executeUpdate();
 		}catch(SQLException sqlExcept) {
 			sqlExcept.printStackTrace();
 		}

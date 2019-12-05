@@ -229,8 +229,11 @@ public class MyServlet extends DefaultServlet {
 
 			case "delete-meal":
 				deleteMeal(req, resp, isMultiPart, parameters);
-
 				return;
+			case "add-meal":
+				addMeal(req, resp, isMultiPart, parameters);
+				return;	
+				
 			case "add-order":
 				addOrder(req, resp, isMultiPart, parameters);
 				return;
@@ -257,10 +260,10 @@ public class MyServlet extends DefaultServlet {
 				case "finish-order":
 					finishOrder(req, resp, isMultiPart, parameters);
 					return;
-				case "add-meal":
+				/*case "add-meal":
 					addMeal(req, resp, isMultiPart, parameters);
 					return;
-				/*case "delete-meal":
+				case "delete-meal":
 					deleteMeal(req, resp, isMultiPart, parameters);
 					return;*/
 				}

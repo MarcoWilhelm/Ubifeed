@@ -19,7 +19,7 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 	
 	private ThreadLocal<Connection> connections;
 
-	private static final String URL = "jdbc:mysql://localhost:3306/ubifeed?useSSL=false";
+	private static final String URL = "jdbc:mysql://localhost:3306/ubifeed?useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 	private static final String PASSWORD = "n08odYkantC";
 	private static final String USER = "project_user";
 
