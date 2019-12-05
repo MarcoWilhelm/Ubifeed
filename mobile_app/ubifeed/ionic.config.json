@@ -1,7 +1,0 @@
-{
-  "name": "ubifeed",
-  "integrations": {
-    "cordova": {}
-  },
-  "type": "angular"
-}
